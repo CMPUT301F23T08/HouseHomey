@@ -1,8 +1,18 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.HouseHomey" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <style name="Base.Theme.HouseHomey" parent="Theme.Material3.Light.NoActionBar">
+        <!-- Customize theme colors -->
+        <item name="colorPrimary">@color/brown</item>
+        <item name="colorOnPrimary">@color/creme</item>
+        <item name="colorPrimaryVariant">@color/creme</item>
+        <item name="colorOnSurface">@color/black</item>
+        <!-- Customize Material Design styles -->
+        <item name="textInputStyle">@style/Widget.Material3.TextInputLayout.OutlinedBox</item>
+    </style>
+
+    <style name="TextInputLayoutStyle" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@drawable/text_input_style</item>
+        <item name="android:textColorHint">@color/brown</item>
     </style>
 
     <style name="Theme.HouseHomey" parent="Base.Theme.HouseHomey" />
