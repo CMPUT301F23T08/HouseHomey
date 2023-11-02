@@ -1,11 +1,15 @@
 package com.example.househomey;
 
+import com.google.firebase.Timestamp;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Item {
-    private String id;
+    public String id;
     private String description;
     private Date acquisitionDate;
     private String make;
@@ -13,16 +17,17 @@ public class Item {
     private String serialNumber;
     private String comment;
 
-    public Item(Map<String, Object> data) {
-        if (data.containsKey("id")) {
-            this.id = (String) data.get("id");
-        }
-        if (data.containsKey("description")) {
-            this.description = (String) data.get("description");
-        }
-        if (data.containsKey("acquisitionDate")) {
-            this.acquisitionDate = (Date) data.get("acquisitionDate");
-        }
+    private BigDecimal cost;
+
+    private Map<String, Object> data;
+
+    public Item(String id, Map<String, Object> data) {
+        this.data = data;
+        this.id = id;
+        this.description = (String) data.get("description");
+        this.acquisitionDate = ((Timestamp) data.get("acquisitionDate")).toDate();
+//        this.acquisitionDate = new Date();
+
         if (data.containsKey("make")) {
             this.make = (String) data.get("make");
         }
@@ -35,11 +40,24 @@ public class Item {
         if (data.containsKey("comment")) {
             this.comment = (String) data.get("comment");
         }
+
+        this.cost = new BigDecimal((String) data.get("cost")).setScale(2);
+//        this.cost = new BigDecimal("2.00");
     }
 
     public HashMap<String, Object> data() {
         return new HashMap<>();
     }
 
+    public Date getAcquisitionDate() {
+        return acquisitionDate;
+    }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public BigDecimal getCost() {
+        return cost;
+    }
 }

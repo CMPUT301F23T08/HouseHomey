@@ -1,5 +1,6 @@
 package com.example.househomey;
 
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class User {
@@ -7,10 +8,15 @@ public class User {
     private ItemList itemList;
     private FirebaseFirestore db;
 
-    public User(String username) {
+    private DocumentReference userRef;
+
+    public User(FirestoreUpdateListener listener, String username) {
         db = FirebaseFirestore.getInstance();
 
         this.username = username;
+        userRef = db.collection("user").document(username);
+
+        itemList = new ItemList(listener, userRef.collection("item"));
     }
 
     public String getUsername() {

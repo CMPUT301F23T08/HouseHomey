@@ -1,5 +1,6 @@
 package com.example.househomey;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.google.firebase.firestore.CollectionReference;
@@ -17,8 +18,10 @@ public class ItemList {
     private String username;
 
     private CollectionReference itemsRef;
+    private FirestoreUpdateListener listener;
 
-    public ItemList(CollectionReference itemsRef) {
+    public ItemList(FirestoreUpdateListener listener, CollectionReference itemsRef) {
+        this.listener = listener;
         this.itemsRef = itemsRef;
         this.username = username;
         initItems();
@@ -34,9 +37,9 @@ public class ItemList {
                 items.clear();
                 for (QueryDocumentSnapshot doc: querySnapshots) {
                     Map<String, Object> data = new HashMap<>();
-                    data.put("id", doc.getId());
                     data.putAll(doc.getData());
-                    items.add(new Item(data));
+                    items.add(new Item(doc.getId(), data));
+                    listener.notifyDataSetChanged();
                 }
             }
         });
@@ -46,7 +49,10 @@ public class ItemList {
         itemsRef.add(item.data());
     }
 
-    /*
+    public ArrayList<Item> getItems() {
+        return items;
+    }
+/*
         db = FirebaseFirestore.getInstance();
         citiesRef = db.collection("cities");
 

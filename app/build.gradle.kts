@@ -4,21 +4,14 @@ plugins {
 }
 
 android {
-    signingConfigs {
-        getByName("debug") {
-            storeFile = file("C:\\Users\\lbonk\\.android\\debug.keystore")
-            storePassword = "android"
-            keyAlias = "android"
-            keyPassword = "android"
-        }
-    }
     namespace = "com.example.househomey"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.househomey"
-        minSdk = 26
-        targetSdk = 33
+        minSdk = 34
+
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
