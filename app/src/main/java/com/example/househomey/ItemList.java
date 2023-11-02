@@ -52,50 +52,5 @@ public class ItemList {
     public ArrayList<Item> getItems() {
         return items;
     }
-/*
-        db = FirebaseFirestore.getInstance();
-        citiesRef = db.collection("cities");
-
-            citiesRef.addSnapshotListener((querySnapshots, error) -> {
-            if (error != null) {
-                Log.e("Firestore", error.toString());
-                return;
-            }
-            if (querySnapshots != null) {
-                dataList.clear();
-                for (QueryDocumentSnapshot doc: querySnapshots) {
-                    String city = doc.getId();
-                    String province = doc.getString("Province");
-                    Log.d("Firestore", String.format("City(%s, %s) fetched",
-                            city, province));
-                    dataList.add(new City(city, province));
-                }
-                cityAdapter.notifyDataSetChanged();
-            }
-        });
-
-            @Override
-    public void onOKPressed(City city) {
-        HashMap<String, String> data = new HashMap<>();
-        data.put("Province", city.getProvince());
-        citiesRef.document(city.getName()).set(data)
-                .addOnSuccessListener(aVoid -> Log.d("Firestore", "DocumentSnapshot successfully written!"));;
-
-    }
-
-            deleteButton.setOnClickListener(view -> {
-            EditText deleteText = findViewById(R.id.delete_text);
-            String cityName = deleteText.getText().toString();
-            if (!cityName.isEmpty()) {
-                for (City city:dataList) {
-                    if (city.getName().equals(cityName)){
-                        citiesRef.document(cityName).delete();
-                        deleteText.setText("");
-                    }
-                }
-
-            }
-        });
-     */
 
 }

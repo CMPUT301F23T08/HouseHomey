@@ -35,7 +35,7 @@ public class ItemAdapter extends ArrayAdapter<Item> {
             view = LayoutInflater.from(context).inflate(R.layout.list_item, parent, false);
         }
 
-        // Get the correct expense
+        // Get the correct item
         Item item = items.get(position);
 
         // Set all the text views to their appropriate values

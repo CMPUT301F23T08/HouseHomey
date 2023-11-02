@@ -26,7 +26,6 @@ public class Item {
         this.id = id;
         this.description = (String) data.get("description");
         this.acquisitionDate = ((Timestamp) data.get("acquisitionDate")).toDate();
-//        this.acquisitionDate = new Date();
 
         if (data.containsKey("make")) {
             this.make = (String) data.get("make");
@@ -42,7 +41,6 @@ public class Item {
         }
 
         this.cost = new BigDecimal((String) data.get("cost")).setScale(2);
-//        this.cost = new BigDecimal("2.00");
     }
 
     public HashMap<String, Object> data() {
