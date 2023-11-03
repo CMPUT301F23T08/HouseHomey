@@ -18,6 +18,7 @@ import com.google.firebase.Timestamp;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class AddItemFragment extends Fragment {
     private Date dateAcquired;
@@ -36,8 +37,10 @@ public class AddItemFragment extends Fragment {
         dateTextView = rootView.findViewById(R.id.add_item_date);
         dateTextView.setOnClickListener(v -> showDatePicker());
 
-        // Add listener for add item button
+        // Add listener for confirm and back buttons
         rootView.findViewById(R.id.add_item_confirm_button).setOnClickListener(v -> addItem());
+        rootView.findViewById(R.id.add_item_back_button).setOnClickListener(v -> returnToHomeScreen());
+
         return rootView;
     }
 
@@ -62,15 +65,15 @@ public class AddItemFragment extends Fragment {
         data.put("description", getInputText(R.id.add_item_description));
         data.put("acquisitionDate", new Timestamp(dateAcquired));
         data.put("cost", getInputText(R.id.add_item_cost));
+        data.put("make", getInputText(R.id.add_item_make));
+        data.put("model", getInputText(R.id.add_item_model));
+        data.put("serialNumber", getInputText(R.id.add_item_serial_number));
+        data.put("comment", getInputText(R.id.add_item_comment));
 
         // Create new item document in Firestore
         itemRef.add(data).addOnSuccessListener(documentReference -> {
                     Log.d("Firestore", "Successfully created new item with id:" + documentReference.getId());
-                    // Return to Home Page
-                    FragmentManager fragmentManager = getParentFragmentManager();
-                    FragmentTransaction transaction = fragmentManager.beginTransaction();
-                    transaction.replace(R.id.fragmentContainer, new HomeFragment(itemRef));
-                    transaction.commit();
+                    returnToHomeScreen();
                 })
                 .addOnFailureListener(e -> {
                     // TODO: Handle the failure to add the document
@@ -79,6 +82,13 @@ public class AddItemFragment extends Fragment {
     }
 
     private String getInputText(int id) {
-        return ((TextInputEditText) getView().findViewById(id)).getText().toString();
+        return Objects.requireNonNull(((TextInputEditText) requireView().findViewById(id)).getText()).toString();
+    }
+
+    private void returnToHomeScreen() {
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.fragmentContainer, new HomeFragment(itemRef));
+        transaction.commit();
     }
 }
