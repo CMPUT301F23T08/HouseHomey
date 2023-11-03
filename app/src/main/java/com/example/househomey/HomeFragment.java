@@ -11,25 +11,25 @@ import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class HomeFragment extends Fragment implements FirestoreUpdateListener {
-    private FirebaseFirestore db;
+    private CollectionReference itemRef;
     private ListView itemListView;
     private ArrayAdapter<Item> itemAdapter;
+
+    public HomeFragment(CollectionReference itemRef) {
+        this.itemRef = itemRef;
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Inflate the fragment's layout
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
-        db = FirebaseFirestore.getInstance();
-
-        // create or login a user, for now just assume...
-        User user = new User(this, "john_doe");
-
         itemListView = rootView.findViewById(R.id.item_list);
-        itemAdapter = new ItemAdapter(getContext(), user.getItemList().getItems());
+        itemAdapter = new ItemAdapter(getContext(), new ItemList(this, itemRef).getItems());
         itemListView.setAdapter(itemAdapter);
 
         return rootView;

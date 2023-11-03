@@ -11,16 +11,21 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
+    private User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // create or login a user, for now just assume...
+        user = new User("john_doe");
+
         // Init home fragment
-        navigateToFragment(new HomeFragment());
+        navigateToFragment(new HomeFragment(user.getItemRef()));
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -28,13 +33,13 @@ public class MainActivity extends AppCompatActivity {
             Fragment fragment = null;
             if (id == R.id.action_home) {
                 // Go to Home page
-                fragment = new HomeFragment();
+                fragment = new HomeFragment(user.getItemRef());
             } else if (id == R.id.action_add) {
                 // Go to Add Item page
-                fragment = new AddItemFragment();
+                fragment = new AddItemFragment(user.getItemRef());
             } else {
-                // FIXME: Go to Profile Page
-                fragment = new HomeFragment();
+                // TODO: Go to Profile Page
+                fragment = new HomeFragment(user.getItemRef());
             }
             navigateToFragment(fragment);
             return true;

@@ -15,7 +15,6 @@ import java.util.Map;
 public class ItemList {
 
     private ArrayList<Item> items = new ArrayList<>();
-    private String username;
 
     private CollectionReference itemsRef;
     private FirestoreUpdateListener listener;
@@ -23,7 +22,6 @@ public class ItemList {
     public ItemList(FirestoreUpdateListener listener, CollectionReference itemsRef) {
         this.listener = listener;
         this.itemsRef = itemsRef;
-        this.username = username;
         initItems();
     }
 
@@ -45,12 +43,7 @@ public class ItemList {
         });
     }
 
-    public void addItem(Item item) {
-        itemsRef.add(item.data());
-    }
-
     public ArrayList<Item> getItems() {
         return items;
     }
-
 }
