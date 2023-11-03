@@ -2,21 +2,27 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground"
-    android:minHeight="64dp">
+    android:layout_height="64dp"
+    android:layout_margin="8dp"
+    android:background="@drawable/rounded_background">
 
 
     <CheckBox
         android:id="@+id/item_checkBox"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="8dp"
+        android:gravity="center"
+        android:background="@color/white"/>
 
     <ImageView
         android:id="@+id/item_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="64dp"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
         android:layout_toEndOf="@id/item_checkBox"
+        android:background="@color/white"
         android:padding="16dp"/>
 
     <LinearLayout
@@ -25,7 +31,8 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/item_image"
         android:layout_toStartOf="@id/button"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/white">
 
         <TextView
             android:id="@+id/item_description_text"
@@ -35,7 +42,7 @@
             android:paddingTop="8dp"
             android:paddingEnd="16dp"
             android:text="Brief Description"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/item_text"
@@ -44,21 +51,23 @@
             android:maxLines="1"
             android:paddingTop="8dp"
             android:paddingEnd="16dp"
+            android:textSize="16sp"
             android:text="yyyy-mm-dd | $xx.xx" />
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button"
-        style="@style/Widget.MaterialComponents.Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        android:layout_width="48dp"
+        android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
-        app:iconGravity="textStart"
-        app:iconSize="32dp"
+        android:layout_marginEnd="8dp"
+        android:backgroundTint="@color/white"
         app:icon="@drawable/chevron_right"
+        app:iconSize="32dp"
         app:iconTint="@color/black"
-        android:backgroundTint="@color/white"/>
-
-
+        android:elevation="0dp"
+        android:stateListAnimator="@null"
+        />
 
 </RelativeLayout>

@@ -20,13 +20,21 @@ public class ItemList {
     private CollectionReference itemsRef;
     private FirestoreUpdateListener listener;
 
+    /**
+     * Create a new item list for a given item collection
+     *
+     * @param listener The listener to update with changes to the item collection
+     * @param itemsRef The item collection
+     */
     public ItemList(FirestoreUpdateListener listener, CollectionReference itemsRef) {
         this.listener = listener;
         this.itemsRef = itemsRef;
-        this.username = username;
         initItems();
     }
 
+    /**
+     * Setup the itemsRef CollectionReference to listen for database changes
+     */
     private void initItems() {
         itemsRef.addSnapshotListener((querySnapshots, error) -> {
             if (error != null) {
@@ -45,10 +53,26 @@ public class ItemList {
         });
     }
 
+    /**
+     * Add an item to the user's item list via firestore
+     *
+     * @param item The item to add
+     */
     public void addItem(Item item) {
         itemsRef.add(item.data());
     }
 
+    /**
+     * Delete an item from the user's list via firestore
+     * @param item The item to delete
+     */
+    public void deleteItem(Item item) {
+        itemsRef.document(item.getId()).delete();
+    }
+
+    /**
+     * @return An ArrayList of items in the Item List
+     */
     public ArrayList<Item> getItems() {
         return items;
     }

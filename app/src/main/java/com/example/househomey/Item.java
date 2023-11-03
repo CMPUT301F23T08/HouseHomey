@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Item {
-    public String id;
+    private String id;
     private String description;
     private Date acquisitionDate;
     private String make;
@@ -57,5 +57,9 @@ public class Item {
 
     public BigDecimal getCost() {
         return cost;
+    }
+
+    public String getId() {
+        return id;
     }
 }
