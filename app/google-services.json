@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1029912739488",
+    "project_id": "househomey-2f443",
+    "storage_bucket": "househomey-2f443.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1029912739488:android:49c241c5b8fffeb83b53c5",
+        "android_client_info": {
+          "package_name": "com.example.househomey"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4jniJJ6LiVAyICOcA88Ki6_G_3oEH-Lk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
