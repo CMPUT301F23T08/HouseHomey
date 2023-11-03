@@ -13,24 +13,11 @@ import android.widget.ListView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class MainActivity extends AppCompatActivity implements FirestoreUpdateListener {
-    private FirebaseFirestore db;
-    private ListView itemListView;
-    private ArrayAdapter<Item> itemAdapter;
-
+public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        db = FirebaseFirestore.getInstance();
-
-        // create or login a user, for now just assume...
-        User user = new User(this,"john_doe");
-
-        itemListView = findViewById(R.id.item_list);
-        itemAdapter = new ItemAdapter(this, user.getItemList().getItems());
-        itemListView.setAdapter(itemAdapter);
 
         // Init home fragment
         navigateToFragment(new HomeFragment());
@@ -52,11 +39,6 @@ public class MainActivity extends AppCompatActivity implements FirestoreUpdateLi
             navigateToFragment(fragment);
             return true;
         });
-    }
-
-    @Override
-    public void notifyDataSetChanged() {
-        itemAdapter.notifyDataSetChanged();
     }
 
     private void navigateToFragment(Fragment fragment) {
