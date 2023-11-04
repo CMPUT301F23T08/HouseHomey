@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/filter_by_date_range"
+        android:id="@+id/filter_by_dates"
         android:title="Date Range"
         />
     <item
@@ -9,11 +9,11 @@
         android:title="Make"
         />
     <item
-        android:id="@+id/filter_by_description"
+        android:id="@+id/filter_by_keywords"
         android:title="Description Keywords"
         />
     <item
-        android:id="@+id/filter_by_tag"
+        android:id="@+id/filter_by_tags"
         android:title="Tags"
         />
 </menu>

@@ -8,14 +8,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.PopupMenu;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 public class HomeFragment extends Fragment implements FirestoreUpdateListener {
     private CollectionReference itemRef;
@@ -37,7 +35,7 @@ public class HomeFragment extends Fragment implements FirestoreUpdateListener {
         itemListView.setAdapter(itemAdapter);
 
         View filterButton = rootView.findViewById(R.id.filter_dropdown_button);
-        filterButton.setOnClickListener(v -> showPopupMenu(v));
+        filterButton.setOnClickListener(v -> showFilterMenu(v));
 
         return rootView;
     }
@@ -47,13 +45,32 @@ public class HomeFragment extends Fragment implements FirestoreUpdateListener {
         itemAdapter.notifyDataSetChanged();
     }
 
-    private void showPopupMenu(View view) {
+    private void showFilterMenu(View view) {
         PopupMenu popupMenu = new PopupMenu(requireContext(), view);
         MenuInflater inflater = popupMenu.getMenuInflater();
         inflater.inflate(R.menu.filter, popupMenu.getMenu());
 
         popupMenu.setOnMenuItemClickListener(item -> {
-            Toast.makeText(requireContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
+            int itemId = item.getItemId();
+            if (itemId == R.id.filter_by_dates) {
+                View dateFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_dates, null);
+                DateFilterFragment dateFilterFragment = new DateFilterFragment("Modify Date Filter", dateFilterView);
+                dateFilterFragment.show(requireActivity().getSupportFragmentManager(), "dates_filter_dialog");
+            } else if (itemId == R.id.filter_by_make) {
+                View makeFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_make, null);
+                DateFilterFragment makeFilterFragment = new DateFilterFragment("Modify Make Filter", makeFilterView);
+                makeFilterFragment.show(requireActivity().getSupportFragmentManager(), "make_filter_dialog");
+            } else if (itemId == R.id.filter_by_keywords) {
+                View keywordFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_keywords, null);
+                DateFilterFragment keywordFilterFragment = new DateFilterFragment("Modify Keyword Filter", keywordFilterView);
+                keywordFilterFragment.show(requireActivity().getSupportFragmentManager(), "keywords_filter_dialog");
+            } else if (itemId == R.id.filter_by_tags) {
+                View tagFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_tags, null);
+                DateFilterFragment tagFilterFragment = new DateFilterFragment("Modify Tag Filter", tagFilterView);
+                tagFilterFragment.show(requireActivity().getSupportFragmentManager(), "tags_filter_dialog");
+            } else {
+                return false;
+            }
             return true;
         });
 
