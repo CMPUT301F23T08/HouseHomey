@@ -1,10 +1,10 @@
-package com.example.househomey;
+package com.example.househomey.Filters;
 
 import android.view.View;
 
-public class TagFilterFragment extends FilterFragment {
+public class MakeFilterFragment extends FilterFragment {
 
-    public TagFilterFragment(String title, View contentView) {
+    public MakeFilterFragment(String title, View contentView) {
         super(title, contentView);
     }
 

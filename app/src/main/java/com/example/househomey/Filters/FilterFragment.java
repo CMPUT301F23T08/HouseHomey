@@ -1,4 +1,4 @@
-package com.example.househomey;
+package com.example.househomey.Filters;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

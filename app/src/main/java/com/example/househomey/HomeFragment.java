@@ -13,6 +13,10 @@ import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.househomey.Filters.DateFilterFragment;
+import com.example.househomey.Filters.KeywordFilterFragment;
+import com.example.househomey.Filters.MakeFilterFragment;
+import com.example.househomey.Filters.TagFilterFragment;
 import com.google.firebase.firestore.CollectionReference;
 
 public class HomeFragment extends Fragment implements FirestoreUpdateListener {
@@ -58,15 +62,15 @@ public class HomeFragment extends Fragment implements FirestoreUpdateListener {
                 dateFilterFragment.show(requireActivity().getSupportFragmentManager(), "dates_filter_dialog");
             } else if (itemId == R.id.filter_by_make) {
                 View makeFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_make, null);
-                DateFilterFragment makeFilterFragment = new DateFilterFragment("Modify Make Filter", makeFilterView);
+                MakeFilterFragment makeFilterFragment = new MakeFilterFragment("Modify Make Filter", makeFilterView);
                 makeFilterFragment.show(requireActivity().getSupportFragmentManager(), "make_filter_dialog");
             } else if (itemId == R.id.filter_by_keywords) {
                 View keywordFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_keywords, null);
-                DateFilterFragment keywordFilterFragment = new DateFilterFragment("Modify Keyword Filter", keywordFilterView);
+                KeywordFilterFragment keywordFilterFragment = new KeywordFilterFragment("Modify Keyword Filter", keywordFilterView);
                 keywordFilterFragment.show(requireActivity().getSupportFragmentManager(), "keywords_filter_dialog");
             } else if (itemId == R.id.filter_by_tags) {
                 View tagFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_tags, null);
-                DateFilterFragment tagFilterFragment = new DateFilterFragment("Modify Tag Filter", tagFilterView);
+                TagFilterFragment tagFilterFragment = new TagFilterFragment("Modify Tag Filter", tagFilterView);
                 tagFilterFragment.show(requireActivity().getSupportFragmentManager(), "tags_filter_dialog");
             } else {
                 return false;
