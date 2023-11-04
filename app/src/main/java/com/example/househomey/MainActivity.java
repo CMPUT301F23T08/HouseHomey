@@ -8,13 +8,19 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.PopupMenu;
+import android.widget.Toast;
+import com.example.househomey.R;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
+    // Define constants for filter items
     private User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,5 +63,25 @@ public class MainActivity extends AppCompatActivity {
         // Commit the transaction
         transaction.addToBackStack(null); // Optional, to add the transaction to the back stack
         transaction.commit();
+    }
+
+    public void showFilterDropdown(View view) {
+        PopupMenu filterDropdown = new PopupMenu(this, view);
+        filterDropdown.setOnMenuItemClickListener(this);
+        filterDropdown.inflate(R.menu.filter);
+        filterDropdown.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        if (item.getItemId() == R.id.filter1) {
+            Toast.makeText(this, "Item 1 clicked", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (item.getItemId() == R.id.filter2) {
+            Toast.makeText(this, "Item 2 clicked", Toast.LENGTH_SHORT).show();
+            return true;
+        } else {
+            return false;
+        }
     }
 }

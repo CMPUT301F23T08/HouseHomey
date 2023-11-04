@@ -7,11 +7,42 @@
     android:background="@color/creme"
     tools:context=".MainActivity">
 
-    <FrameLayout
-        android:id="@+id/fragmentContainer"
+    <LinearLayout
+        android:id="@+id/dropdown_buttons"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-     />
+        android:orientation="horizontal"
+        android:padding="4dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/filter_dropdown_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            app:icon="@drawable/baseline_tune_24"
+            app:iconGravity="end"
+            app:iconPadding="0dp"
+            app:iconSize="30dp"
+            app:iconTint="@color/black"
+            android:onClick="showFilterDropdown"
+            />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dropdown_buttons">
+
+        <FrameLayout
+            android:id="@+id/fragmentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+    </RelativeLayout>
 
 <!--    FIXME: remove the default purple icon outline-->
     <com.google.android.material.bottomnavigation.BottomNavigationView
