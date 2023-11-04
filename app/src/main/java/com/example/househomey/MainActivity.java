@@ -64,24 +64,4 @@ public class MainActivity extends AppCompatActivity {
         transaction.addToBackStack(null); // Optional, to add the transaction to the back stack
         transaction.commit();
     }
-
-//    public void showFilterDropdown(View view) {
-//        PopupMenu filterDropdown = new PopupMenu(this, view);
-//        filterDropdown.setOnMenuItemClickListener(this);
-//        filterDropdown.inflate(R.menu.filter);
-//        filterDropdown.show();
-//    }
-//
-//    @Override
-//    public boolean onMenuItemClick(MenuItem item) {
-//        if (item.getItemId() == R.id.filter1) {
-//            Toast.makeText(this, "Item 1 clicked", Toast.LENGTH_SHORT).show();
-//            return true;
-//        } else if (item.getItemId() == R.id.filter2) {
-//            Toast.makeText(this, "Item 2 clicked", Toast.LENGTH_SHORT).show();
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
 }
