@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/filter1"
-        android:title="Item 1" />
+        android:id="@+id/filter_by_date_range"
+        android:title="Date Range"
+        />
     <item
-        android:id="@+id/filter2"
-        android:title="Item 2" />
+        android:id="@+id/filter_by_make"
+        android:title="Make"
+        />
+    <item
+        android:id="@+id/filter_by_description"
+        android:title="Description Keywords"
+        />
+    <item
+        android:id="@+id/filter_by_tag"
+        android:title="Tags"
+        />
 </menu>
