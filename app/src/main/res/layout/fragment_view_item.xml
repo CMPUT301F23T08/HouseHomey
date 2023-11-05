@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/creme"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
     <FrameLayout
@@ -13,197 +15,164 @@
         android:layout_height="wrap_content"
         />
 
-    <TextView
-        android:layout_width="306dp"
-        android:layout_height="134dp"
-        android:layout_above="@+id/bottom_navigation"
-        android:layout_below="@+id/fragmentContainer"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="7dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="97dp"
-        android:layout_marginBottom="509dp"
-        android:text="Details"
-        android:textSize="25sp"
-        android:textStyle="bold" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical">
 
-    <TextView
-        android:layout_width="326dp"
-        android:layout_height="132dp"
-        android:layout_above="@+id/bottom_navigation"
-        android:layout_below="@+id/fragmentContainer"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="13dp"
-        android:layout_marginTop="66dp"
-        android:layout_marginEnd="72dp"
-        android:layout_marginBottom="453dp"
-        android:text="Make"
-        android:textColor="@color/grey"
-        android:textSize="20sp" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="40dp"
+            android:text="Details"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
+    </LinearLayout>
 
-    <TextView
-        android:layout_width="331dp"
-        android:layout_height="122dp"
-        android:layout_above="@+id/bottom_navigation"
-        android:layout_below="@+id/fragmentContainer"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="13dp"
-        android:layout_marginTop="99dp"
-        android:layout_marginEnd="67dp"
-        android:layout_marginBottom="430dp"
-        android:text="Model"
-        android:textColor="@color/grey"
-        android:textSize="20sp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical">
 
-    <TextView
-        android:layout_width="343dp"
-        android:layout_height="108dp"
-        android:layout_above="@+id/bottom_navigation"
-        android:layout_below="@+id/fragmentContainer"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="13dp"
-        android:layout_marginTop="134dp"
-        android:layout_marginEnd="55dp"
-        android:layout_marginBottom="409dp"
-        android:text="Serial Number"
-        android:textColor="@color/grey"
-        android:textSize="20sp" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="40dp"
+            android:text="Make"
+            android:textSize="18sp"
+            android:textColor="@color/subTitle" />
 
+        <TextView
+            android:id="@+id/view_item_make"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="40dp"
+            android:text="Make"
+            android:textSize="18sp" />
+    </LinearLayout>
 
-    <TextView
-        android:layout_width="383dp"
-        android:layout_height="114dp"
-        android:layout_above="@+id/bottom_navigation"
-        android:layout_below="@+id/fragmentContainer"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="13dp"
-        android:layout_marginTop="166dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="371dp"
-        android:text="Est. Cost (CAD)"
-        android:textColor="@color/grey"
-        android:textSize="20sp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical">
 
-    <TextView
-        android:id="@+id/view_item_make"
-        android:layout_width="198dp"
-        android:layout_height="80dp"
-        android:layout_above="@+id/bottom_navigation"
-        android:layout_below="@+id/fragmentContainer"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="203dp"
-        android:layout_marginTop="66dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="505dp"
-        android:text="Make"
-        android:textSize="20sp" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="40dp"
+            android:text="Model"
+            android:textSize="18sp"
+            android:textColor="@color/subTitle" />
 
-    <TextView
-        android:id="@+id/view_item_cost"
-        android:layout_width="208dp"
-        android:layout_height="107dp"
-        android:layout_above="@+id/bottom_navigation"
-        android:layout_below="@+id/fragmentContainer"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="203dp"
-        android:layout_marginTop="167dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginBottom="377dp"
-        android:text="Cost"
-        android:textSize="20sp" />
+        <TextView
+            android:id="@+id/view_item_model"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="40dp"
+            android:text="Model"
+            android:textSize="18sp" />
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/view_item_model"
-        android:layout_width="203dp"
-        android:layout_height="80dp"
-        android:layout_above="@+id/bottom_navigation"
-        android:layout_below="@+id/fragmentContainer"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="203dp"
-        android:layout_marginTop="99dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginBottom="472dp"
-        android:text="Model"
-        android:textSize="20sp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical">
 
-    <TextView
-        android:id="@+id/view_item_serial_number"
-        android:layout_width="202dp"
-        android:layout_height="87dp"
-        android:layout_above="@+id/bottom_navigation"
-        android:layout_below="@+id/fragmentContainer"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="203dp"
-        android:layout_marginTop="134dp"
-        android:layout_marginEnd="6dp"
-        android:layout_marginBottom="430dp"
-        android:text="Serial"
-        android:textSize="20sp" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="40dp"
+            android:text="Serial Number"
+            android:textSize="18sp"
+            android:textColor="@color/subTitle" />
 
-    <TextView
-        android:layout_width="286dp"
-        android:layout_height="112dp"
-        android:layout_above="@+id/bottom_navigation"
-        android:layout_below="@+id/fragmentContainer"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="7dp"
-        android:layout_marginTop="208dp"
-        android:layout_marginEnd="117dp"
-        android:layout_marginBottom="331dp"
-        android:text="Comment"
-        android:textSize="25sp"
-        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/view_item_serial_number"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="40dp"
+            android:text="Serial"
+            android:textSize="18sp" />
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/view_item_comment"
-        android:layout_width="384dp"
-        android:layout_height="161dp"
-        android:layout_above="@+id/bottom_navigation"
-        android:layout_below="@+id/fragmentContainer"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="13dp"
-        android:layout_marginTop="248dp"
-        android:layout_marginEnd="13dp"
-        android:layout_marginBottom="242dp"
-        android:text="Comment"
-        android:textSize="15sp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="40dp"
+            android:text="Est. Cost (CAD)"
+            android:textSize="18sp"
+            android:textColor="@color/subTitle" />
+
+        <TextView
+            android:id="@+id/view_item_cost"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="40dp"
+            android:text="Cost"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="40dp"
+            android:text="Comment"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/view_item_comment"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="40dp"
+            android:text="Comment"
+            android:textSize="15sp" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/edit_button"
-        android:layout_width="216dp"
-        android:layout_height="120dp"
-        android:layout_above="@+id/bottom_navigation"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="96dp"
-        android:layout_marginTop="429dp"
-        android:layout_marginEnd="99dp"
-        android:layout_marginBottom="102dp"
+        android:layout_width="150dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
         android:text="Edit Item" />
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/brown"
-        app:itemIconTint="@color/white"
-        app:menu="@menu/navbar" />
-
-
-</RelativeLayout>
-
-
+</LinearLayout>
