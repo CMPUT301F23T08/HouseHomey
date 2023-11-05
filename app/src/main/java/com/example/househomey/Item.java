@@ -15,7 +15,7 @@ import java.util.Objects;
  * @see ItemAdapter
  */
 public class Item {
-    public String id;
+    private String id;
     private String description;
     private Date acquisitionDate;
     private String make = "";
@@ -50,6 +50,14 @@ public class Item {
         if (data.containsKey("comment")) {
             this.comment = (String) data.get("comment");
         }
+    }
+
+    /**
+     * Getter for id
+     * @return The id of this item in firestore
+     */
+    public String getId() {
+        return id;
     }
 
     /**
