@@ -30,7 +30,7 @@ public abstract class FilterFragment extends DialogFragment {
         DialogInterface.OnClickListener onApplyListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                applyFilter();
+                getFilterProps();
             }
         };
 
@@ -45,5 +45,5 @@ public abstract class FilterFragment extends DialogFragment {
     }
 
     // Abstract method for filter-specific logic (dates, make, keywords, tags)
-    public abstract void applyFilter();
+    public abstract void getFilterProps();
 }

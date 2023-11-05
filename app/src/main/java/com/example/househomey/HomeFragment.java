@@ -29,8 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * This fragment represents the home screen containing the primary list of the user's inventory
@@ -40,7 +39,6 @@ public class HomeFragment extends Fragment implements FilterCallback {
     private CollectionReference itemRef;
     private ListView itemListView;
     private Map<String, Object> appliedFilters = new HashMap<>();
-    private PopupMenu filterView;
 
     private ArrayList<Item> itemList = new ArrayList<>();
     private ArrayAdapter<Item> itemAdapter;
@@ -140,14 +138,25 @@ public class HomeFragment extends Fragment implements FilterCallback {
     }
 
     @Override
-    public void onFilterApplied(String filterType, Object filterValue) {
+    public void onFilterApplied(String filterType, String filterValue) {
         appliedFilters.put(filterType, filterValue);
-        Toast.makeText(getContext(), filterType, Toast.LENGTH_SHORT).show();
-        filterItemList();
-    }
+        ArrayList<Item> filteredList = new ArrayList<>();
 
-    private void filterItemList() {
-        // TODO: Filter logic
+        for (Map.Entry<String, Object> filter : appliedFilters.entrySet()) {
+            switch (filter.getKey()) {
+                case "MAKE":
+                    String makeFilter = (String) filter.getValue();
+                    Log.i("MAKE", makeFilter);
+                    filteredList = (ArrayList<Item>) itemList.stream()
+                            .filter(item -> item.getMake().equals(makeFilter))
+                            .collect(Collectors.toList());
+                    break;
+            }
+        }
+        Log.i("MAKE", String.valueOf(filteredList.size()));
+
+        itemList.clear();
+        itemList.addAll(filteredList);
         itemAdapter.notifyDataSetChanged();
     }
 }

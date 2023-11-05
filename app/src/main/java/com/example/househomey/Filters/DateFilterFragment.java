@@ -9,7 +9,7 @@ public class DateFilterFragment extends FilterFragment {
     }
 
     @Override
-    public void applyFilter() {
-        // TODO: Implement date filtering logic specific to DateFilterFragment
+    public void getFilterProps() {
+        // TODO: get the filter properties from fragment inputs
     }
 }
