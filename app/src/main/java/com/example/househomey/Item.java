@@ -5,10 +5,9 @@ import androidx.annotation.NonNull;
 import com.google.firebase.Timestamp;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * This class represents an inventory item with a variety of properties
@@ -29,13 +28,14 @@ public class Item {
      * This constructs a new item from a Map of data with a reference to it's firestore docunebt
      * @param id The id of this object's document in the firestore database
      * @param data The data from that document to initialize the instance
+     * @throws NullPointerException if a null required field is given
      */
     public Item(String id, @NonNull Map<String, Object> data) {
         // Required fields
-        this.id = id;
-        this.description = (String) data.get("description");
-        this.acquisitionDate = ((Timestamp) data.get("acquisitionDate")).toDate();
-        this.cost = new BigDecimal((String) data.get("cost")).setScale(2);
+        this.id = Objects.requireNonNull(id);
+        this.description = (String) Objects.requireNonNull(data.get("description"));
+        this.acquisitionDate = ((Timestamp) Objects.requireNonNull(data.get("acquisitionDate"))).toDate();
+        this.cost = new BigDecimal((String) Objects.requireNonNull(data.get("cost"))).setScale(2);
 
         // Optional fields
         if (data.containsKey("make")) {
