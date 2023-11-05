@@ -10,8 +10,7 @@
     <FrameLayout
         android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-     />
+        android:layout_height="wrap_content" />
 
 <!--    FIXME: remove the default purple icon outline-->
     <com.google.android.material.bottomnavigation.BottomNavigationView
