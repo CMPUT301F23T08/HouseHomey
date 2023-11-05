@@ -19,7 +19,9 @@ import com.example.househomey.Filters.KeywordFilterFragment;
 import com.example.househomey.Filters.MakeFilterFragment;
 import com.example.househomey.Filters.TagFilterFragment;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,26 +66,33 @@ public class HomeFragment extends Fragment {
         itemAdapter = new ItemAdapter(getContext(), itemList);
         itemListView.setAdapter(itemAdapter);
 
-        itemRef.addSnapshotListener((querySnapshots, error) -> {
-            if (error != null) {
-                Log.e("Firestore", error.toString());
-                return;
-            }
-            if (querySnapshots != null) {
-                itemList.clear();
-                for (QueryDocumentSnapshot doc: querySnapshots) {
-                    Map<String, Object> data = new HashMap<>();
-                    data.putAll(doc.getData());
-                    itemList.add(new Item(doc.getId(), data));
-                    itemAdapter.notifyDataSetChanged();
-                }
-            }
-        });
+        itemRef.addSnapshotListener(this::setupItemListener);
 
         View filterButton = rootView.findViewById(R.id.filter_dropdown_button);
-        filterButton.setOnClickListener(v -> showFilterMenu(v));
+        filterButton.setOnClickListener(this::showFilterMenu);
 
         return rootView;
+    }
+
+    /**
+     * This method updates the itemAdapter with changes in the firestore database and creates new
+     * item objects
+     * @param querySnapshots The updated information on the inventory from the database
+     * @param error Non-null if an error occurred in Firestore
+     */
+    private void setupItemListener(QuerySnapshot querySnapshots, FirebaseFirestoreException error) {
+        if (error != null) {
+            Log.e("Firestore", error.toString());
+            return;
+        }
+        if (querySnapshots != null) {
+            itemList.clear();
+            for (QueryDocumentSnapshot doc: querySnapshots) {
+                Map<String, Object> data = new HashMap<>(doc.getData());
+                itemList.add(new Item(doc.getId(), data));
+                itemAdapter.notifyDataSetChanged();
+            }
+        }
     }
 
     /**
