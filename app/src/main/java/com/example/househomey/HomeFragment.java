@@ -7,6 +7,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Toast;
@@ -21,39 +22,90 @@ import com.example.househomey.Filters.KeywordFilterFragment;
 import com.example.househomey.Filters.MakeFilterFragment;
 import com.example.househomey.Filters.TagFilterFragment;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HomeFragment extends Fragment implements FirestoreUpdateListener, FilterCallback {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * This fragment represents the home screen containing the primary list of the user's inventory
+ * @author Owen Cooke, Jared Drueco, Lukas Bonkowski
+ */
+public class HomeFragment extends Fragment implements FilterCallback {
     private CollectionReference itemRef;
     private ListView itemListView;
     private Map<String, Object> appliedFilters = new HashMap<>();
+    private PopupMenu filterView;
+
+    private ArrayList<Item> itemList = new ArrayList<>();
     private ArrayAdapter<Item> itemAdapter;
 
+    /**
+     * This constructs a new HomeFragment with the appropriate list of items
+     * @param itemRef A reference to the firestore collection containing the items to display
+     */
     public HomeFragment(CollectionReference itemRef) {
         this.itemRef = itemRef;
     }
 
+    /**
+     * @param inflater           The LayoutInflater object that can be used to inflate
+     *                           any views in the fragment,
+     * @param container          If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to.  The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     *                           from a previous saved state as given here.
+     * @return the home fragment view containing the inventory list
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Inflate the fragment's layout
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
         itemListView = rootView.findViewById(R.id.item_list);
-        itemAdapter = new ItemAdapter(getContext(), new ItemList(this, itemRef).getItems());
+        itemAdapter = new ItemAdapter(getContext(), itemList);
         itemListView.setAdapter(itemAdapter);
 
+        itemRef.addSnapshotListener(this::setupItemListener);
+
         View filterButton = rootView.findViewById(R.id.filter_dropdown_button);
-        filterButton.setOnClickListener(v -> showFilterMenu(v));
+        filterButton.setOnClickListener(this::showFilterMenu);
 
         return rootView;
+
     }
 
-    @Override
-    public void notifyDataSetChanged() {
-        itemAdapter.notifyDataSetChanged();
+    /**
+     * This method updates the itemAdapter with changes in the firestore database and creates new
+     * item objects
+     * @param querySnapshots The updated information on the inventory from the database
+     * @param error Non-null if an error occurred in Firestore
+     */
+    private void setupItemListener(QuerySnapshot querySnapshots, FirebaseFirestoreException error) {
+        if (error != null) {
+            Log.e("Firestore", error.toString());
+            return;
+        }
+        if (querySnapshots != null) {
+            itemList.clear();
+            for (QueryDocumentSnapshot doc: querySnapshots) {
+                Map<String, Object> data = new HashMap<>(doc.getData());
+                itemList.add(new Item(doc.getId(), data));
+                itemAdapter.notifyDataSetChanged();
+            }
+        }
     }
 
+    /**
+     * Displays the filter menu with options to select the appropriate filter
+     * @param view The view to set the filter menu on
+     */
     private void showFilterMenu(View view) {
         PopupMenu popupMenu = new PopupMenu(requireContext(), view);
         MenuInflater inflater = popupMenu.getMenuInflater();
