@@ -109,6 +109,14 @@ public class AddItemFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * Checks whether the text input for a required form field is empty.
+     * Additionally, if empty, it sets an inline error message on the input field.
+     * If not empty, it removes the inline error.
+     *
+     * @param id Id of the required field's TextInputLayout
+     * @return a boolean indicating if the field is empty
+     */
     private boolean isRequiredFieldEmpty(int id) {
         TextInputLayout textInputLayout = (TextInputLayout) getView().findViewById(id);
         if (TextUtils.isEmpty(textInputLayout.getEditText().getText().toString().trim())) {
@@ -120,7 +128,7 @@ public class AddItemFragment extends Fragment {
     }
 
     /**
-     * Adds the user input data to the firestore database
+     * Adds the user input data to a new item in their Firestore collection
      */
     private void addItem() {
         // Check that required fields are filled before submitting
