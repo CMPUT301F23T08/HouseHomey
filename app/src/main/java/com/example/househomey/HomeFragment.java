@@ -20,6 +20,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This fragment represents the home screen containing the primary list of the user's inventory
+ * @author Owen Cooke, Lukas Bonkowski
+ */
 public class HomeFragment extends Fragment {
     private CollectionReference itemRef;
     private ListView itemListView;
@@ -27,10 +31,24 @@ public class HomeFragment extends Fragment {
     private ArrayList<Item> itemList = new ArrayList<>();
     private ArrayAdapter<Item> itemAdapter;
 
+    /**
+     * This constructs a new HomeFragment with the appropriate list of items
+     * @param itemRef A reference to the firestore collection containing the items to display
+     */
     public HomeFragment(CollectionReference itemRef) {
         this.itemRef = itemRef;
     }
 
+    /**
+     * @param inflater           The LayoutInflater object that can be used to inflate
+     *                           any views in the fragment,
+     * @param container          If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to.  The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     *                           from a previous saved state as given here.
+     * @return the home fragment view containing the inventory list
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Inflate the fragment's layout
