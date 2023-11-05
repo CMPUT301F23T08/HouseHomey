@@ -1,6 +1,9 @@
 package com.example.househomey;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,11 +13,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.firestore.CollectionReference;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.Timestamp;
-
+import com.google.firebase.firestore.CollectionReference;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -51,10 +56,47 @@ public class AddItemFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add_item, container, false);
+        dateTextView = rootView.findViewById(R.id.add_item_date);
+
+        // Create DatePicker with dates restricted to past/present
+        CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
+        constraintsBuilder.setEnd(System.currentTimeMillis());
+        constraintsBuilder.setValidator(DateValidatorPointBackward.now());
+        MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
+                .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
+                .setCalendarConstraints(constraintsBuilder.build())
+                .build();
+        datePicker.addOnPositiveButtonClickListener(selection -> {
+            dateAcquired = new Date(selection);
+            dateTextView.setText(datePicker.getHeaderText());
+            ((TextInputLayout) getView().findViewById(R.id.add_item_date_layout)).setError(null);
+        });
 
         // Show DatePicker when date field selected
-        dateTextView = rootView.findViewById(R.id.add_item_date);
-        dateTextView.setOnClickListener(v -> showDatePicker());
+        dateTextView.setOnClickListener(v -> datePicker.show(getParentFragmentManager(), "Date Picker"));
+
+        TextInputEditText descView = rootView.findViewById(R.id.add_item_description);
+        TextInputEditText costView = rootView.findViewById(R.id.add_item_cost);
+        TextWatcher emptyTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.equals(descView.getEditableText())) {
+                    isRequiredFieldEmpty(R.id.add_item_description_layout);
+                } else if (editable == costView.getEditableText()) {
+                    isRequiredFieldEmpty(R.id.add_item_cost_layout);
+                }
+            }
+        };
+        descView.addTextChangedListener(emptyTextWatcher);
+        costView.addTextChangedListener(emptyTextWatcher);
 
         // Add listener for confirm and back buttons
         rootView.findViewById(R.id.add_item_confirm_button).setOnClickListener(v -> addItem());
@@ -63,27 +105,25 @@ public class AddItemFragment extends Fragment {
         return rootView;
     }
 
-    /**
-     * This shows a datePicker for the user to select the date of the item acquisition
-     */
-    private void showDatePicker() {
-        MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
-                .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
-                .build();
-
-        datePicker.addOnPositiveButtonClickListener(selection -> {
-            dateAcquired = new Date(selection);
-            dateTextView.setText(datePicker.getHeaderText());
-        });
-
-        datePicker.show(getParentFragmentManager(), "Date Picker");
+    private boolean isRequiredFieldEmpty(int id) {
+        TextInputLayout textInputLayout = (TextInputLayout) getView().findViewById(id);
+        if (TextUtils.isEmpty(textInputLayout.getEditText().getText().toString().trim())) {
+            textInputLayout.setError("This field is required");
+            return true;
+        }
+        textInputLayout.setError(null);
+        return false;
     }
 
     /**
      * Adds the user input data to the firestore database
      */
     private void addItem() {
-        // TODO: add input validation
+        // Check that required fields are filled before submitting
+        boolean invalidDesc = isRequiredFieldEmpty(R.id.add_item_description_layout);
+        boolean invalidDate = isRequiredFieldEmpty(R.id.add_item_date_layout);
+        boolean invalidCost = isRequiredFieldEmpty(R.id.add_item_cost_layout);
+        if (invalidDesc || invalidDate || invalidCost) return;
 
         // Create map with form data
         HashMap<String, Object> data = new HashMap<>();

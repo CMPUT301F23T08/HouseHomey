@@ -66,6 +66,7 @@
             tools:context=".MainActivity">
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/add_item_description_layout"
                 style="@style/TextInputLayoutStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -83,6 +84,7 @@
                 android:layout_height="16dp" />
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/add_item_date_layout"
                 style="@style/TextInputLayoutStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -106,6 +108,7 @@
                 android:layout_height="16dp" />
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/add_item_cost_layout"
                 style="@style/TextInputLayoutStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
