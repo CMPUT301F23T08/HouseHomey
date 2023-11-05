@@ -20,9 +20,22 @@ import com.example.househomey.R;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+
+/**
+ * MainActivity of the application, handles setting up the bottom nav fragment and the user
+ * @author Owen Cooke, Lukas Bonkowski
+ */
 public class MainActivity extends AppCompatActivity {
     // Define constants for filter items
     private User user;
+
+    /**
+     * Method to run on creation of the activity. Handles user setup and creates the bottom
+     * nav fragment
+     * @param savedInstanceState If the activity is being re-initialized after
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,12 +66,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Changes the current fragment to the passed fragment
+     * @param fragment a Fragment to navigate to and replace the current fragment with
+     */
     private void navigateToFragment(Fragment fragment) {
         // Get the FragmentManager and start a transaction
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-        // Replace the current fragment with the addItemFragment
+        // Replace the current fragment with the new Fragment
         transaction.replace(R.id.fragmentContainer, fragment);
 
         // Commit the transaction

@@ -20,15 +20,34 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 
+/**
+ *  This fragment is responsible for creating and loading to the database a new item
+ * @author Owen Cooke
+ */
 public class AddItemFragment extends Fragment {
     private Date dateAcquired;
     private TextInputEditText dateTextView;
     private final CollectionReference itemRef;
 
+    /**
+     * Constructs a new AddItemFragment with a firestore reference
+     * @param itemRef A reference to a firestore collection of items
+     */
     public AddItemFragment(CollectionReference itemRef) {
         this.itemRef = itemRef;
     }
 
+    /**
+     * This creates the view to add an item to a user's inventory and set's the button listeners
+     * @param inflater           The LayoutInflater object that can be used to inflate
+     *                           any views in the fragment,
+     * @param container          If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to.  The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     *                           from a previous saved state as given here.
+     * @return The fragment_add_item view with the correct listeners added
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add_item, container, false);
@@ -44,6 +63,9 @@ public class AddItemFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * This shows a datePicker for the user to select the date of the item acquisition
+     */
     private void showDatePicker() {
         MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
                 .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
@@ -57,6 +79,9 @@ public class AddItemFragment extends Fragment {
         datePicker.show(getParentFragmentManager(), "Date Picker");
     }
 
+    /**
+     * Adds the user input data to the firestore database
+     */
     private void addItem() {
         // TODO: add input validation
 
@@ -81,10 +106,19 @@ public class AddItemFragment extends Fragment {
                 });
     }
 
+    /**
+     * Gets the user input as a string from a given TextInputEditText
+     * @param id Id of the TextInputEditText object
+     * @return The user input String
+     * @throws NullPointerException if the input text is null
+     */
     private String getInputText(int id) {
         return Objects.requireNonNull(((TextInputEditText) requireView().findViewById(id)).getText()).toString();
     }
 
+    /**
+     * Changes the fragment back to the home screen
+     */
     private void returnToHomeScreen() {
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
