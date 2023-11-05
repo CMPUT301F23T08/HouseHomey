@@ -1,5 +1,7 @@
 package com.example.househomey;
 
+import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
+
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -9,9 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointBackward;
@@ -26,7 +27,8 @@ import java.util.HashMap;
 import java.util.Objects;
 
 /**
- *  This fragment is responsible for creating and loading to the database a new item
+ * This fragment is responsible for creating and loading to the database a new item
+ *
  * @author Owen Cooke
  */
 public class AddItemFragment extends Fragment {
@@ -36,6 +38,7 @@ public class AddItemFragment extends Fragment {
 
     /**
      * Constructs a new AddItemFragment with a firestore reference
+     *
      * @param itemRef A reference to a firestore collection of items
      */
     public AddItemFragment(CollectionReference itemRef) {
@@ -44,6 +47,7 @@ public class AddItemFragment extends Fragment {
 
     /**
      * This creates the view to add an item to a user's inventory and set's the button listeners
+     *
      * @param inflater           The LayoutInflater object that can be used to inflate
      *                           any views in the fragment,
      * @param container          If non-null, this is the parent view that the fragment's
@@ -100,7 +104,7 @@ public class AddItemFragment extends Fragment {
 
         // Add listener for confirm and back buttons
         rootView.findViewById(R.id.add_item_confirm_button).setOnClickListener(v -> addItem());
-        rootView.findViewById(R.id.add_item_back_button).setOnClickListener(v -> returnToHomeScreen());
+        rootView.findViewById(R.id.add_item_back_button).setOnClickListener(v -> navigateToFragmentPage((AppCompatActivity) getContext(), new HomeFragment(itemRef)));
 
         return rootView;
     }
@@ -138,7 +142,7 @@ public class AddItemFragment extends Fragment {
         // Create new item document in Firestore
         itemRef.add(data).addOnSuccessListener(documentReference -> {
                     Log.d("Firestore", "Successfully created new item with id:" + documentReference.getId());
-                    returnToHomeScreen();
+                    navigateToFragmentPage((AppCompatActivity) getContext(), new HomeFragment(itemRef));
                 })
                 .addOnFailureListener(e -> {
                     Log.d("Firestore", "Failed to create new item");
@@ -148,21 +152,12 @@ public class AddItemFragment extends Fragment {
 
     /**
      * Gets the user input as a string from a given TextInputEditText
+     *
      * @param id Id of the TextInputEditText object
      * @return The user input String
      * @throws NullPointerException if the input text is null
      */
     private String getInputText(int id) {
         return Objects.requireNonNull(((TextInputEditText) requireView().findViewById(id)).getText()).toString();
-    }
-
-    /**
-     * Changes the fragment back to the home screen
-     */
-    private void returnToHomeScreen() {
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.fragmentContainer, new HomeFragment(itemRef));
-        transaction.commit();
     }
 }
