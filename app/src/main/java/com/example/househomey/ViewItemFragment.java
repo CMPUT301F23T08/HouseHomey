@@ -10,8 +10,25 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+/**
+ * This fragment is for the "View Item Page" - which currently displays the details and comment linked
+ * to the item
+ * @author Matthew Neufeld
+ */
 public class ViewItemFragment extends Fragment {
 
+    /**
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return view item fragment
+     */
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_view_item, container, false);
 
@@ -22,7 +39,7 @@ public class ViewItemFragment extends Fragment {
         TextView cost = rootView.findViewById(R.id.view_item_cost);
         TextView comment = rootView.findViewById(R.id.view_item_comment);
 
-        // Set TextViews to arguments sent over from ItemAdapter
+        // Set TextViews to detail arguments sent over from ItemAdapter
         Bundle details = getArguments();
         if (details != null) {
             make.setText(details.getString("make", ""));

@@ -8,6 +8,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class represents an inventory item with a variety of properties
+ * @author Lukas Bonkowski, Matthew Neufeld
+ * @see ItemAdapter
+ */
 public class Item {
     public String id;
     private String description;
@@ -59,17 +64,27 @@ public class Item {
         return cost;
     }
 
-    public String getMake() {
-        return make;
-    }
+    /**
+     * Getter for make
+     * @return make of the item
+     */
+    public String getMake() { return make; }
 
-    public String getModel() {
-        return model;
-    }
+    /**
+     * Getter for model
+     * @return model of the item
+     */
+    public String getModel() { return model; }
 
-    public String getSerialNumber() {
-        return serialNumber;
-    }
+    /**
+     * Getter for serial number
+     * @return serial number of the item
+     */
+    public String getSerialNumber() { return serialNumber; }
 
+    /**
+     * Getter for comment
+     * @return comment for the item
+     */
     public String getComment() { return comment; }
 }

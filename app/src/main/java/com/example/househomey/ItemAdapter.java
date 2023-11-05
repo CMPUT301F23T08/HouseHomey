@@ -25,6 +25,11 @@ import com.google.firebase.firestore.DocumentReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+/**
+ * A child of ArrayAdapter this adapter specifically displays a list of class Item objects
+ * @author Lukas Bonkowski, Matthew Neufeld
+ * @see Item
+ */
 public class ItemAdapter extends ArrayAdapter<Item> {
     private ArrayList<Item> items;
     private Context context;
@@ -54,10 +59,14 @@ public class ItemAdapter extends ArrayAdapter<Item> {
         String dateCost = new SimpleDateFormat("yyyy-MM-dd").format(item.getAcquisitionDate()) + " | $" + item.getCost();
         ((TextView) view.findViewById(R.id.item_text)).setText(dateCost);
 
+        // Initialize button for viewing details of the item
         Button viewItemButton = view.findViewById(R.id.action_view);
-        FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
-        viewItemButton.setOnClickListener(v -> {
 
+        // Initialize fragment manager
+        FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
+
+        // When view item button is clicked, bundle item details and send them as arguments to ViewItemFragment
+        viewItemButton.setOnClickListener(v -> {
             ViewItemFragment viewItemFragment = new ViewItemFragment();
             Bundle details = new Bundle();
             details.putString("make", item.getMake());
@@ -66,16 +75,13 @@ public class ItemAdapter extends ArrayAdapter<Item> {
             details.putString("cost", item.getCost().toString());
             details.putString("comment", item.getComment());
             viewItemFragment.setArguments(details);
-
             // Begin a fragment transaction
             FragmentTransaction transaction = fragmentManager.beginTransaction();
-
             // Replace the current fragment with the ViewItemFragment
             transaction.replace(R.id.fragmentContainer, viewItemFragment);
             transaction.addToBackStack(null);
             transaction.commit();
         });
-
 
         return view;
     }
