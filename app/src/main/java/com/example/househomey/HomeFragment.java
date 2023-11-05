@@ -19,6 +19,7 @@ import com.example.househomey.Filters.KeywordFilterFragment;
 import com.example.househomey.Filters.MakeFilterFragment;
 import com.example.househomey.Filters.TagFilterFragment;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +27,7 @@ import java.util.Map;
 
 /**
  * This fragment represents the home screen containing the primary list of the user's inventory
- * @author Owen Cooke, Lukas Bonkowski
+ * @author Owen Cooke, Jared Drueco, Lukas Bonkowski
  */
 public class HomeFragment extends Fragment {
     private CollectionReference itemRef;
@@ -85,11 +86,10 @@ public class HomeFragment extends Fragment {
         return rootView;
     }
 
-    @Override
-    public void notifyDataSetChanged() {
-        itemAdapter.notifyDataSetChanged();
-    }
-
+    /**
+     * Displays the filter menu with options to select the appropriate filter
+     * @param view The view to set the filter menu on
+     */
     private void showFilterMenu(View view) {
         PopupMenu popupMenu = new PopupMenu(requireContext(), view);
         MenuInflater inflater = popupMenu.getMenuInflater();
