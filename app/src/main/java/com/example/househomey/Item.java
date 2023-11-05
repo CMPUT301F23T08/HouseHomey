@@ -19,10 +19,10 @@ public class Item {
     public String id;
     private String description;
     private Date acquisitionDate;
-    private String make;
-    private String model;
-    private String serialNumber;
-    private String comment;
+    private String make = "";
+    private String model = "";
+    private String serialNumber = "";
+    private String comment = "";
     private BigDecimal cost;
 
     /**
