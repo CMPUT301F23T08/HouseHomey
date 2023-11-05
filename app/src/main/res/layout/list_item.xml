@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/item_image"
-            android:layout_toStartOf="@id/button"
+            android:layout_toStartOf="@id/action_view"
             android:orientation="vertical"
             android:background="@color/offWhite">
 
@@ -61,7 +61,7 @@
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/button"
+            android:id="@+id/action_view"
             style="@style/Widget.MaterialComponents.Button.Icon"
             android:layout_width="48dp"
             android:layout_height="match_parent"

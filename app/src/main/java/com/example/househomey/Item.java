@@ -58,4 +58,18 @@ public class Item {
     public BigDecimal getCost() {
         return cost;
     }
+
+    public String getMake() {
+        return make;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public String getSerialNumber() {
+        return serialNumber;
+    }
+
+    public String getComment() { return comment; }
 }
