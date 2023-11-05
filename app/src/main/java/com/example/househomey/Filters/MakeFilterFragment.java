@@ -10,6 +10,8 @@ public class MakeFilterFragment extends FilterFragment {
 
     @Override
     public void applyFilter() {
-        // TODO: Implement date filtering logic specific to DateFilterFragment
+        // String makeValue = ((EditText) contentView.findViewById(R.id.makeEditText)).getText().toString();
+        filterCallback.onFilterApplied("MAKE", "Apple");
+        dismiss();
     }
 }

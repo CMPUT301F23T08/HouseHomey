@@ -58,4 +58,8 @@ public class Item {
     public BigDecimal getCost() {
         return cost;
     }
+
+    public String getMake() {
+        return make;
+    }
 }

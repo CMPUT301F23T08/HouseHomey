@@ -1,6 +1,7 @@
 package com.example.househomey;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
@@ -8,21 +9,25 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.househomey.Filters.DateFilterFragment;
+import com.example.househomey.Filters.FilterCallback;
 import com.example.househomey.Filters.KeywordFilterFragment;
 import com.example.househomey.Filters.MakeFilterFragment;
 import com.example.househomey.Filters.TagFilterFragment;
 import com.google.firebase.firestore.CollectionReference;
+import java.util.HashMap;
+import java.util.Map;
 
-public class HomeFragment extends Fragment implements FirestoreUpdateListener {
+public class HomeFragment extends Fragment implements FirestoreUpdateListener, FilterCallback {
     private CollectionReference itemRef;
     private ListView itemListView;
-    private PopupMenu filterView;
+    private Map<String, Object> appliedFilters = new HashMap<>();
     private ArrayAdapter<Item> itemAdapter;
 
     public HomeFragment(CollectionReference itemRef) {
@@ -63,6 +68,7 @@ public class HomeFragment extends Fragment implements FirestoreUpdateListener {
             } else if (itemId == R.id.filter_by_make) {
                 View makeFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_make, null);
                 MakeFilterFragment makeFilterFragment = new MakeFilterFragment("Modify Make Filter", makeFilterView);
+                makeFilterFragment.setFilterCallback(this);
                 makeFilterFragment.show(requireActivity().getSupportFragmentManager(), "make_filter_dialog");
             } else if (itemId == R.id.filter_by_keywords) {
                 View keywordFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_keywords, null);
@@ -81,4 +87,15 @@ public class HomeFragment extends Fragment implements FirestoreUpdateListener {
         popupMenu.show();
     }
 
+    @Override
+    public void onFilterApplied(String filterType, Object filterValue) {
+        appliedFilters.put(filterType, filterValue);
+        Toast.makeText(getContext(), filterType, Toast.LENGTH_SHORT).show();
+        filterItemList();
+    }
+
+    private void filterItemList() {
+        // TODO: Filter logic
+        itemAdapter.notifyDataSetChanged();
+    }
 }
