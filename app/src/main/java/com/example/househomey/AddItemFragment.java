@@ -141,8 +141,8 @@ public class AddItemFragment extends Fragment {
                     returnToHomeScreen();
                 })
                 .addOnFailureListener(e -> {
-                    // TODO: Handle the failure to add the document
                     Log.d("Firestore", "Failed to create new item");
+                    getView().findViewById(R.id.add_item_error_msg).setVisibility(View.VISIBLE);
                 });
     }
 
