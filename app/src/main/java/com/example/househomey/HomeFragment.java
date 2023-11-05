@@ -6,6 +6,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 
@@ -42,6 +43,7 @@ public class HomeFragment extends Fragment implements FirestoreUpdateListener {
         filterButton.setOnClickListener(v -> showFilterMenu(v));
 
         return rootView;
+
     }
 
     @Override

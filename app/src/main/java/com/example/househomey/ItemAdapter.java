@@ -1,20 +1,36 @@
 package com.example.househomey;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.content.Context;
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.google.firebase.firestore.DocumentReference;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+/**
+ * A child of ArrayAdapter this adapter specifically displays a list of class Item objects
+ * @author Lukas Bonkowski, Matthew Neufeld
+ * @see Item
+ */
 public class ItemAdapter extends ArrayAdapter<Item> {
-
     private ArrayList<Item> items;
     private Context context;
 
@@ -23,7 +39,6 @@ public class ItemAdapter extends ArrayAdapter<Item> {
         this.items = items;
         this.context = context;
     }
-
 
     @NonNull
     @Override
@@ -43,6 +58,30 @@ public class ItemAdapter extends ArrayAdapter<Item> {
 
         String dateCost = new SimpleDateFormat("yyyy-MM-dd").format(item.getAcquisitionDate()) + " | $" + item.getCost();
         ((TextView) view.findViewById(R.id.item_text)).setText(dateCost);
+
+        // Initialize button for viewing details of the item
+        Button viewItemButton = view.findViewById(R.id.action_view);
+
+        // Initialize fragment manager
+        FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
+
+        // When view item button is clicked, bundle item details and send them as arguments to ViewItemFragment
+        viewItemButton.setOnClickListener(v -> {
+            ViewItemFragment viewItemFragment = new ViewItemFragment();
+            Bundle details = new Bundle();
+            details.putString("make", item.getMake());
+            details.putString("model", item.getModel());
+            details.putString("serialNumber", item.getSerialNumber());
+            details.putString("cost", item.getCost().toString());
+            details.putString("comment", item.getComment());
+            viewItemFragment.setArguments(details);
+            // Begin a fragment transaction
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            // Replace the current fragment with the ViewItemFragment
+            transaction.replace(R.id.fragmentContainer, viewItemFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        });
 
         return view;
     }
