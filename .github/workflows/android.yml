@@ -23,7 +23,7 @@ jobs:
         cache: gradle
 
     - name: Cache Gradle dependencies
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/.gradle/caches
         key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
@@ -37,13 +37,13 @@ jobs:
       continue-on-error: true
 
     - name: Upload html test report
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: index.html
         path: app/build/reports/tests/testDebugUnitTest/index.html
 
     - name: Upload test report directory
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: testDebugStuff
         path: app/build/reports/tests/testDebugUnitTest/
