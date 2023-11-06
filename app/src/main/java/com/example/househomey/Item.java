@@ -32,7 +32,7 @@ public class Item {
      * @throws NullPointerException if a null required field is given
      */
     public Item(String id, @NonNull Map<String, Object> data) {
-        // Required fields
+        // Required fields, will throw exceptions
         this.id = Objects.requireNonNull(id);
         this.description = (String) Objects.requireNonNull(data.get("description"));
         this.acquisitionDate = ((Timestamp) Objects.requireNonNull(data.get("acquisitionDate"))).toDate();
