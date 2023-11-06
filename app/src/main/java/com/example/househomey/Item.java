@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.google.firebase.Timestamp;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
@@ -15,7 +16,7 @@ import java.util.Objects;
  * @see ItemAdapter
  */
 public class Item {
-    public String id;
+    private String id;
     private String description;
     private Date acquisitionDate;
     private String make = "";
@@ -35,7 +36,7 @@ public class Item {
         this.id = Objects.requireNonNull(id);
         this.description = (String) Objects.requireNonNull(data.get("description"));
         this.acquisitionDate = ((Timestamp) Objects.requireNonNull(data.get("acquisitionDate"))).toDate();
-        this.cost = new BigDecimal((String) Objects.requireNonNull(data.get("cost"))).setScale(2);
+        this.cost = new BigDecimal((String) Objects.requireNonNull(data.get("cost"))).setScale(2, RoundingMode.HALF_UP);
 
         // Optional fields
         if (data.containsKey("make")) {
@@ -50,6 +51,14 @@ public class Item {
         if (data.containsKey("comment")) {
             this.comment = (String) data.get("comment");
         }
+    }
+
+    /**
+     * Getter for id
+     * @return The id of this item in firestore
+     */
+    public String getId() {
+        return id;
     }
 
     /**

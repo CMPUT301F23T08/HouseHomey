@@ -34,7 +34,7 @@ public class ItemTest {
     public void testRequiredConstructor() {
         Item newItem = new Item(id, inputMap);
 
-        assertEquals(id, newItem.id);
+        assertEquals(id, newItem.getId());
         assertEquals(inputMap.get("description"), newItem.getDescription());
         assertEquals(((Timestamp)inputMap.get("acquisitionDate")).toDate(), newItem.getAcquisitionDate());
         assertEquals(new BigDecimal((String) inputMap.get("cost")), newItem.getCost());
