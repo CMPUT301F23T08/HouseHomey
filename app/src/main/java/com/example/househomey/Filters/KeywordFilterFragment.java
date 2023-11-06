@@ -4,8 +4,8 @@ import android.view.View;
 
 public class KeywordFilterFragment extends FilterFragment {
 
-    public KeywordFilterFragment(String title, View contentView) {
-        super(title, contentView);
+    public KeywordFilterFragment(String title, View contentView, FilterCallback filterCallback) {
+        super(title, contentView, filterCallback);
     }
 
     @Override

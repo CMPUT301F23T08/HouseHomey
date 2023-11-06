@@ -15,13 +15,10 @@ public abstract class FilterFragment extends DialogFragment {
     protected View contentView;
     protected FilterCallback filterCallback;
 
-    public FilterFragment(String title, View contentView) {
+    public FilterFragment(String title, View contentView, FilterCallback filterCallback) {
         this.title = title;
         this.contentView = contentView;
-    }
-
-    public void setFilterCallback(FilterCallback callback) {
-        this.filterCallback = callback;
+        this.filterCallback = filterCallback;
     }
 
     @NonNull

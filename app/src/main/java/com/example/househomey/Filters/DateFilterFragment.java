@@ -4,8 +4,8 @@ import android.view.View;
 
 public class DateFilterFragment extends FilterFragment {
 
-    public DateFilterFragment(String title, View contentView) {
-        super(title, contentView);
+    public DateFilterFragment(String title, View contentView, FilterCallback filterCallback) {
+        super(title, contentView, filterCallback);
     }
 
     @Override

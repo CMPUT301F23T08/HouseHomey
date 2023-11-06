@@ -7,8 +7,8 @@ import com.example.househomey.R;
 
 public class MakeFilterFragment extends FilterFragment {
 
-    public MakeFilterFragment(String title, View contentView) {
-        super(title, contentView);
+    public MakeFilterFragment(String title, View contentView, FilterCallback filterCallback) {
+        super(title, contentView, filterCallback);
     }
 
     @Override
