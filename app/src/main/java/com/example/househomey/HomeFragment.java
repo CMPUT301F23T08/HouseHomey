@@ -78,13 +78,14 @@ public class HomeFragment extends Fragment implements DeleteItemsFragment.OnFrag
         View filterButton = rootView.findViewById(R.id.filter_dropdown_button);
         filterButton.setOnClickListener(this::showFilterMenu);
 
+        ItemAdapter itemView = (ItemAdapter) itemAdapter;
         Button selectButton = rootView.findViewById(R.id.select_items_button);
         Button cancelButton = rootView.findViewById(R.id.cancel_select_button);
         View baseStateTools = rootView.findViewById(R.id.base_state_tools);
         View selectStateButtons = rootView.findViewById(R.id.select_state_tools);
 
         selectButton.setOnClickListener(v -> {
-            itemAdapter.setSelectState(true);
+            itemView.setSelectState(true);
             selectButton.setVisibility(View.GONE);
             cancelButton.setVisibility(View.VISIBLE);
             baseStateTools.setVisibility(View.GONE);
@@ -94,7 +95,7 @@ public class HomeFragment extends Fragment implements DeleteItemsFragment.OnFrag
         });
 
         cancelButton.setOnClickListener(v -> {
-            itemAdapter.setSelectState(false);
+            itemView.setSelectState(false);
             selectButton.setVisibility(View.VISIBLE);
             cancelButton.setVisibility(View.GONE);
             baseStateTools.setVisibility(View.VISIBLE);
