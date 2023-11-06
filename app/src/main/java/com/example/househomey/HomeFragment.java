@@ -13,7 +13,6 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,7 +22,6 @@ import com.example.househomey.Filters.KeywordFilterFragment;
 import com.example.househomey.Filters.MakeFilterFragment;
 import com.example.househomey.Filters.TagFilterFragment;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -32,7 +30,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * This fragment represents the home screen containing the primary list of the user's inventory
@@ -104,52 +101,8 @@ public class HomeFragment extends Fragment implements DeleteItemsFragment.OnFrag
             unselectAllItems();
         });
 
-            final Button deleteButton = rootView.findViewById(R.id.action_delete);
-            deleteButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    boolean itemsToDelete = false;
-                    int i = 0;
-                    while (!itemsToDelete && i < itemList.size()) {
-                        if (itemList.get(i).isSelected()) {
-                            itemsToDelete = true;
-                        }
-                        i += 1;
-                    }
+        checkAndDeleteItems(rootView);
 
-                    if (itemsToDelete) {
-                        // TODO: Ideally there should be a dialog fragment here asking for confirmation, and the below code
-                        // TODO: should be the implementation of an interface in the dialog
-                        // TODO: but since I can't implement interfaces in a fragment class, I wrote the entire code here
-                        Integer numItemsSelected = 0;
-                        for (int j=0;j<itemList.size();j++) {
-                            if (itemList.get(j).isSelected()) {
-                                numItemsSelected+=1;
-                                itemRef
-                                        .document(itemList.get(j).getId())
-                                        .delete()
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Log.d("Firestore", "DocumentSnapshots successfully Deleted!");
-                                            }
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            // TODO: Handle the failure to delete the document
-                                            Log.d("Firestore", "Failed to create new item");
-                                        });
-                            }
-                        }
-                        Toast.makeText(requireActivity().getApplicationContext(), "Deleted "+ numItemsSelected +" item(s).",
-                                Toast.LENGTH_SHORT).show();
-                        unselectAllItems();
-                    }
-                    else {
-                        Toast.makeText(requireActivity().getApplicationContext(), "Please select one or more cities to delete.",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
         return rootView;
 
     }
@@ -221,6 +174,7 @@ public class HomeFragment extends Fragment implements DeleteItemsFragment.OnFrag
     }
 
 
+    // TODO: This is an interface method for a dialog fragment. Useless for now since I can't figure out how to have a dialog pop up inside a fragment
     @Override
     public void onOKPressed(){
         for (int i=0;i<itemList.size();i++) {
@@ -242,6 +196,7 @@ public class HomeFragment extends Fragment implements DeleteItemsFragment.OnFrag
         }
     }
 
+    // TODO: This is an interface method for a dialog fragment. Useless for now since I can't figure out how to have a dialog pop up inside a fragment
     @Override
     public String DialogTitle() {
 
@@ -253,11 +208,69 @@ public class HomeFragment extends Fragment implements DeleteItemsFragment.OnFrag
         }
         return "Confirm deletion of "+numItemsToDelete.toString()+" item(s)?";
     }
+
+
     private void unselectAllItems() {
         for (int i=0;i<itemList.size();i++) {
             itemList.get(i).setSelected(false);
         }
         itemAdapter.notifyDataSetChanged();
+    }
+
+    private void checkAndDeleteItems(View view) {
+        final Button deleteButton = view.findViewById(R.id.action_delete);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean itemsToDelete = false;
+                int i = 0;
+
+                // check if there are items selected
+                while (!itemsToDelete && i < itemList.size()) {
+                    if (itemList.get(i).isSelected()) {
+                        itemsToDelete = true;
+                        break;
+                    }
+                    i += 1;
+                }
+
+                //delete selected items if at least one item is selected
+                if (itemsToDelete) {
+                    // TODO: Ideally there should be a dialog fragment here asking for confirmation,
+                    // TODO: and the deletion should be implemented by an interface, however that requires making callbacks to this fragment
+                    // Alternatively, just make a select_state Activity class and implement there, no callbacks.
+                    Integer numItemsSelected = 0;
+                    for (int j=0;j<itemList.size();j++) {
+                        if (itemList.get(j).isSelected()) {
+                            numItemsSelected+=1;
+                            itemRef
+                                    .document(itemList.get(j).getId())
+                                    .delete()
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d("Firestore", "DocumentSnapshots successfully Deleted!");
+                                        }
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        // TODO: Handle the failure to delete the document
+                                        Log.d("Firestore", "Failed to create new item");
+                                    });
+                        }
+                    }
+                    Toast.makeText(requireActivity().getApplicationContext(),
+                            "Deleted "+ numItemsSelected +" item(s).",
+                            Toast.LENGTH_SHORT).show();
+
+                    unselectAllItems();
+                }
+                else {
+                    Toast.makeText(requireActivity().getApplicationContext(),
+                            "Please select one or more cities to delete.",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
 }
