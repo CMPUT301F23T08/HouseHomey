@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.google.firebase.Timestamp;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
@@ -35,7 +36,7 @@ public class Item {
         this.id = Objects.requireNonNull(id);
         this.description = (String) Objects.requireNonNull(data.get("description"));
         this.acquisitionDate = ((Timestamp) Objects.requireNonNull(data.get("acquisitionDate"))).toDate();
-        this.cost = new BigDecimal((String) Objects.requireNonNull(data.get("cost"))).setScale(2);
+        this.cost = new BigDecimal((String) Objects.requireNonNull(data.get("cost"))).setScale(2, RoundingMode.HALF_UP);
 
         // Optional fields
         if (data.containsKey("make")) {
