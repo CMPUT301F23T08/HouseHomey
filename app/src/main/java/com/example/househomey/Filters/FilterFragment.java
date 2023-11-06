@@ -9,18 +9,37 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+/**
+ * Abstract class for creating filter fragments.
+ */
 public abstract class FilterFragment extends DialogFragment {
-
+    /**
+     * Constructs a new FilterFragment.
+     * @param title         The title of the filter dialog.
+     * @param contentView   The content view of the filter dialog.
+     * @param filterCallback The callback interface for handling filter changes.
+     */
     protected String title;
     protected View contentView;
     protected FilterCallback filterCallback;
 
+    /**
+     * Constructs a new FilterFragment with the provided title, content view, and filter callback.
+     * @param title           The title of the filter dialog.
+     * @param contentView     The content view of the filter dialog.
+     * @param filterCallback  The callback interface for handling filter changes.
+     */
     public FilterFragment(String title, View contentView, FilterCallback filterCallback) {
         this.title = title;
         this.contentView = contentView;
         this.filterCallback = filterCallback;
     }
 
+    /**
+     * Called to create and return the filter dialog.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
+     * @return The filter dialog to be displayed.
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -41,6 +60,9 @@ public abstract class FilterFragment extends DialogFragment {
                 .create();
     }
 
-    // Abstract method for filter-specific logic (dates, make, keywords, tags)
+    /**
+     * This method should be implemented in subclasses to define filter-specific logic
+     * that extract filter properites from XML like dates, make, keywords, and tags.
+     */
     public abstract void getFilterProps();
 }

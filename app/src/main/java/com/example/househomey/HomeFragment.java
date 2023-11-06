@@ -133,6 +133,11 @@ public class HomeFragment extends Fragment implements FilterCallback {
         popupMenu.show();
     }
 
+    /**
+     * Called when a filter is applied or modified.
+     * @param filterType  The type of filter being applied (e.g., "MAKE").
+     * @param filterValue The value or criteria for the filter.
+     */
     @Override
     public void onFilterApplied(String filterType, String filterValue) {
         appliedFilters.put(filterType, filterValue);
