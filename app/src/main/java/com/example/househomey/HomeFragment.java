@@ -36,8 +36,7 @@ public class HomeFragment extends Fragment {
     private CollectionReference itemRef;
     private ListView itemListView;
     private PopupMenu filterView;
-
-    private ArrayList<Item> itemList = new ArrayList<>();
+    private ArrayList<Item> itemList;
     private ArrayAdapter<Item> itemAdapter;
 
     /**
@@ -46,6 +45,7 @@ public class HomeFragment extends Fragment {
      */
     public HomeFragment(CollectionReference itemRef) {
         this.itemRef = itemRef;
+        itemList = new ArrayList<>();
     }
 
     /**
