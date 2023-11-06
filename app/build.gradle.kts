@@ -1,6 +1,12 @@
+
 plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
+    id("jacoco")
+}
+
+jacoco {
+    toolVersion = "0.8.7"
 }
 
 android {
@@ -27,6 +33,9 @@ android {
                 "proguard-rules.pro"
             )
         }
+        debug {
+            isTestCoverageEnabled = true
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -44,4 +53,31 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+}
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest")
+
+    reports {
+        xml.required.set(false)
+        csv.required.set(false)
+        html.required.set(true)
+    }
+
+    val fileFilter = listOf(
+        "**/R.class",
+        "**/R$*.class",
+        "**/BuildConfig.*",
+        "**/Manifest*.*",
+        "**/*Test*.*",
+        "android/**/*.*",
+        "jdk/**",
+        "jdk.internal.*"
+    )
+
+    val debugTree = fileTree(mapOf("dir" to file("${buildDir}/intermediates/classes/debug"), "excludes" to fileFilter))
+    val mainSrc = file("${project.projectDir}/src/main/java")
+
+    sourceDirectories.from(mainSrc)
+    classDirectories.from(debugTree)
+    executionData.from(file("${buildDir}/jacoco/testDebugUnitTest.exec"))
 }
