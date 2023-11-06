@@ -46,7 +46,7 @@ public abstract class FilterFragment extends DialogFragment {
         DialogInterface.OnClickListener onApplyListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                getFilterProps();
+                getFilterInput();
             }
         };
 
@@ -64,5 +64,5 @@ public abstract class FilterFragment extends DialogFragment {
      * This method should be implemented in subclasses to define filter-specific logic
      * that extract filter properites from XML like dates, make, keywords, and tags.
      */
-    public abstract void getFilterProps();
+    public abstract void getFilterInput();
 }

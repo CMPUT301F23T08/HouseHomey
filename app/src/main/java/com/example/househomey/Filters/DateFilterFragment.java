@@ -9,7 +9,7 @@ public class DateFilterFragment extends FilterFragment {
     }
 
     @Override
-    public void getFilterProps() {
+    public void getFilterInput() {
         // TODO: get the filter properties from fragment inputs
     }
 }
