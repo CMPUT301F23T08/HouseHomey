@@ -16,9 +16,7 @@ import java.util.Objects;
  * @see ItemAdapter
  */
 public class Item {
-
-    // TODO: We should make this private and only use the Getter to access the id
-    public String id;
+    private String id;
     private String description;
     private Date acquisitionDate;
     private String make = "";
@@ -35,11 +33,11 @@ public class Item {
      * @throws NullPointerException if a null required field is given
      */
     public Item(String id, @NonNull Map<String, Object> data) {
-        // Required fields
+        // Required fields, will throw exceptions
         this.id = Objects.requireNonNull(id);
         this.description = (String) Objects.requireNonNull(data.get("description"));
         this.acquisitionDate = ((Timestamp) Objects.requireNonNull(data.get("acquisitionDate"))).toDate();
-        this.cost = new BigDecimal((String) Objects.requireNonNull(data.get("cost"))).setScale(2, RoundingMode.HALF_DOWN);
+        this.cost = new BigDecimal((String) Objects.requireNonNull(data.get("cost"))).setScale(2, RoundingMode.HALF_UP);
 
         // Optional fields
         if (data.containsKey("make")) {
@@ -56,10 +54,9 @@ public class Item {
         }
     }
 
-
     /**
-     * Getter for ID of the item
-     * @return Unique ID of the item
+     * Getter for id
+     * @return The id of this item in firestore
      */
     public String getId() {
         return id;

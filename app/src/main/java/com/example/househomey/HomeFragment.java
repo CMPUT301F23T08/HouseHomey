@@ -42,8 +42,8 @@ public class HomeFragment extends Fragment implements DeleteItemsFragment.OnFrag
     private CollectionReference itemRef;
     private ListView itemListView;
     private PopupMenu filterView;
-    private ArrayList<Item> itemList = new ArrayList<>();
-    private ItemAdapter itemAdapter;
+    private ArrayList<Item> itemList;
+    private ArrayAdapter<Item> itemAdapter;
 
     /**
      * This constructs a new HomeFragment with the appropriate list of items
@@ -51,6 +51,7 @@ public class HomeFragment extends Fragment implements DeleteItemsFragment.OnFrag
      */
     public HomeFragment(CollectionReference itemRef) {
         this.itemRef = itemRef;
+        itemList = new ArrayList<>();
     }
 
     /**
