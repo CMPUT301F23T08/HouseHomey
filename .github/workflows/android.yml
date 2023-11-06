@@ -30,14 +30,20 @@ jobs:
         restore-keys: |
           gradle-${{ runner.os }}-
 
-    - name: Build with Gradle and Generate Coverage
+    - name: Build with Gradle 
       run: |
         chmod +x gradlew
-        ./gradlew clean build jacocoTestReport
+        ./gradlew test
       continue-on-error: true
 
-    - name: Upload Code Coverage Report
+    - name: Upload html test report
       uses: actions/upload-artifact@v2
       with:
-        name: code-coverage
-        path: app/build/reports/jacoco/test/html
+        name: index.html
+        path: app/build/reports/tests/testDebugUnitTest/index.html
+
+    - name: Upload test report directory
+      uses: actions/upload-artifact@v2
+      with:
+        name: testDebugStuff
+        path: app/build/reports/tests/testDebugUnitTest/
