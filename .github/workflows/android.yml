@@ -36,14 +36,7 @@ jobs:
         ./gradlew test
       continue-on-error: true
 
-    - name: Upload html test report
-      uses: actions/upload-artifact@v3
-      with:
-        name: index.html
-        path: app/build/reports/tests/testDebugUnitTest/index.html
-
-    - name: Upload test report directory
-      uses: actions/upload-artifact@v3
-      with:
-        name: testDebugStuff
-        path: app/build/reports/tests/testDebugUnitTest/
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
