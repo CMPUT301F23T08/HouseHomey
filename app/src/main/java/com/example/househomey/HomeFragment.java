@@ -46,6 +46,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
      */
     public HomeFragment(CollectionReference itemRef) {
         this.itemRef = itemRef;
+        itemList = new ArrayList<>();
     }
 
     /**
