@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     // Define constants for filter items
     private User user;
 
+
     /**
      * Method to run on creation of the activity. Handles user setup and creates the bottom
      * nav fragment

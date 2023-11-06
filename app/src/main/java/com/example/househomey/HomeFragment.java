@@ -8,9 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +22,8 @@ import com.example.househomey.Filters.DateFilterFragment;
 import com.example.househomey.Filters.KeywordFilterFragment;
 import com.example.househomey.Filters.MakeFilterFragment;
 import com.example.househomey.Filters.TagFilterFragment;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -27,18 +32,18 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * This fragment represents the home screen containing the primary list of the user's inventory
  * @author Owen Cooke, Jared Drueco, Lukas Bonkowski
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements DeleteItemsFragment.OnFragmentInteractionListener {
     private CollectionReference itemRef;
     private ListView itemListView;
     private PopupMenu filterView;
-
     private ArrayList<Item> itemList = new ArrayList<>();
-    private ArrayAdapter<Item> itemAdapter;
+    private ItemAdapter itemAdapter;
 
     /**
      * This constructs a new HomeFragment with the appropriate list of items
@@ -72,6 +77,77 @@ public class HomeFragment extends Fragment {
         View filterButton = rootView.findViewById(R.id.filter_dropdown_button);
         filterButton.setOnClickListener(this::showFilterMenu);
 
+        Button selectButton = rootView.findViewById(R.id.select_items_button);
+        Button cancelButton = rootView.findViewById(R.id.cancel_select_button);
+        View baseStateTools = rootView.findViewById(R.id.base_state_tools);
+        View selectStateButtons = rootView.findViewById(R.id.select_state_tools);
+
+        selectButton.setOnClickListener(v -> {
+            itemAdapter.setSelectState(true);
+            selectButton.setVisibility(View.GONE);
+            cancelButton.setVisibility(View.VISIBLE);
+            baseStateTools.setVisibility(View.GONE);
+            selectStateButtons.setVisibility(View.VISIBLE);
+
+
+        });
+
+        cancelButton.setOnClickListener(v -> {
+            itemAdapter.setSelectState(false);
+            selectButton.setVisibility(View.VISIBLE);
+            cancelButton.setVisibility(View.GONE);
+            baseStateTools.setVisibility(View.VISIBLE);
+            selectStateButtons.setVisibility(View.GONE);
+            // Unselect all items
+            unselectAllItems();
+        });
+
+            final Button deleteButton = rootView.findViewById(R.id.action_delete);
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    boolean itemsToDelete = false;
+                    int i = 0;
+                    while (!itemsToDelete && i < itemList.size()) {
+                        if (itemList.get(i).isSelected()) {
+                            itemsToDelete = true;
+                        }
+                        i += 1;
+                    }
+
+                    if (itemsToDelete) {
+                        // TODO: Ideally there should be a dialog fragment here asking for confirmation, and the below code
+                        // TODO: should be the implementation of an interface in the dialog
+                        // TODO: but since I can't implement interfaces in a fragment class, I wrote the entire code here
+                        Integer numItemsSelected = 0;
+                        for (int j=0;j<itemList.size();j++) {
+                            if (itemList.get(j).isSelected()) {
+                                numItemsSelected+=1;
+                                itemRef
+                                        .document(itemList.get(j).getId())
+                                        .delete()
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Log.d("Firestore", "DocumentSnapshots successfully Deleted!");
+                                            }
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            // TODO: Handle the failure to delete the document
+                                            Log.d("Firestore", "Failed to create new item");
+                                        });
+                            }
+                        }
+                        Toast.makeText(requireActivity().getApplicationContext(), "Deleted "+ numItemsSelected +" item(s).",
+                                Toast.LENGTH_SHORT).show();
+                        unselectAllItems();
+                    }
+                    else {
+                        Toast.makeText(requireActivity().getApplicationContext(), "Please select one or more cities to delete.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         return rootView;
 
     }
@@ -92,8 +168,16 @@ public class HomeFragment extends Fragment {
             for (QueryDocumentSnapshot doc: querySnapshots) {
                 Map<String, Object> data = new HashMap<>(doc.getData());
                 itemList.add(new Item(doc.getId(), data));
-                itemAdapter.notifyDataSetChanged();
             }
+//                    Every time the data list is updated, all the checkboxes are unselected
+            for (int i=0;i<itemList.size();i++) {
+                View itemView = itemListView.getChildAt(i);
+                if (itemView != null) {
+                    CheckBox itemCheckBox = itemView.findViewById(R.id.item_checkBox);
+                    itemCheckBox.setChecked(false);
+                }
+            }
+            itemAdapter.notifyDataSetChanged();
         }
     }
 
@@ -131,6 +215,47 @@ public class HomeFragment extends Fragment {
         });
 
         popupMenu.show();
+
+    }
+
+
+    @Override
+    public void onOKPressed(){
+        for (int i=0;i<itemList.size();i++) {
+            if (itemList.get(i).isSelected()) {
+                itemRef
+                        .document(itemList.get(i).getId())
+                        .delete()
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d("Firestore", "DocumentSnapshots successfully Deleted!");
+                            }
+                        })
+                        .addOnFailureListener(e -> {
+                    // TODO: Handle the failure to delete the document
+                    Log.d("Firestore", "Failed to create new item");
+                });
+            }
+        }
+    }
+
+    @Override
+    public String DialogTitle() {
+
+        Integer numItemsToDelete=0;
+        for (int i=0;i<itemList.size();i++) {
+            if (itemList.get(i).isSelected()) {
+                numItemsToDelete++;
+            }
+        }
+        return "Confirm deletion of "+numItemsToDelete.toString()+" item(s)?";
+    }
+    private void unselectAllItems() {
+        for (int i=0;i<itemList.size();i++) {
+            itemList.get(i).setSelected(false);
+        }
+        itemAdapter.notifyDataSetChanged();
     }
 
 }

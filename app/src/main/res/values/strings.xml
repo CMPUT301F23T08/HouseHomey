@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">HouseHomey</string>
+    <string name="select">Select</string>
+    <string name="cancel">Cancel</string>
+    <string name="toggle_description">toggle ascending or descending order</string>
+    <string name="sort_button_description">sort by property</string>
+    <string name="filter_dropdown_description">show filtering options</string>
+    <string name="tags_popup_description">show popup to add tags</string>
+    <string name="delete_action_description">delete selected items</string>
 </resources>

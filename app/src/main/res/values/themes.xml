@@ -13,6 +13,11 @@
     <style name="TextInputLayoutStyle" parent="Widget.Material3.TextInputLayout.OutlinedBox">
         <item name="boxStrokeColor">@drawable/text_input_style</item>
         <item name="android:textColorHint">@color/brown</item>
+
+    </style>
+
+    <style name="App.Custom.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/black</item>
     </style>
 
     <style name="Theme.HouseHomey" parent="Base.Theme.HouseHomey" />

@@ -1,38 +1,34 @@
 package com.example.househomey;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
 import android.content.Context;
-import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
-import com.google.firebase.firestore.DocumentReference;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
  * A child of ArrayAdapter this adapter specifically displays a list of class Item objects
- * @author Lukas Bonkowski, Matthew Neufeld
+ * @author Lukas Bonkowski, Matthew Neufeld, Sami Jagirdar
  * @see Item
  */
 public class ItemAdapter extends ArrayAdapter<Item> {
     private ArrayList<Item> items;
     private Context context;
+
+    private boolean selectState;
 
     /**
      * Constructs a new ItemAdapter with an ArrayList of items
@@ -43,6 +39,24 @@ public class ItemAdapter extends ArrayAdapter<Item> {
         super(context, 0, items);
         this.items = items;
         this.context = context;
+    }
+
+
+    /**
+     * tells whether items are in select state or not
+     * @return true or false value indicating if itemView is in select state or not
+     */
+    public boolean isSelectState() {
+        return selectState;
+    }
+
+    /**
+     * sets the view into a select state allowing user to select items
+     * @param selectMode a true or false value indicating if view should be in select state or not
+     */
+    public void setSelectState(boolean selectMode) {
+        selectState = selectMode;
+        notifyDataSetChanged();
     }
 
 
@@ -100,6 +114,15 @@ public class ItemAdapter extends ArrayAdapter<Item> {
             transaction.replace(R.id.fragmentContainer, viewItemFragment);
             transaction.addToBackStack(null);
             transaction.commit();
+        });
+
+        CheckBox itemCheckBox = view.findViewById(R.id.item_checkBox);
+        if (!selectState) {
+            itemCheckBox.setChecked(false);
+        }
+        itemCheckBox.setVisibility(selectState ? View.VISIBLE : View.GONE);
+        itemCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            item.setSelected(isChecked);
         });
 
         return view;

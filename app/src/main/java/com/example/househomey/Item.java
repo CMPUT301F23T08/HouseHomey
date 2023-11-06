@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.google.firebase.Timestamp;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
@@ -15,6 +16,8 @@ import java.util.Objects;
  * @see ItemAdapter
  */
 public class Item {
+
+    // TODO: We should make this private and only use the Getter to access the id
     public String id;
     private String description;
     private Date acquisitionDate;
@@ -23,6 +26,7 @@ public class Item {
     private String serialNumber = "";
     private String comment = "";
     private BigDecimal cost;
+    private boolean selected;
 
     /**
      * This constructs a new item from a Map of data with a reference to it's firestore docunebt
@@ -35,7 +39,7 @@ public class Item {
         this.id = Objects.requireNonNull(id);
         this.description = (String) Objects.requireNonNull(data.get("description"));
         this.acquisitionDate = ((Timestamp) Objects.requireNonNull(data.get("acquisitionDate"))).toDate();
-        this.cost = new BigDecimal((String) Objects.requireNonNull(data.get("cost"))).setScale(2);
+        this.cost = new BigDecimal((String) Objects.requireNonNull(data.get("cost"))).setScale(2, RoundingMode.HALF_DOWN);
 
         // Optional fields
         if (data.containsKey("make")) {
@@ -50,6 +54,15 @@ public class Item {
         if (data.containsKey("comment")) {
             this.comment = (String) data.get("comment");
         }
+    }
+
+
+    /**
+     * Getter for ID of the item
+     * @return Unique ID of the item
+     */
+    public String getId() {
+        return id;
     }
 
     /**
@@ -100,4 +113,8 @@ public class Item {
      * @return comment for the item
      */
     public String getComment() { return comment; }
+
+    public boolean isSelected() { return selected; }
+
+    public void setSelected(boolean selected) { this.selected = selected; }
 }
