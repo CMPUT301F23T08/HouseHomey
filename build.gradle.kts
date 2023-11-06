@@ -7,7 +7,7 @@ buildscript {
     }
     dependencies {
         classpath("com.android.tools.build:gradle:7.0.0")
-        classpath("org.jacoco:org.jacoco.core:0.8.7")
+        classpath("org.jacoco:org.jacoco.core:0.8.8")
     }
 }
 plugins {

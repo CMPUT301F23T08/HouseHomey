@@ -6,7 +6,7 @@ plugins {
 }
 
 jacoco {
-    toolVersion = "0.8.7"
+    toolVersion = "0.8.8"
 }
 
 android {
@@ -34,7 +34,7 @@ android {
             )
         }
         debug {
-            isTestCoverageEnabled = true
+            //isTestCoverageEnabled = true
         }
     }
     compileOptions {

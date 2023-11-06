@@ -33,7 +33,7 @@ jobs:
     - name: Build with Gradle 
       run: |
         chmod +x gradlew
-        ./gradlew test
+        ./gradlew testDebugUnitTest
       continue-on-error: true
 
     - name: Upload coverage reports to Codecov
