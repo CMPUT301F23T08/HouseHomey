@@ -15,8 +15,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.househomey.Filters.DateFilterFragment;
+import com.example.househomey.Filters.Filter;
 import com.example.househomey.Filters.FilterCallback;
 import com.example.househomey.Filters.KeywordFilterFragment;
+import com.example.househomey.Filters.MakeFilter;
 import com.example.househomey.Filters.MakeFilterFragment;
 import com.example.househomey.Filters.TagFilterFragment;
 import com.google.firebase.firestore.CollectionReference;
@@ -24,9 +26,12 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -36,8 +41,9 @@ import java.util.stream.Collectors;
 public class HomeFragment extends Fragment implements FilterCallback {
     private CollectionReference itemRef;
     private ListView itemListView;
-    private Map<String, Object> appliedFilters = new HashMap<>();
+//    private Map<String, Object> appliedFilters = new HashMap<>();
     private ArrayList<Item> itemList = new ArrayList<>();
+    private Set<Filter> appliedFilters = new HashSet<>();
     private ArrayAdapter<Item> itemAdapter;
 
     /**
@@ -134,39 +140,22 @@ public class HomeFragment extends Fragment implements FilterCallback {
         popupMenu.show();
     }
 
-    public void setFilter(String filterType, String filterValue) {
-        appliedFilters.put(filterType, filterValue);
-    }
-
-    public void applyFilter() {
-        ArrayList<Item> filteredList = new ArrayList<>();
-
-        for (Map.Entry<String, Object> filter : appliedFilters.entrySet()) {
-            switch (filter.getKey()) {
-                case "MAKE":
-                    String makeFilter = (String) filter.getValue();
-                    filteredList = (ArrayList<Item>) itemList.stream()
-                            .filter(item -> item.getMake().equals(makeFilter))
-                            .collect(Collectors.toList());
-                    break;
-                // TODO: Add other filter logic here
-            }
-        }
-
-        itemList.clear();
-        itemList.addAll(filteredList);
-        itemAdapter.notifyDataSetChanged();
-    }
-
-
-    /**
-     * Called when a filter is applied or modified.
-     * @param filterType  The type of filter being applied (e.g., "MAKE").
-     * @param filterValue The value or criteria for the filter.
-     */
     @Override
-    public void onFilterApplied(String filterType, String filterValue) {
-        setFilter(filterType, filterValue);
-        applyFilter();
+    public void onFilterApplied(Filter filter) {
+        if (!appliedFilters.add(filter)) {
+            appliedFilters.remove(filter);
+            appliedFilters.add(filter);
+        }
+        applyFilters();
+    }
+
+    private void applyFilters() {
+        ArrayList<Item> filteredList = new ArrayList<>(itemList);
+        for (Filter filter : appliedFilters) {
+            filteredList = filter.filterList(filteredList);
+        }
+        itemAdapter.clear();
+        itemAdapter.addAll(filteredList);
+        itemAdapter.notifyDataSetChanged();
     }
 }

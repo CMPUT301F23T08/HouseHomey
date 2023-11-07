@@ -25,7 +25,8 @@ public class MakeFilterFragment extends FilterFragment {
     @Override
     public void getFilterInput() {
         String makeValue = ((EditText) contentView.findViewById(R.id.make_filter)).getText().toString();
-        filterCallback.onFilterApplied("MAKE", makeValue);
+        MakeFilter makeFilter = new MakeFilter(makeValue);
+        filterCallback.onFilterApplied(makeFilter);
         dismiss();
     }
 }
