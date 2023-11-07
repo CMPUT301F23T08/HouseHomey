@@ -3,6 +3,7 @@ package com.example.househomey;
 import static com.example.househomey.utils.FragmentUtils.navigateHomeWithIndicator;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,7 @@ import java.util.Locale;
  * @author Owen Cooke
  */
 public class EditItemFragment extends ItemFormFragment {
-    private Item item;
+    private final Item item;
 
     /**
      * Constructs a new EditItemFragment with the item to edit.
@@ -54,7 +55,7 @@ public class EditItemFragment extends ItemFormFragment {
         // Add listeners for buttons and text validation
         initDatePicker(rootView);
         initTextValidators(rootView);
-        // rootView.findViewById(R.id.add_item_confirm_button).setOnClickListener(v -> editItem());
+        rootView.findViewById(R.id.add_item_confirm_button).setOnClickListener(v -> editItem());
         rootView.findViewById(R.id.add_item_back_button).setOnClickListener(v -> navigateHomeWithIndicator((AppCompatActivity) getContext()));
         return rootView;
     }
@@ -79,5 +80,25 @@ public class EditItemFragment extends ItemFormFragment {
             SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
             ((TextInputEditText) rootView.findViewById(R.id.add_item_date)).setText(dateFormat.format(dateAcquired));
         }
+    }
+
+    /**
+     * Edits an existing Item in the user's Firestore item collection.
+     */
+    private void editItem() {
+        Item updatedItem = validateItem(item.getId());
+        if (updatedItem == null) return;
+
+        // Update the existing item document in Firestore
+        itemRef.document(updatedItem.getId())
+                .set(updatedItem.getData())
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Firestore", "Successfully updated item with id: " + updatedItem.getId());
+                    navigateHomeWithIndicator((AppCompatActivity) getContext());
+                })
+                .addOnFailureListener(e -> {
+                    Log.d("Firestore", "Failed to update item with id: " + updatedItem.getId());
+                    getView().findViewById(R.id.add_item_error_msg).setVisibility(View.VISIBLE);
+                });
     }
 }

@@ -17,11 +17,13 @@ import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  * This abstract class serves as a base for creating and managing both Add and Edit Item forms.
@@ -31,7 +33,7 @@ import java.util.Date;
  */
 public abstract class ItemFormFragment extends Fragment {
     protected Date dateAcquired;
-    protected TextInputEditText dateTextView;
+    private TextInputEditText dateTextView;
     protected CollectionReference itemRef;
 
     /**
@@ -54,6 +56,39 @@ public abstract class ItemFormFragment extends Fragment {
     }
 
     /**
+     * Validates the user input and constructs an Item object if the input is valid.
+     *
+     * @param itemId The unique identifier of the item, if it exists, or an empty string for new items.
+     * @return An Item object representing the validated item data, or null if validation fails.
+     */
+    protected Item validateItem(String itemId) {
+        // Check that required fields are filled before validating
+        boolean invalidDesc = isRequiredFieldEmpty(R.id.add_item_description_layout);
+        boolean invalidDate = isRequiredFieldEmpty(R.id.add_item_date_layout);
+        boolean invalidCost = isRequiredFieldEmpty(R.id.add_item_cost_layout);
+        if (invalidDesc || invalidDate || invalidCost) return null;
+
+        // Create map with form data
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("description", getInputText(R.id.add_item_description));
+        data.put("acquisitionDate", new Timestamp(dateAcquired));
+        data.put("cost", getInputText(R.id.add_item_cost));
+        data.put("make", getInputText(R.id.add_item_make));
+        data.put("model", getInputText(R.id.add_item_model));
+        data.put("serialNumber", getInputText(R.id.add_item_serial_number));
+        data.put("comment", getInputText(R.id.add_item_comment));
+
+        // Ensure that form data can be used to create a valid Item
+        Item item;
+        try {
+            item = new Item(itemId, data);
+        } catch (NullPointerException e) {
+            return null;
+        }
+        return item;
+    }
+
+    /**
      * Checks whether the text input for a required form field is empty.
      * Additionally, if empty, it sets an inline error message on the input field.
      * If not empty, it removes the inline error.
@@ -61,7 +96,7 @@ public abstract class ItemFormFragment extends Fragment {
      * @param id Id of the required field's TextInputLayout
      * @return a boolean indicating if the field is empty
      */
-    protected boolean isRequiredFieldEmpty(int id) {
+    private boolean isRequiredFieldEmpty(int id) {
         TextInputLayout textInputLayout = getView().findViewById(id);
         if (TextUtils.isEmpty(textInputLayout.getEditText().getText().toString().trim())) {
             textInputLayout.setError("This field is required");
@@ -79,7 +114,7 @@ public abstract class ItemFormFragment extends Fragment {
      * @return The user input String
      * @throws NullPointerException if the input text is null
      */
-    protected String getInputText(int id) {
+    private String getInputText(int id) {
         return requireNonNull(((TextInputEditText) requireView().findViewById(id)).getText()).toString();
     }
 
