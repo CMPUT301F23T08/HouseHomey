@@ -14,7 +14,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -75,19 +74,12 @@ public class ItemAdapter extends ArrayAdapter<Item> {
         // Initialize button for viewing details of the item
         Button viewItemButton = view.findViewById(R.id.action_view);
 
-        // When view item button is clicked, bundle item details and send them as arguments to ViewItemFragment
+        // When view item button clicked, pass Item to ViewItemFragment via bundle
         viewItemButton.setOnClickListener(v -> {
             ViewItemFragment viewItemFragment = new ViewItemFragment();
-
-            // Pass item details to view page via bundle
-            Bundle details = new Bundle();
-            details.putString("make", item.getMake());
-            details.putString("model", item.getModel());
-            details.putString("serialNumber", item.getSerialNumber());
-            details.putString("cost", item.getCost().toString());
-            details.putString("comment", item.getComment());
-            viewItemFragment.setArguments(details);
-
+            Bundle args = new Bundle();
+            args.putSerializable("item", item);
+            viewItemFragment.setArguments(args);
             navigateToFragmentPage((AppCompatActivity) context, viewItemFragment);
         });
 
