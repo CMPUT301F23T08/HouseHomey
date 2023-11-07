@@ -1,19 +1,20 @@
-package com.example.househomey;
+package com.example.househomey.form;
 
-import static com.example.househomey.utils.FragmentUtils.navigateHomeWithIndicator;
+import static java.util.Objects.requireNonNull;
 
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.example.househomey.Item;
+import com.example.househomey.MainActivity;
+import com.example.househomey.R;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -26,51 +27,66 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Objects;
 
 /**
- * This fragment is responsible for creating and loading to the database a new item
+ * This abstract class serves as a base for creating and managing both Add and Edit Item forms.
+ * It provides common functionality for handling user input and date selection.
  *
  * @author Owen Cooke
  */
-public class AddItemFragment extends Fragment {
-    private Date dateAcquired;
+public abstract class ItemFormFragment extends Fragment {
+    protected Date dateAcquired;
     private TextInputEditText dateTextView;
-    private final CollectionReference itemRef;
+    protected CollectionReference itemRef;
 
     /**
-     * Constructs a new AddItemFragment with a firestore reference
-     *
-     * @param itemRef A reference to a firestore collection of items
-     */
-    public AddItemFragment(CollectionReference itemRef) {
-        this.itemRef = itemRef;
-    }
-
-    /**
-     * This creates the view to add an item to a user's inventory and set's the button listeners
+     * Creates the basic view for a validated Item form.
      *
      * @param inflater           The LayoutInflater object that can be used to inflate
-     *                           any views in the fragment,
+     *                           any views in the fragment.
      * @param container          If non-null, this is the parent view that the fragment's
-     *                           UI should be attached to.  The fragment should not add the view itself,
+     *                           UI should be attached to. The fragment should not add the view itself,
      *                           but this can be used to generate the LayoutParams of the view.
      * @param savedInstanceState If non-null, this fragment is being re-constructed
      *                           from a previous saved state as given here.
-     * @return The fragment_add_item view with the correct listeners added
+     * @return A View representing the Item form with validation listeners.
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_add_item, container, false);
+        // Get item collection reference from main activity
+        itemRef = ((MainActivity) requireActivity()).getItemRef();
+        return inflater.inflate(R.layout.fragment_add_item, container, false);
+    }
 
-        initDatePicker(rootView);
-        initTextValidators(rootView);
+    /**
+     * Validates the user input and constructs an Item object if the input is valid.
+     *
+     * @param itemId The unique identifier of the item, if it exists, or an empty string for new items.
+     * @return An Item object representing the validated item data, or null if validation fails.
+     */
+    protected Item validateItem(String itemId) {
+        // Check that required fields are filled before validating
+        boolean invalidDesc = isRequiredFieldEmpty(R.id.add_item_description_layout);
+        boolean invalidDate = isRequiredFieldEmpty(R.id.add_item_date_layout);
+        boolean invalidCost = isRequiredFieldEmpty(R.id.add_item_cost_layout);
+        if (invalidDesc || invalidDate || invalidCost) return null;
 
-        // Add listener for confirm and back buttons
-        rootView.findViewById(R.id.add_item_confirm_button).setOnClickListener(v -> addItem());
-        rootView.findViewById(R.id.add_item_back_button).setOnClickListener(v -> navigateHomeWithIndicator((AppCompatActivity) getContext()));
+        // Create map with form data
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("description", getInputText(R.id.add_item_description));
+        data.put("acquisitionDate", new Timestamp(dateAcquired));
+        data.put("cost", getInputText(R.id.add_item_cost));
+        data.put("make", getInputText(R.id.add_item_make));
+        data.put("model", getInputText(R.id.add_item_model));
+        data.put("serialNumber", getInputText(R.id.add_item_serial_number));
+        data.put("comment", getInputText(R.id.add_item_comment));
 
-        return rootView;
+        // Ensure that form data can be used to create a valid Item
+        try {
+            return new Item(itemId, data);
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
 
     /**
@@ -91,44 +107,6 @@ public class AddItemFragment extends Fragment {
         return false;
     }
 
-    /**
-     * Adds the user input data to a new item in their Firestore collection
-     */
-    private void addItem() {
-        // Check that required fields are filled before submitting
-        boolean invalidDesc = isRequiredFieldEmpty(R.id.add_item_description_layout);
-        boolean invalidDate = isRequiredFieldEmpty(R.id.add_item_date_layout);
-        boolean invalidCost = isRequiredFieldEmpty(R.id.add_item_cost_layout);
-        if (invalidDesc || invalidDate || invalidCost) return;
-
-        // Create map with form data
-        HashMap<String, Object> data = new HashMap<>();
-        data.put("description", getInputText(R.id.add_item_description));
-        data.put("acquisitionDate", new Timestamp(dateAcquired));
-        data.put("cost", getInputText(R.id.add_item_cost));
-        data.put("make", getInputText(R.id.add_item_make));
-        data.put("model", getInputText(R.id.add_item_model));
-        data.put("serialNumber", getInputText(R.id.add_item_serial_number));
-        data.put("comment", getInputText(R.id.add_item_comment));
-
-        // Ensure that form data can be used to create a valid Item
-        Item newItem;
-        try {
-            newItem = new Item("", data);
-        } catch (NullPointerException e) {
-            return;
-        }
-
-        // Create new item document in Firestore
-        itemRef.add(newItem.getData()).addOnSuccessListener(documentReference -> {
-                    Log.d("Firestore", "Successfully created new item with id:" + documentReference.getId());
-                    navigateHomeWithIndicator((AppCompatActivity) getContext());
-                })
-                .addOnFailureListener(e -> {
-                    Log.d("Firestore", "Failed to create new item");
-                    getView().findViewById(R.id.add_item_error_msg).setVisibility(View.VISIBLE);
-                });
-    }
 
     /**
      * Gets the user input as a string from a given TextInputEditText
@@ -138,7 +116,7 @@ public class AddItemFragment extends Fragment {
      * @throws NullPointerException if the input text is null
      */
     private String getInputText(int id) {
-        return Objects.requireNonNull(((TextInputEditText) requireView().findViewById(id)).getText()).toString();
+        return requireNonNull(((TextInputEditText) requireView().findViewById(id)).getText()).toString();
     }
 
     /**
@@ -146,7 +124,7 @@ public class AddItemFragment extends Fragment {
      *
      * @param rootView The root view of the UI where the date picker is to be displayed.
      */
-    private void initDatePicker(View rootView) {
+    protected void initDatePicker(View rootView) {
         dateTextView = rootView.findViewById(R.id.add_item_date);
 
         // Create constraint to restrict dates to past/present
@@ -172,7 +150,7 @@ public class AddItemFragment extends Fragment {
      *
      * @param rootView The root view of the UI where the input fields are located.
      */
-    private void initTextValidators(View rootView) {
+    protected void initTextValidators(View rootView) {
         TextInputEditText descView = rootView.findViewById(R.id.add_item_description);
         TextInputEditText costView = rootView.findViewById(R.id.add_item_cost);
 

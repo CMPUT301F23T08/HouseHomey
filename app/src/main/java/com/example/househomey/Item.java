@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.google.firebase.Timestamp;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
@@ -16,7 +17,7 @@ import java.util.Objects;
  * @author Lukas Bonkowski, Matthew Neufeld, Owen Cooke
  * @see ItemAdapter
  */
-public class Item {
+public class Item implements Serializable {
     private String id;
     private String description;
     private Date acquisitionDate;

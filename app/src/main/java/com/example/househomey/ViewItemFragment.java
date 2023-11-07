@@ -1,5 +1,8 @@
 package com.example.househomey;
 
+import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
+import static java.util.Optional.ofNullable;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +11,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+
+import com.example.househomey.form.EditItemFragment;
 
 /**
  * This fragment is for the "View Item Page" - which currently displays the details and comment linked
@@ -16,6 +20,7 @@ import androidx.fragment.app.FragmentTransaction;
  * @author Matthew Neufeld
  */
 public class ViewItemFragment extends Fragment {
+    private Item item;
 
     /**
      *
@@ -39,22 +44,23 @@ public class ViewItemFragment extends Fragment {
         TextView cost = rootView.findViewById(R.id.view_item_cost);
         TextView comment = rootView.findViewById(R.id.view_item_comment);
 
-        // Set TextViews to detail arguments sent over from ItemAdapter
-        Bundle details = getArguments();
-        if (details != null) {
-            make.setText(details.getString("make", ""));
-            model.setText(details.getString("model", ""));
-            serialNumber.setText(details.getString("serialNumber", ""));
-            cost.setText(details.getString("cost", ""));
-            comment.setText(details.getString("comment", ""));
-        }
+        // Set TextViews to Item details sent over from ItemAdapter
+        ofNullable(getArguments())
+                .map(args -> args.getSerializable("item", Item.class))
+                .ifPresent(item -> {
+                    this.item = item;
+                    make.setText(item.getMake());
+                    model.setText(item.getModel());
+                    serialNumber.setText(item.getSerialNumber());
+                    cost.setText(item.getCost().toString());
+                    comment.setText(item.getComment());
+                });
 
-        // Initialize edit button
+        // On edit button click, pass item to EditItemFragment
         Button editButton = rootView.findViewById(R.id.edit_button);
-        editButton.setOnClickListener(v -> {
-            // TODO: Go to Edit Item fragment once it has been created
-        });
-
+        editButton.setOnClickListener(v ->
+                navigateToFragmentPage(getContext(), new EditItemFragment(item))
+        );
 
         return rootView;
     }
