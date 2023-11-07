@@ -111,8 +111,16 @@ public class AddItemFragment extends Fragment {
         data.put("serialNumber", getInputText(R.id.add_item_serial_number));
         data.put("comment", getInputText(R.id.add_item_comment));
 
+        // Ensure that form data can be used to create a valid Item
+        Item newItem;
+        try {
+            newItem = new Item("", data);
+        } catch (NullPointerException e) {
+            return;
+        }
+
         // Create new item document in Firestore
-        itemRef.add(data).addOnSuccessListener(documentReference -> {
+        itemRef.add(newItem.getData()).addOnSuccessListener(documentReference -> {
                     Log.d("Firestore", "Successfully created new item with id:" + documentReference.getId());
                     navigateToFragmentPage((AppCompatActivity) getContext(), new HomeFragment(itemRef));
                 })
