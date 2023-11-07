@@ -1,6 +1,8 @@
-package com.example.househomey.Filters;
+package com.example.househomey.filter.ui;
 
 import android.view.View;
+
+import com.example.househomey.filter.model.FilterCallback;
 
 public class KeywordFilterFragment extends FilterFragment {
 

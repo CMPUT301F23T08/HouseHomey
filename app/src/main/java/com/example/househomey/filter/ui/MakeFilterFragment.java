@@ -1,9 +1,11 @@
-package com.example.househomey.Filters;
+package com.example.househomey.filter.ui;
 
 import android.view.View;
 import android.widget.EditText;
 
 import com.example.househomey.R;
+import com.example.househomey.filter.model.FilterCallback;
+import com.example.househomey.filter.model.MakeFilter;
 
 /**
  * Fragment for applying "Make" filter criteria.

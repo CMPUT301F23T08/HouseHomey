@@ -1,4 +1,4 @@
-package com.example.househomey.Filters;
+package com.example.househomey.filter.ui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,6 +8,8 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+
+import com.example.househomey.filter.model.FilterCallback;
 
 /**
  * Abstract class for creating filter fragments.

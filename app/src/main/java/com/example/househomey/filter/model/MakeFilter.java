@@ -1,4 +1,4 @@
-package com.example.househomey.Filters;
+package com.example.househomey.filter.model;
 
 import com.example.househomey.Item;
 

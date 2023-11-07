@@ -14,25 +14,22 @@ import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.househomey.Filters.DateFilterFragment;
-import com.example.househomey.Filters.Filter;
-import com.example.househomey.Filters.FilterCallback;
-import com.example.househomey.Filters.KeywordFilterFragment;
-import com.example.househomey.Filters.MakeFilter;
-import com.example.househomey.Filters.MakeFilterFragment;
-import com.example.househomey.Filters.TagFilterFragment;
+import com.example.househomey.filter.ui.DateFilterFragment;
+import com.example.househomey.filter.model.Filter;
+import com.example.househomey.filter.model.FilterCallback;
+import com.example.househomey.filter.ui.KeywordFilterFragment;
+import com.example.househomey.filter.ui.MakeFilterFragment;
+import com.example.househomey.filter.ui.TagFilterFragment;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 
 import java.util.ArrayList;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * This fragment represents the home screen containing the primary list of the user's inventory
@@ -41,7 +38,6 @@ import java.util.stream.Collectors;
 public class HomeFragment extends Fragment implements FilterCallback {
     private CollectionReference itemRef;
     private ListView itemListView;
-//    private Map<String, Object> appliedFilters = new HashMap<>();
     private ArrayList<Item> itemList = new ArrayList<>();
     private Set<Filter> appliedFilters = new HashSet<>();
     private ArrayAdapter<Item> itemAdapter;
