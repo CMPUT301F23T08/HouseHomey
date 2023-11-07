@@ -34,14 +34,16 @@ jobs:
         ./gradlew test
       continue-on-error: true
 
-    - name: Set up emulator
-      uses: reactivecircus/android-emulator-runner@v2
+    - name: Set up Android SDK
+      uses: android-actions/setup-android@v2
       with:
-        api-level: 34
-        target: default
+        sdk-platform: 'android-34'
+
+    - name: Set up emulator
+      run: echo "no" | avdmanager create avd -n test -k 'system-images;android-34;google_apis;x86' --tag google_apis --abi x86
 
     - name: Start the emulator
-      run: adb devices
+      run: $ANDROID_SDK_ROOT/emulator/emulator -avd test -no-audio -no-snapshot-load -no-snapshot-save -gpu swiftshader
 
     - name: Run Espresso tests
       run: |
