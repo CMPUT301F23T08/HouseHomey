@@ -14,10 +14,10 @@ public abstract class Filter {
      * Applies the filter to a list of items and returns a new list containing only
      * the items that pass the filter.
      *
-     * @param originalList The original list of items to be filtered.
+     * @param itemList The list of items to be filtered.
      * @return A filtered list of items.
      */
-    public abstract ArrayList<Item> filterList(ArrayList<Item> originalList);
+    public abstract ArrayList<Item> filterList(ArrayList<Item> itemList);
 
     /**
      * Indicates whether some other object is "equal to" this filter.
