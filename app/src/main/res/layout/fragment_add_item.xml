@@ -53,19 +53,29 @@
             app:iconTint="@color/white" />
     </LinearLayout>
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginVertical="32dp"
             android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="32dp"
             tools:context=".MainActivity">
 
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/add_item_error_msg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="16dp"
+                android:text="@string/defaultError"
+                android:textColor="@color/red"
+                android:visibility="gone" />
+
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/add_item_description_layout"
                 style="@style/TextInputLayoutStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -75,7 +85,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/add_item_description"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:maxLength="50" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <Space
@@ -83,6 +94,7 @@
                 android:layout_height="16dp" />
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/add_item_date_layout"
                 style="@style/TextInputLayoutStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -106,6 +118,7 @@
                 android:layout_height="16dp" />
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/add_item_cost_layout"
                 style="@style/TextInputLayoutStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -133,7 +146,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/add_item_make"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:maxLength="70" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <Space
@@ -150,7 +164,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/add_item_model"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:maxLength="70" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <Space
@@ -205,11 +220,16 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/add_item_comment"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:maxLength="280" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="48dp" />
 
         </LinearLayout>
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>

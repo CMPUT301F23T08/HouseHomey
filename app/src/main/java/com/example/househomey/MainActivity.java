@@ -1,5 +1,7 @@
 package com.example.househomey;
 
+import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -26,7 +28,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * @author Owen Cooke, Lukas Bonkowski
  */
 public class MainActivity extends AppCompatActivity {
-    // Define constants for filter items
     private User user;
 
     /**
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         user = new User("john_doe");
 
         // Init home fragment
-        navigateToFragment(new HomeFragment(user.getItemRef()));
+        navigateToFragmentPage(this, new HomeFragment(user.getItemRef()));
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -61,25 +62,8 @@ public class MainActivity extends AppCompatActivity {
                 // TODO: Go to Profile Page
                 fragment = new HomeFragment(user.getItemRef());
             }
-            navigateToFragment(fragment);
+            navigateToFragmentPage(this, fragment);
             return true;
         });
-    }
-
-    /**
-     * Changes the current fragment to the passed fragment
-     * @param fragment a Fragment to navigate to and replace the current fragment with
-     */
-    private void navigateToFragment(Fragment fragment) {
-        // Get the FragmentManager and start a transaction
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-
-        // Replace the current fragment with the new Fragment
-        transaction.replace(R.id.fragmentContainer, fragment);
-
-        // Commit the transaction
-        transaction.addToBackStack(null); // Optional, to add the transaction to the back stack
-        transaction.commit();
     }
 }

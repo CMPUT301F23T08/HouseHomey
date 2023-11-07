@@ -1,10 +1,8 @@
 package com.example.househomey;
 
-import static androidx.core.content.ContextCompat.startActivity;
+import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
 
 import android.content.Context;
-import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,11 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-import com.google.firebase.firestore.DocumentReference;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -81,12 +75,11 @@ public class ItemAdapter extends ArrayAdapter<Item> {
         // Initialize button for viewing details of the item
         Button viewItemButton = view.findViewById(R.id.action_view);
 
-        // Initialize fragment manager
-        FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
-
         // When view item button is clicked, bundle item details and send them as arguments to ViewItemFragment
         viewItemButton.setOnClickListener(v -> {
             ViewItemFragment viewItemFragment = new ViewItemFragment();
+
+            // Pass item details to view page via bundle
             Bundle details = new Bundle();
             details.putString("make", item.getMake());
             details.putString("model", item.getModel());
@@ -94,12 +87,8 @@ public class ItemAdapter extends ArrayAdapter<Item> {
             details.putString("cost", item.getCost().toString());
             details.putString("comment", item.getComment());
             viewItemFragment.setArguments(details);
-            // Begin a fragment transaction
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            // Replace the current fragment with the ViewItemFragment
-            transaction.replace(R.id.fragmentContainer, viewItemFragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
+
+            navigateToFragmentPage((AppCompatActivity) context, viewItemFragment);
         });
 
         return view;

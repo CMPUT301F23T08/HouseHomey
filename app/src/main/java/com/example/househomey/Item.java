@@ -7,12 +7,13 @@ import com.google.firebase.Timestamp;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 /**
  * This class represents an inventory item with a variety of properties
- * @author Lukas Bonkowski, Matthew Neufeld
+ * @author Lukas Bonkowski, Matthew Neufeld, Owen Cooke
  * @see ItemAdapter
  */
 public class Item {
@@ -26,7 +27,7 @@ public class Item {
     private BigDecimal cost;
 
     /**
-     * This constructs a new item from a Map of data with a reference to it's firestore docunebt
+     * This constructs a new item from a Map of data with a reference to its Firestore document
      * @param id The id of this object's document in the firestore database
      * @param data The data from that document to initialize the instance
      * @throws NullPointerException if a null required field is given
@@ -52,6 +53,35 @@ public class Item {
             this.comment = (String) data.get("comment");
         }
     }
+
+    /**
+     * Convenient getter for map of properties to be used for Firestore queries
+     * @return A Map containing all the properties of this object as key-value pairs
+     */
+    public Map<String, Object> getData() {
+        Map<String, Object> itemData = new HashMap<>();
+
+        // Add required properties
+        itemData.put("description", description);
+        itemData.put("acquisitionDate", new Timestamp(acquisitionDate));
+        itemData.put("cost", cost.toString());
+
+        // Only add optional properties if they have non-empty values
+        if (!make.isEmpty()) {
+            itemData.put("make", make);
+        }
+        if (!model.isEmpty()) {
+            itemData.put("model", model);
+        }
+        if (!serialNumber.isEmpty()) {
+            itemData.put("serialNumber", serialNumber);
+        }
+        if (!comment.isEmpty()) {
+            itemData.put("comment", comment);
+        }
+        return itemData;
+    }
+
 
     /**
      * Getter for id
