@@ -1,4 +1,4 @@
-package com.example.househomey;
+package com.example.househomey.form;
 
 import static com.example.househomey.utils.FragmentUtils.navigateHomeWithIndicator;
 
@@ -7,6 +7,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.househomey.Item;
+import com.example.househomey.R;
 
 /**
  * This fragment is responsible for creating and loading to the database a new item

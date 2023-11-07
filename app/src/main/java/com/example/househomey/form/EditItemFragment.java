@@ -1,4 +1,4 @@
-package com.example.househomey;
+package com.example.househomey.form;
 
 import static com.example.househomey.utils.FragmentUtils.goBack;
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
@@ -11,6 +11,9 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 
+import com.example.househomey.Item;
+import com.example.househomey.R;
+import com.example.househomey.ViewItemFragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
 
