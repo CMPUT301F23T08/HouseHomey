@@ -7,7 +7,7 @@ on:
   pull_request:
 
 jobs:
-  build:
+  buildUnitTest:
     runs-on: ubuntu-latest
 
     steps:
@@ -34,18 +34,14 @@ jobs:
         ./gradlew test
       continue-on-error: true
 
-    - name: Set up Android SDK
-      uses: android-actions/setup-android@v2
-      with:
-        sdk-platform: 'android-34'
+  androidTest:
+    runs-on: macos-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
 
-    - name: Set up emulator
-      run: echo "no" | avdmanager create avd -n test -k 'system-images;android-34;google_apis;x86' --tag google_apis --abi x86
-
-    - name: Start the emulator
-      run: $ANDROID_SDK_ROOT/emulator/emulator -avd test -no-audio -no-snapshot-load -no-snapshot-save -gpu swiftshader
-
-    - name: Run Espresso tests
-      run: |
-        chmod +x gradlew
-        ./gradlew connectedDebugAndroidTest
+      - name: run tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          script: ./gradlew connectedCheck
