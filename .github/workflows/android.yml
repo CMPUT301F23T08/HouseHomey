@@ -35,3 +35,8 @@ jobs:
         chmod +x gradlew
         ./gradlew test
       continue-on-error: true
+
+    - name: Run Instrumented Tests
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        script: ./gradlew connectedCheck
