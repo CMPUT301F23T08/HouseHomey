@@ -34,8 +34,16 @@ jobs:
         ./gradlew test
       continue-on-error: true
 
-    - name: Run Instrumented Tests
+    - name: Set up emulator
       uses: reactivecircus/android-emulator-runner@v2
       with:
-        api-level: 34
-        script: ./gradlew connectedCheck
+        api-level: 30
+        target: default
+
+    - name: Start the emulator
+      run: adb devices
+
+    - name: Run Espresso tests
+      run: |
+        chmod +x gradlew
+        ./gradlew connectedDebugAndroidTest
