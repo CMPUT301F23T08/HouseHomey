@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.househomey.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**
  * This is a utility class for fragment page navigation within an Android application.
@@ -25,6 +26,16 @@ public class FragmentUtils {
         transaction.replace(R.id.fragmentContainer, page);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    /**
+     * Specialized method for navigating back to the HomeFragment
+     * while also setting the selected item in the BottomNavigationView
+     * @param context The AppCompatActivity context from which the navigation is initiated.
+     */
+    public static void navigateHomeWithIndicator(AppCompatActivity context) {
+        BottomNavigationView bottomNavigationView = context.findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.action_home);
     }
 }
 

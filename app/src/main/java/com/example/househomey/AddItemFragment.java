@@ -1,6 +1,6 @@
 package com.example.househomey;
 
-import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
+import static com.example.househomey.utils.FragmentUtils.navigateHomeWithIndicator;
 
 import android.os.Bundle;
 import android.text.Editable;
@@ -68,7 +68,7 @@ public class AddItemFragment extends Fragment {
 
         // Add listener for confirm and back buttons
         rootView.findViewById(R.id.add_item_confirm_button).setOnClickListener(v -> addItem());
-        rootView.findViewById(R.id.add_item_back_button).setOnClickListener(v -> navigateToFragmentPage((AppCompatActivity) getContext(), new HomeFragment(itemRef)));
+        rootView.findViewById(R.id.add_item_back_button).setOnClickListener(v -> navigateHomeWithIndicator((AppCompatActivity) getContext()));
 
         return rootView;
     }
@@ -122,7 +122,7 @@ public class AddItemFragment extends Fragment {
         // Create new item document in Firestore
         itemRef.add(newItem.getData()).addOnSuccessListener(documentReference -> {
                     Log.d("Firestore", "Successfully created new item with id:" + documentReference.getId());
-                    navigateToFragmentPage((AppCompatActivity) getContext(), new HomeFragment(itemRef));
+                    navigateHomeWithIndicator((AppCompatActivity) getContext());
                 })
                 .addOnFailureListener(e -> {
                     Log.d("Firestore", "Failed to create new item");
