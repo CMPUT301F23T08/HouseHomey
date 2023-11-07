@@ -22,6 +22,8 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
@@ -60,47 +62,9 @@ public class AddItemFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add_item, container, false);
-        dateTextView = rootView.findViewById(R.id.add_item_date);
 
-        // Create DatePicker with dates restricted to past/present
-        CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
-        constraintsBuilder.setEnd(System.currentTimeMillis());
-        constraintsBuilder.setValidator(DateValidatorPointBackward.now());
-        MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
-                .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
-                .setCalendarConstraints(constraintsBuilder.build())
-                .build();
-        datePicker.addOnPositiveButtonClickListener(selection -> {
-            dateAcquired = new Date(selection);
-            dateTextView.setText(datePicker.getHeaderText());
-            ((TextInputLayout) getView().findViewById(R.id.add_item_date_layout)).setError(null);
-        });
-
-        // Show DatePicker when date field selected
-        dateTextView.setOnClickListener(v -> datePicker.show(getParentFragmentManager(), "Date Picker"));
-
-        TextInputEditText descView = rootView.findViewById(R.id.add_item_description);
-        TextInputEditText costView = rootView.findViewById(R.id.add_item_cost);
-        TextWatcher emptyTextWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (editable.equals(descView.getEditableText())) {
-                    isRequiredFieldEmpty(R.id.add_item_description_layout);
-                } else if (editable == costView.getEditableText()) {
-                    isRequiredFieldEmpty(R.id.add_item_cost_layout);
-                }
-            }
-        };
-        descView.addTextChangedListener(emptyTextWatcher);
-        costView.addTextChangedListener(emptyTextWatcher);
+        initDatePicker(rootView);
+        initTextValidators(rootView);
 
         // Add listener for confirm and back buttons
         rootView.findViewById(R.id.add_item_confirm_button).setOnClickListener(v -> addItem());
@@ -118,7 +82,7 @@ public class AddItemFragment extends Fragment {
      * @return a boolean indicating if the field is empty
      */
     private boolean isRequiredFieldEmpty(int id) {
-        TextInputLayout textInputLayout = (TextInputLayout) getView().findViewById(id);
+        TextInputLayout textInputLayout = getView().findViewById(id);
         if (TextUtils.isEmpty(textInputLayout.getEditText().getText().toString().trim())) {
             textInputLayout.setError("This field is required");
             return true;
@@ -167,5 +131,73 @@ public class AddItemFragment extends Fragment {
      */
     private String getInputText(int id) {
         return Objects.requireNonNull(((TextInputEditText) requireView().findViewById(id)).getText()).toString();
+    }
+
+    /**
+     * Initializes and configures a Date Picker for selecting past/present acquisition dates.
+     *
+     * @param rootView The root view of the UI where the date picker is to be displayed.
+     */
+    private void initDatePicker(View rootView) {
+        dateTextView = rootView.findViewById(R.id.add_item_date);
+
+        // Create constraint to restrict dates to past/present
+        CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
+        constraintsBuilder.setEnd(System.currentTimeMillis());
+        constraintsBuilder.setValidator(DateValidatorPointBackward.now());
+        MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
+                .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
+                .setCalendarConstraints(constraintsBuilder.build())
+                .build();
+        datePicker.addOnPositiveButtonClickListener(selection -> {
+            dateAcquired = new Date(selection);
+            dateTextView.setText(datePicker.getHeaderText());
+            ((TextInputLayout) rootView.findViewById(R.id.add_item_date_layout)).setError(null);
+        });
+
+        // Show DatePicker when date field selected
+        dateTextView.setOnClickListener(v -> datePicker.show(getParentFragmentManager(), "Date Picker"));
+    }
+
+    /**
+     * Initializes text validators for required input fields on the add item form.
+     *
+     * @param rootView The root view of the UI where the input fields are located.
+     */
+    private void initTextValidators(View rootView) {
+        TextInputEditText descView = rootView.findViewById(R.id.add_item_description);
+        TextInputEditText costView = rootView.findViewById(R.id.add_item_cost);
+
+        // Add text watchers for empty input to both description and cost
+        TextWatcher emptyTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.equals(descView.getEditableText())) {
+                    isRequiredFieldEmpty(R.id.add_item_description_layout);
+                } else if (editable == costView.getEditableText()) {
+                    isRequiredFieldEmpty(R.id.add_item_cost_layout);
+                }
+            }
+        };
+        descView.addTextChangedListener(emptyTextWatcher);
+        costView.addTextChangedListener(emptyTextWatcher);
+
+        // Add listener for rounding cost to 2 decimals
+        costView.setOnFocusChangeListener((v, b) -> {
+            String costString = costView.getText().toString();
+            try {
+                costString = new BigDecimal(costString).setScale(2, RoundingMode.HALF_UP).toString();
+                costView.setText(costString);
+            } catch (NumberFormatException ignored) {
+            }
+        });
     }
 }
