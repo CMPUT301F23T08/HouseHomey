@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 /**
@@ -58,7 +57,7 @@ public class ViewItemFragment extends Fragment {
         // On edit button click, pass item to EditItemFragment
         Button editButton = rootView.findViewById(R.id.edit_button);
         editButton.setOnClickListener(v ->
-                navigateToFragmentPage((AppCompatActivity) getContext(), new EditItemFragment(item))
+                navigateToFragmentPage(getContext(), new EditItemFragment(item))
         );
 
         return rootView;

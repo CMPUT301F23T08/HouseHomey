@@ -8,8 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 /**
  * This fragment is responsible for creating and loading to the database a new item
  *
@@ -35,7 +33,7 @@ public class AddItemFragment extends ItemFormFragment {
         initDatePicker(rootView);
         initTextValidators(rootView);
         rootView.findViewById(R.id.add_item_confirm_button).setOnClickListener(v -> addItem());
-        rootView.findViewById(R.id.add_item_back_button).setOnClickListener(v -> navigateHomeWithIndicator((AppCompatActivity) getContext()));
+        rootView.findViewById(R.id.add_item_back_button).setOnClickListener(v -> navigateHomeWithIndicator(getContext()));
         return rootView;
     }
 
@@ -49,7 +47,7 @@ public class AddItemFragment extends ItemFormFragment {
         // Create new item document in Firestore
         itemRef.add(newItem.getData()).addOnSuccessListener(documentReference -> {
                     Log.d("Firestore", "Successfully created new item with id:" + documentReference.getId());
-                    navigateHomeWithIndicator((AppCompatActivity) getContext());
+                    navigateHomeWithIndicator(getContext());
                 })
                 .addOnFailureListener(e -> {
                     Log.d("Firestore", "Failed to create new item");

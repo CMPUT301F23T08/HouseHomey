@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -80,7 +79,7 @@ public class ItemAdapter extends ArrayAdapter<Item> {
             Bundle args = new Bundle();
             args.putSerializable("item", item);
             viewItemFragment.setArguments(args);
-            navigateToFragmentPage((AppCompatActivity) context, viewItemFragment);
+            navigateToFragmentPage(context, viewItemFragment);
         });
 
         return view;

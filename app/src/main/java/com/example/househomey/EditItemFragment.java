@@ -1,6 +1,7 @@
 package com.example.househomey;
 
-import static com.example.househomey.utils.FragmentUtils.navigateHomeWithIndicator;
+import static com.example.househomey.utils.FragmentUtils.goBack;
+import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -9,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
@@ -56,7 +56,7 @@ public class EditItemFragment extends ItemFormFragment {
         initDatePicker(rootView);
         initTextValidators(rootView);
         rootView.findViewById(R.id.add_item_confirm_button).setOnClickListener(v -> editItem());
-        rootView.findViewById(R.id.add_item_back_button).setOnClickListener(v -> navigateHomeWithIndicator((AppCompatActivity) getContext()));
+        rootView.findViewById(R.id.add_item_back_button).setOnClickListener(v -> goBack(getContext()));
         return rootView;
     }
 
@@ -94,7 +94,11 @@ public class EditItemFragment extends ItemFormFragment {
                 .set(updatedItem.getData())
                 .addOnSuccessListener(aVoid -> {
                     Log.d("Firestore", "Successfully updated item with id: " + updatedItem.getId());
-                    navigateHomeWithIndicator((AppCompatActivity) getContext());
+                    ViewItemFragment viewItemFragment = new ViewItemFragment();
+                    Bundle args = new Bundle();
+                    args.putSerializable("item", updatedItem);
+                    viewItemFragment.setArguments(args);
+                    navigateToFragmentPage(getContext(), viewItemFragment);
                 })
                 .addOnFailureListener(e -> {
                     Log.d("Firestore", "Failed to update item with id: " + updatedItem.getId());
