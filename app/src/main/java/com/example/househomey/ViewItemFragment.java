@@ -1,5 +1,6 @@
 package com.example.househomey;
 
+import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
 import static java.util.Optional.ofNullable;
 
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 /**
@@ -17,6 +19,7 @@ import androidx.fragment.app.Fragment;
  * @author Matthew Neufeld
  */
 public class ViewItemFragment extends Fragment {
+    private Item item;
 
     /**
      *
@@ -44,6 +47,7 @@ public class ViewItemFragment extends Fragment {
         ofNullable(getArguments())
                 .map(args -> args.getSerializable("item", Item.class))
                 .ifPresent(item -> {
+                    this.item = item;
                     make.setText(item.getMake());
                     model.setText(item.getModel());
                     serialNumber.setText(item.getSerialNumber());
@@ -51,11 +55,11 @@ public class ViewItemFragment extends Fragment {
                     comment.setText(item.getComment());
                 });
 
-        // Initialize edit button
+        // On edit button click, pass item to EditItemFragment
         Button editButton = rootView.findViewById(R.id.edit_button);
-        editButton.setOnClickListener(v -> {
-            // TODO: Go to Edit Item fragment once it has been created
-        });
+        editButton.setOnClickListener(v ->
+                navigateToFragmentPage((AppCompatActivity) getContext(), new EditItemFragment(item))
+        );
 
         return rootView;
     }

@@ -3,30 +3,16 @@ package com.example.househomey;
 import static com.example.househomey.utils.FragmentUtils.navigateHomeWithIndicator;
 
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
-import com.google.android.material.datepicker.CalendarConstraints;
-import com.google.android.material.datepicker.DateValidatorPointBackward;
-import com.google.android.material.datepicker.MaterialDatePicker;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.CollectionReference;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Objects;
 
 /**
  * This fragment is responsible for creating and loading to the database a new item
@@ -34,16 +20,6 @@ import java.util.Objects;
  * @author Owen Cooke
  */
 public class AddItemFragment extends ItemFormFragment {
-
-    /**
-     * Constructs a new AddItemFragment with a Firestore reference
-     *
-     * @param itemRef A reference to a Firestore collection of items
-     */
-    public AddItemFragment(CollectionReference itemRef) {
-        super(itemRef);
-    }
-
     /**
      * This creates the view to add an item to a user's inventory and set's the button listeners
      *
@@ -59,7 +35,9 @@ public class AddItemFragment extends ItemFormFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        // Add listener for confirm and back buttons
+        // Add listeners for buttons and text validation
+        initDatePicker(rootView);
+        initTextValidators(rootView);
         rootView.findViewById(R.id.add_item_confirm_button).setOnClickListener(v -> addItem());
         rootView.findViewById(R.id.add_item_back_button).setOnClickListener(v -> navigateHomeWithIndicator((AppCompatActivity) getContext()));
         return rootView;

@@ -9,7 +9,6 @@
     tools:context=".MainActivity">
 
     <LinearLayout
-        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="78dp"
         android:background="@color/brown"
@@ -29,6 +28,7 @@
             app:iconTint="@color/white" />
 
         <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/add_item_title"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"

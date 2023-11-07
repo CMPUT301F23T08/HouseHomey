@@ -1,5 +1,7 @@
 package com.example.househomey;
 
+import static java.util.Objects.requireNonNull;
+
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -20,7 +22,6 @@ import com.google.firebase.firestore.CollectionReference;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * This abstract class serves as a base for creating and managing both Add and Edit Item forms.
@@ -31,16 +32,7 @@ import java.util.Objects;
 public abstract class ItemFormFragment extends Fragment {
     protected Date dateAcquired;
     protected TextInputEditText dateTextView;
-    protected final CollectionReference itemRef;
-
-    /**
-     * Constructs a new ItemFormFragment with a reference to a Firestore collection of items.
-     *
-     * @param itemRef A reference to a Firestore collection of items
-     */
-    public ItemFormFragment(CollectionReference itemRef) {
-        this.itemRef = itemRef;
-    }
+    protected CollectionReference itemRef;
 
     /**
      * Creates the basic view for a validated Item form.
@@ -56,10 +48,9 @@ public abstract class ItemFormFragment extends Fragment {
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_add_item, container, false);
-        initDatePicker(rootView);
-        initTextValidators(rootView);
-        return rootView;
+        // Get item collection reference from main activity
+        itemRef = ((MainActivity) requireActivity()).getItemRef();
+        return inflater.inflate(R.layout.fragment_add_item, container, false);
     }
 
     /**
@@ -89,7 +80,7 @@ public abstract class ItemFormFragment extends Fragment {
      * @throws NullPointerException if the input text is null
      */
     protected String getInputText(int id) {
-        return Objects.requireNonNull(((TextInputEditText) requireView().findViewById(id)).getText()).toString();
+        return requireNonNull(((TextInputEditText) requireView().findViewById(id)).getText()).toString();
     }
 
     /**
@@ -97,7 +88,7 @@ public abstract class ItemFormFragment extends Fragment {
      *
      * @param rootView The root view of the UI where the date picker is to be displayed.
      */
-    private void initDatePicker(View rootView) {
+    protected void initDatePicker(View rootView) {
         dateTextView = rootView.findViewById(R.id.add_item_date);
 
         // Create constraint to restrict dates to past/present
@@ -123,7 +114,7 @@ public abstract class ItemFormFragment extends Fragment {
      *
      * @param rootView The root view of the UI where the input fields are located.
      */
-    private void initTextValidators(View rootView) {
+    protected void initTextValidators(View rootView) {
         TextInputEditText descView = rootView.findViewById(R.id.add_item_description);
         TextInputEditText costView = rootView.findViewById(R.id.add_item_cost);
 

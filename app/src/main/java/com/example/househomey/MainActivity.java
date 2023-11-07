@@ -2,25 +2,13 @@ package com.example.househomey;
 
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
 
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.PopupMenu;
-import android.widget.Toast;
-import com.example.househomey.R;
-
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 
 /**
@@ -46,24 +34,31 @@ public class MainActivity extends AppCompatActivity {
         user = new User("john_doe");
 
         // Init home fragment
-        navigateToFragmentPage(this, new HomeFragment(user.getItemRef()));
+        navigateToFragmentPage(this, new HomeFragment(getItemRef()));
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
-            Fragment fragment = null;
+            Fragment fragment;
             if (id == R.id.action_home) {
                 // Go to Home page
-                fragment = new HomeFragment(user.getItemRef());
+                fragment = new HomeFragment(getItemRef());
             } else if (id == R.id.action_add) {
                 // Go to Add Item page
-                fragment = new AddItemFragment(user.getItemRef());
+                fragment = new AddItemFragment();
             } else {
                 // TODO: Go to Profile Page
-                fragment = new HomeFragment(user.getItemRef());
+                fragment = new HomeFragment(getItemRef());
             }
             navigateToFragmentPage(this, fragment);
             return true;
         });
     }
+
+    /**
+     * Retrieves the Firestore CollectionReference for items associated with the current user.
+     *
+     * @return A CollectionReference for the current user's items.
+     */
+    public CollectionReference getItemRef() { return user.getItemRef(); }
 }
