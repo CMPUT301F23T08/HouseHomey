@@ -47,6 +47,9 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
