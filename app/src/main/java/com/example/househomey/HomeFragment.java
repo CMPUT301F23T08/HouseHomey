@@ -136,6 +136,13 @@ public class HomeFragment extends Fragment implements FilterCallback {
         popupMenu.show();
     }
 
+    /**
+     * Called when a filter is applied to the item list. This method adds the filter
+     * to the list of applied filters and triggers the filtering process. If the filter
+     * is already applied, it is removed and added again to re-apply with the new filter value.
+     *
+     * @param filter The filter to be applied to the item list.
+     */
     @Override
     public void onFilterApplied(Filter filter) {
         if (!appliedFilters.add(filter)) {
@@ -145,6 +152,11 @@ public class HomeFragment extends Fragment implements FilterCallback {
         applyFilters();
     }
 
+    /**
+     * Applies the list of filters to the item list, resulting in a filtered list of items.
+     * This method iterates through the applied filters, applying each filter in sequence,
+     * and then updates the item adapter with the filtered list of items.
+     */
     private void applyFilters() {
         ArrayList<Item> filteredList = new ArrayList<>(itemList);
         for (Filter filter : appliedFilters) {
