@@ -82,13 +82,11 @@ public abstract class ItemFormFragment extends Fragment {
         data.put("comment", getInputText(R.id.add_item_comment));
 
         // Ensure that form data can be used to create a valid Item
-        Item item;
         try {
-            item = new Item(itemId, data);
+            return new Item(itemId, data);
         } catch (NullPointerException e) {
             return null;
         }
-        return item;
     }
 
     /**
