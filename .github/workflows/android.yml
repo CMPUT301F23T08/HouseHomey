@@ -94,7 +94,7 @@ jobs:
           fi
       
       - name: Cache Android SDK
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ${{ runner.workspace }}/android-sdk
