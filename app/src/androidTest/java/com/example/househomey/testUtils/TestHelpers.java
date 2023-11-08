@@ -1,15 +1,24 @@
 package com.example.househomey.testUtils;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.pressImeActionButton;
+import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.matcher.ViewMatchers.hasChildCount;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 
 import android.view.View;
 
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+
+import androidx.annotation.IdRes;
+
+import com.example.househomey.R;
 
 import org.hamcrest.Matcher;
 
-public class EspressoWait {
+public class TestHelpers {
     private static final long TIMEOUT = 5000; // Timeout in milliseconds
     private static final long POLLING_INTERVAL = 500; // Polling interval in milliseconds
 
@@ -37,5 +46,12 @@ public class EspressoWait {
             throw new AssertionError("View matching the given Matcher was not displayed within the timeout. " + e);
         }
     }
-}
 
+    public static void hasListLength(int expectedCount) {
+        onView(withId(R.id.item_list)).check(matches(hasChildCount(expectedCount)));
+    }
+
+    public static void enterText(@IdRes int viewId, String text) {
+        onView(withId(viewId)).perform(typeText(text), pressImeActionButton(), closeSoftKeyboard());
+    }
+}

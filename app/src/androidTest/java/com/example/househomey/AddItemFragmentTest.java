@@ -3,13 +3,14 @@ package com.example.househomey;
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static com.example.househomey.testUtils.EspressoWait.waitForView;
+import static com.example.househomey.testUtils.TestHelpers.enterText;
+import static com.example.househomey.testUtils.TestHelpers.hasListLength;
+import static com.example.househomey.testUtils.TestHelpers.waitForView;
 import static org.hamcrest.CoreMatchers.anything;
 
 import androidx.test.espresso.matcher.RootMatchers;
@@ -50,17 +51,18 @@ public class AddItemFragmentTest extends TestSetup {
         // Add required description and estimated cost
         String itemDescription = "Test Item";
         String estimatedCost = "99.99";
-        onView(withId(R.id.add_item_description)).perform(replaceText(itemDescription), closeSoftKeyboard());
-        onView(withId(R.id.add_item_cost)).perform(replaceText(estimatedCost), closeSoftKeyboard());
+        enterText(R.id.add_item_description, itemDescription);
+        enterText(R.id.add_item_cost, estimatedCost);
         // Add values to other non-required fields
-        onView(withId(R.id.add_item_make)).perform(replaceText("MyMake"), closeSoftKeyboard());
-        onView(withId(R.id.add_item_model)).perform(replaceText("MyModel"), closeSoftKeyboard());
-        onView(withId(R.id.add_item_serial_number)).perform(replaceText("1234567890"), closeSoftKeyboard());
-        onView(withId(R.id.add_item_comment)).perform(replaceText("this is a comment"), closeSoftKeyboard());
+        enterText(R.id.add_item_make, "MyMake");
+        enterText(R.id.add_item_model, "MyModel");
+        enterText(R.id.add_item_serial_number, "1234567890");
+        enterText(R.id.add_item_comment, "this is a comment");
         // Click the confirm button to add the item
         onView(withId(R.id.add_item_confirm_button)).perform(click());
         // Check that we switch back to home page
         waitForView(withId(R.id.item_list));
+        hasListLength(1);
         // Check that the item in list matches description, date, and cost
         onData(anything())
                 .inAdapterView(withId(R.id.item_list))
@@ -72,5 +74,30 @@ public class AddItemFragmentTest extends TestSetup {
                 .atPosition(0)
                 .onChildView(withId(R.id.item_text))
                 .check(matches(withText(acquisitionDate + " | $" + estimatedCost)));
+    }
+
+    @Test
+    public void testSubmitWithRequiredEmpty() {
+        String defaultErrorMsg = "This field is required";
+        // Click the add button with empty form
+        onView(withId(R.id.add_item_confirm_button)).perform(click());
+        // Check that error messages are displayed in TextInputLayouts for required fields
+        onView(withId(R.id.add_item_description_layout)).check(matches(hasDescendant(withText(defaultErrorMsg))));
+        onView(withId(R.id.add_item_cost_layout)).check(matches(hasDescendant(withText(defaultErrorMsg))));
+        onView(withId(R.id.add_item_date_layout)).check(matches(hasDescendant(withText(defaultErrorMsg))));
+    }
+
+    @Test
+    public void testBackButtonGoesToHomePage() {
+        onView(withId(R.id.add_item_back_button)).perform(click());
+        // Check that we switch back to home page with empty list
+        waitForView(withId(R.id.item_list));
+        hasListLength(0);
+    }
+
+    @Test
+    public void testRoundCostTo2Decimals() {
+        enterText(R.id.add_item_cost, "99.9852323324");
+        onView(withId(R.id.add_item_cost)).check(matches(withText("99.99")));
     }
 }
