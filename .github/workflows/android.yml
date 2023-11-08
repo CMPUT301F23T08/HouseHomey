@@ -11,7 +11,7 @@ env:
   ANDROID_TARGET: google_apis_playstore
   API_LEVEL: 34
   ANDROID_BUILD_TOOLS_VERSION: 34.0.0
-  ANDROID_SDK_PACKAGES: system-images;android-34;google_apis_playstore;x86_64 platforms;android-34 build-tools;34.0.0 platform-tools emulator
+  ANDROID_SDK_PACKAGES: system-images;android-34;google_apis;x86_64 platforms;android-34 build-tools;34.0.0 platform-tools emulator
   EMULATOR_TIMEOUT: 350
   EMULATOR_NAME: nexus
 
@@ -65,39 +65,34 @@ jobs:
           key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             gradle-
-      - name: List available AVDs
-        run: $ANDROID_SDK_ROOT/emulator/emulator -list-avds
-        shell: bash
-      - name: Cache Android SDK components
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.android
-          key: android-sdk-${{ runner.os }}
-          restore-keys: |
-            android-sdk-
-      
+
       - name: Make gradlew executable
         run: chmod +x ./gradlew
         
       - name: Add avdmanager and sdkmanager to system PATH
         run: |
             echo "$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/${{ env.ANDROID_BUILD_TOOLS_VERSION }}" >> $GITHUB_PATH
-      
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
+      - name: Install Sdk
+        id: install-sdk
+        run: |
+          if [ -d "$RUNNER_WORKSPACE/android-sdk" ]; then
+            echo "SDK already installed, skipping installation."
+          else
+            yes Y | sdkmanager --licenses
+            sdkmanager --install ${ANDROID_SDK_PACKAGES}
+            echo "SDK installation complete."
+          fi
+  
       - name: Build emulator
         run: |
             echo "no" | avdmanager --verbose create avd --force -n $EMULATOR_NAME --abi "${ANDROID_TARGET}/${ANDROID_ARCH}" -k "system-images;android-${API_LEVEL};${ANDROID_TARGET};${ANDROID_ARCH}"
-
       - name: Launch emulator
         run: |
           chmod +x ./start_emu_headless.sh
           EMULATOR_TIMEOUT=$EMULATOR_TIMEOUT EMULATOR_NAME=$EMULATOR_NAME ./start_emu_headless.sh
-
-      - name: Run Tests
+  
+      - name: Run tests
         run: ./gradlew connectedAndroidTest
-
+  
       - name: Stop emulator
         run: adb emu kill
