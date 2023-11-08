@@ -35,12 +35,12 @@ import java.util.Set;
  * This fragment represents the home screen containing the primary list of the user's inventory
  * @author Owen Cooke, Jared Drueco, Lukas Bonkowski
  */
-public class HomeFragment extends Fragment implements FilterCallback {
+public class HomeFragment extends Fragment {
     private CollectionReference itemRef;
-    private ListView itemListView;
-    private ArrayList<Item> itemList = new ArrayList<>();
+    protected ListView itemListView;
+    protected ArrayList<Item> itemList = new ArrayList<>();
     private Set<Filter> appliedFilters = new HashSet<>();
-    private ArrayAdapter<Item> itemAdapter;
+    protected ArrayAdapter<Item> itemAdapter;
 
     /**
      * This constructs a new HomeFragment with the appropriate list of items
@@ -100,70 +100,4 @@ public class HomeFragment extends Fragment implements FilterCallback {
         }
     }
 
-    /**
-     * Displays the filter menu with options to select the appropriate filter
-     * @param view The view to set the filter menu on
-     */
-    private void showFilterMenu(View view) {
-        PopupMenu popupMenu = new PopupMenu(requireContext(), view);
-        MenuInflater inflater = popupMenu.getMenuInflater();
-        inflater.inflate(R.menu.filter, popupMenu.getMenu());
-
-        popupMenu.setOnMenuItemClickListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.filter_by_dates) {
-                View dateFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_dates, null);
-                DateFilterFragment dateFilterFragment = new DateFilterFragment("Modify Date Filter", dateFilterView, this);
-                dateFilterFragment.show(requireActivity().getSupportFragmentManager(), "dates_filter_dialog");
-            } else if (itemId == R.id.filter_by_make) {
-                View makeFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_make, null);
-                MakeFilterFragment makeFilterFragment = new MakeFilterFragment("Modify Make Filter", makeFilterView, this);
-                makeFilterFragment.show(requireActivity().getSupportFragmentManager(), "make_filter_dialog");
-            } else if (itemId == R.id.filter_by_keywords) {
-                View keywordFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_keywords, null);
-                KeywordFilterFragment keywordFilterFragment = new KeywordFilterFragment("Modify Keyword Filter", keywordFilterView, this);
-                keywordFilterFragment.show(requireActivity().getSupportFragmentManager(), "keywords_filter_dialog");
-            } else if (itemId == R.id.filter_by_tags) {
-                View tagFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_tags, null);
-                TagFilterFragment tagFilterFragment = new TagFilterFragment("Modify Tag Filter", tagFilterView, this);
-                tagFilterFragment.show(requireActivity().getSupportFragmentManager(), "tags_filter_dialog");
-            } else {
-                return false;
-            }
-            return true;
-        });
-
-        popupMenu.show();
-    }
-
-    /**
-     * Called when a filter is applied to the item list. This method adds the filter
-     * to the list of applied filters and triggers the filtering process. If the filter
-     * is already applied, it is removed and added again to re-apply with the new filter value.
-     *
-     * @param filter The filter to be applied to the item list.
-     */
-    @Override
-    public void onFilterApplied(Filter filter) {
-        if (!appliedFilters.add(filter)) {
-            appliedFilters.remove(filter);
-            appliedFilters.add(filter);
-        }
-        applyFilters();
-    }
-
-    /**
-     * Applies the list of filters to the item list, resulting in a filtered list of items.
-     * This method iterates through the applied filters, applying each filter in sequence,
-     * and then updates the item adapter with the filtered list of items.
-     */
-    private void applyFilters() {
-        ArrayList<Item> filteredList = new ArrayList<>(itemList);
-        for (Filter filter : appliedFilters) {
-            filteredList = filter.filterList(filteredList);
-        }
-        itemAdapter.clear();
-        itemAdapter.addAll(filteredList);
-        itemAdapter.notifyDataSetChanged();
-    }
 }
