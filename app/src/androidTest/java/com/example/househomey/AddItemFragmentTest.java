@@ -98,14 +98,4 @@ public class AddItemFragmentTest extends MainActivityTestSetup {
                 .onChildView(withId(R.id.item_description_text))
                 .check(matches(withText(itemDescription)));
     }
-
-    @Test
-    public void brokeTest() {
-        // Check that the item is present in the list
-        onData(anything())
-                .inAdapterView(withId(R.id.item_list))
-                .atPosition(0)
-                .onChildView(withId(R.id.item_description_text))
-                .check(matches(withText("itemDescription")));
-    }
 }
