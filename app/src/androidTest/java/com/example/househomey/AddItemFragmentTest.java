@@ -9,21 +9,51 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static com.example.househomey.testUtils.EspressoWait.waitForView;
 import static org.hamcrest.CoreMatchers.anything;
 
 import androidx.test.espresso.matcher.RootMatchers;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObject;
+import androidx.test.uiautomator.UiObjectNotFoundException;
+import androidx.test.uiautomator.UiSelector;
 
 import com.example.househomey.testUtils.MainActivityTestSetup;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 public class AddItemFragmentTest extends MainActivityTestSetup {
+
+    @BeforeClass
+    public static void dismissANRSystemDialog() throws UiObjectNotFoundException {
+        UiDevice device = UiDevice.getInstance(getInstrumentation());
+        // If the device is running in English Locale
+        UiObject waitButton = device.findObject(new UiSelector().textContains("wait"));
+        if (waitButton.exists()) {
+            waitButton.click();
+        }
+    }
+
+    @BeforeClass
+    public static void dismissAppCrashSystemDialogIfShown() {
+        try {
+            UiDevice
+                    .getInstance(InstrumentationRegistry.getInstrumentation())
+                    .executeShellCommand(
+                            "am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS");
+        } catch (IOException e) {
+            System.out.println("Exception: " + e);
+        }
+    }
 
     @Before
     public void navigateToAddItemFragment() {
