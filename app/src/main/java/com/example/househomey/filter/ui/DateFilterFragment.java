@@ -14,4 +14,5 @@ public class DateFilterFragment extends FilterFragment {
     public void getFilterInput() {
         // TODO: get the filter properties from fragment inputs
     }
+    public void resetFilter() {}
 }

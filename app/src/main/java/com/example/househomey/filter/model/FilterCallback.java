@@ -7,5 +7,5 @@ package com.example.househomey.filter.model;
  */
 public interface FilterCallback {
     void onFilterApplied(Filter filter);
-    // TODO: method for when reset applied
+    void onFilterReset(Filter filter);
 }
