@@ -83,9 +83,24 @@ jobs:
             echo "$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/${{ env.ANDROID_BUILD_TOOLS_VERSION }}" >> $GITHUB_PATH
 
       - name: Install Sdk
+        id: install-sdk
         run: |
-           yes Y | sdkmanager --licenses
-           sdkmanager --install ${ANDROID_SDK_PACKAGES}
+          if [ -d "$RUNNER_WORKSPACE/android-sdk" ]; then
+            echo "SDK already installed, skipping installation."
+          else
+            yes Y | sdkmanager --licenses
+            sdkmanager --install ${ANDROID_SDK_PACKAGES}
+            echo "SDK installation complete."
+          fi
+      
+      - name: Cache Android SDK
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ runner.workspace }}/android-sdk
+          key: sdk-${{ runner.os }}
+          restore-keys: |
+            sdk-
   
       - name: Build emulator
         run: |
