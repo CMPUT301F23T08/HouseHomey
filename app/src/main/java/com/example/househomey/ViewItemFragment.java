@@ -3,6 +3,7 @@ package com.example.househomey;
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
 import static java.util.Optional.ofNullable;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
 import com.example.househomey.form.EditItemFragment;
+
+import java.util.Collection;
 
 /**
  * This fragment is for the "View Item Page" - which currently displays the details and comment linked
@@ -34,6 +37,7 @@ public class ViewItemFragment extends Fragment {
      *
      * @return view item fragment
      */
+    @SuppressLint("SetTextI18n")
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_view_item, container, false);
 
@@ -57,9 +61,15 @@ public class ViewItemFragment extends Fragment {
                 });
 
         // On edit button click, pass item to EditItemFragment
-        Button editButton = rootView.findViewById(R.id.edit_button);
-        editButton.setOnClickListener(v ->
+        rootView.findViewById(R.id.edit_button).setOnClickListener(v ->
                 navigateToFragmentPage(getContext(), new EditItemFragment(item))
+        );
+
+        rootView.findViewById(R.id.delete_button).setOnClickListener(v ->
+                {
+                    ((MainActivity) requireActivity()).getItemRef().document(item.getId()).delete();
+                    navigateToFragmentPage(getContext(), new HomeFragment());
+                }
         );
 
         return rootView;
