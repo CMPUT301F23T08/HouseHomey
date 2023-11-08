@@ -11,6 +11,8 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.househomey.filter.model.FilterCallback;
 
+import java.text.ParseException;
+
 /**
  * Abstract class for creating filter fragments.
  */
@@ -48,7 +50,11 @@ public abstract class FilterFragment extends DialogFragment {
         DialogInterface.OnClickListener onApplyListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                getFilterInput();
+                try {
+                    getFilterInput();
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
             }
         };
 
@@ -66,5 +72,5 @@ public abstract class FilterFragment extends DialogFragment {
      * This method should be implemented in subclasses to define filter-specific logic
      * that extract filter properites from XML like dates, make, keywords, and tags.
      */
-    public abstract void getFilterInput();
+    public abstract void getFilterInput() throws ParseException;
 }
