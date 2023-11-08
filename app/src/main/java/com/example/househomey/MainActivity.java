@@ -31,8 +31,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // create or login a user, for now just assume...
-        user = new User("john_doe");
+        // Handle the test user data
+        Bundle userData = getIntent().getBundleExtra("userData");
+        if (userData != null) {
+            String username = userData.getString("username");
+            user = new User(username);
+        } else {
+            // create or login a user, for now just assume...
+            user = new User("john_doe");
+        }
 
         // Init home fragment
         navigateToFragmentPage(this, new HomeFragment(getItemRef()));
