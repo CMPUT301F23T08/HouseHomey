@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
@@ -24,6 +25,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -41,6 +44,10 @@ public class HomeFragment extends Fragment implements FilterCallback {
     private ArrayList<Item> itemList = new ArrayList<>();
     private Set<Filter> appliedFilters = new HashSet<>();
     private ArrayAdapter<Item> itemAdapter;
+    private TextView listCountView;
+    private TextView listSumView;
+    private int listCount = 0;
+    private BigDecimal listSum = new BigDecimal(0.00);
 
     /**
      * This constructs a new HomeFragment with the appropriate list of items
@@ -65,6 +72,9 @@ public class HomeFragment extends Fragment implements FilterCallback {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Inflate the fragment's layout
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+
+        listCountView = rootView.findViewById(R.id.total_count_text);
+        listSumView = rootView.findViewById(R.id.total_value_text);
 
         itemListView = rootView.findViewById(R.id.item_list);
         itemAdapter = new ItemAdapter(getContext(), itemList);
@@ -91,10 +101,19 @@ public class HomeFragment extends Fragment implements FilterCallback {
             return;
         }
         if (querySnapshots != null) {
+
             itemList.clear();
             for (QueryDocumentSnapshot doc: querySnapshots) {
                 Map<String, Object> data = new HashMap<>(doc.getData());
-                itemList.add(new Item(doc.getId(), data));
+                Item item = new Item(doc.getId(), data);
+
+                this.listSum = this.listSum.add(item.getCost());
+                this.listSumView.setText("$" + this.listSum.toString());
+
+                this.listCount += 1;
+                this.listCountView.setText(this.listCount);
+
+                itemList.add(item);
                 itemAdapter.notifyDataSetChanged();
             }
         }
