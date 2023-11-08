@@ -46,8 +46,6 @@ public class HomeFragment extends Fragment implements FilterCallback {
     private ArrayAdapter<Item> itemAdapter;
     private TextView listCountView;
     private TextView listSumView;
-    private int listCount = 0;
-    private BigDecimal listSum = new BigDecimal(0.00);
 
     /**
      * @param inflater           The LayoutInflater object that can be used to inflate
@@ -97,17 +95,10 @@ public class HomeFragment extends Fragment implements FilterCallback {
             itemList.clear();
             for (QueryDocumentSnapshot doc: querySnapshots) {
                 Map<String, Object> data = new HashMap<>(doc.getData());
-                Item item = new Item(doc.getId(), data);
-
-                this.listSum = this.listSum.add(item.getCost());
-                this.listSumView.setText("$" + this.listSum.toString());
-
-                this.listCount += 1;
-                this.listCountView.setText(this.listCount);
-
-                itemList.add(item);
+                itemList.add(new Item(doc.getId(), data));
                 itemAdapter.notifyDataSetChanged();
             }
+            updateListData();
         }
     }
 
@@ -161,6 +152,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
             appliedFilters.add(filter);
         }
         applyFilters();
+        updateListData();
     }
 
     /**
@@ -176,5 +168,19 @@ public class HomeFragment extends Fragment implements FilterCallback {
         itemAdapter.clear();
         itemAdapter.addAll(filteredList);
         itemAdapter.notifyDataSetChanged();
+    }
+    /**
+     * Updates the displays above list containing information on Total Value and No. of Items
+     * in the List. It works using the itemList array so it should be called whenever the
+     * list is modified.
+     */
+    private void updateListData() {
+        BigDecimal listSum = new BigDecimal(0.00);
+        int listCount = itemList.size();
+        for (int i = 0; i < listCount; i++) {
+            listSum = listSum.add(itemList.get(i).getCost());
+        }
+        this.listSumView.setText("$" + listSum.toString());
+        this.listCountView.setText(Integer.toString(listCount));
     }
 }
