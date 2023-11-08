@@ -14,7 +14,7 @@ env:
   ANDROID_SDK_PACKAGES: system-images;android-34;google_apis_playstore;x86_64 platforms;android-34 build-tools;34.0.0 platform-tools emulator
   EMULATOR_TIMEOUT: 350
   EMULATOR_NAME: nexus
-  
+
 jobs:
   buildUnitTest:
     runs-on: ubuntu-latest
@@ -84,7 +84,7 @@ jobs:
       
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
-          
+
       - name: Build emulator
         run: |
             echo "no" | avdmanager --verbose create avd --force -n $EMULATOR_NAME --abi "${ANDROID_TARGET}/${ANDROID_ARCH}" -k "system-images;android-${API_LEVEL};${ANDROID_TARGET};${ANDROID_ARCH}"
@@ -93,9 +93,9 @@ jobs:
         run: |
           chmod +x ./start_emu_headless.sh
           EMULATOR_TIMEOUT=$EMULATOR_TIMEOUT EMULATOR_NAME=$EMULATOR_NAME ./start_emu_headless.sh
-  
-      - name: Run tests
-        run: ./gradlew connectedDebugAndroidTest
-  
+
+      - name: Run Tests
+        run: ./gradlew connectedAndroidTest
+
       - name: Stop emulator
         run: adb emu kill
