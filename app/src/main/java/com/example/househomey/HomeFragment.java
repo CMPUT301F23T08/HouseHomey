@@ -50,15 +50,6 @@ public class HomeFragment extends Fragment implements FilterCallback {
     private BigDecimal listSum = new BigDecimal(0.00);
 
     /**
-     * This constructs a new HomeFragment with the appropriate list of items
-     * @param itemRef A reference to the firestore collection containing the items to display
-     */
-    public HomeFragment(CollectionReference itemRef) {
-        this.itemRef = itemRef;
-        itemList = new ArrayList<>();
-    }
-
-    /**
      * @param inflater           The LayoutInflater object that can be used to inflate
      *                           any views in the fragment,
      * @param container          If non-null, this is the parent view that the fragment's
@@ -70,6 +61,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
      */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        this.itemRef = ((MainActivity) requireActivity()).getItemRef();
         // Inflate the fragment's layout
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
