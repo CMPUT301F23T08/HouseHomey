@@ -11,7 +11,7 @@ env:
   ANDROID_TARGET: google_apis_playstore
   API_LEVEL: 34
   ANDROID_BUILD_TOOLS_VERSION: 34.0.0
-  ANDROID_SDK_PACKAGES: system-images;android-33;google_apis_playstore;x86_64 platforms;android-34 build-tools;34.0.0 platform-tools emulator
+  ANDROID_SDK_PACKAGES: system-images;android-34;google_apis_playstore;x86_64 platforms;android-34 build-tools;34.0.0 platform-tools emulator
   EMULATOR_TIMEOUT: 350
   EMULATOR_NAME: nexus
   
