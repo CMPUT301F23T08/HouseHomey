@@ -35,7 +35,7 @@ jobs:
       continue-on-error: true
 
   androidTest:
-    runs-on: macos-11
+    runs-on: linux-latest
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -69,37 +69,26 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Create and start Android emulator
-        run: |
-          export ANDROID_SDK_ROOT=$RUNNER_WORKSPACE/android-sdk
-          mkdir -p $ANDROID_SDK_ROOT
-          if [ ! -d "$ANDROID_SDK_ROOT/cmdline-tools/latest" ]; then
-            wget -q https://dl.google.com/android/repository/commandlinetools-mac-7302050_latest.zip -O android-sdk.zip
-            unzip -q android-sdk.zip -d $ANDROID_SDK_ROOT
-          fi
-          if [ ! -d "$ANDROID_SDK_ROOT/emulator" ]; then
-            yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager "emulator"
-          fi
-          if [ ! -d "$ANDROID_SDK_ROOT/platforms/android-29" ]; then
-            yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager "platforms;android-29"
-          fi
-          if [ ! -d "$ANDROID_SDK_ROOT/system-images/android-29/google_apis/x86_64" ]; then
-            yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager "system-images;android-34;google_apis;x86_64"
-          fi
-          if [ ! -d "$ANDROID_SDK_ROOT/avd/test.avd" ]; then
-            echo no | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/avdmanager create avd -n test -k "system-images;android-34;google_apis;x86_64" --force
-          fi
-          $ANDROID_SDK_ROOT/emulator/emulator -avd test -no-audio -no-window -no-boot-anim -gpu swiftshader_indirect -camera-back none -dns-server 8.8.8.8 &
+    - name: Create and start Android emulator
+      run: |
+        export ANDROID_SDK_ROOT=$RUNNER_WORKSPACE/android-sdk
+        mkdir -p $ANDROID_SDK_ROOT
+        wget -q https://dl.google.com/android/repository/commandlinetools-linux-7302050_latest.zip -O android-sdk.zip
+        unzip -q android-sdk.zip -d $ANDROID_SDK_ROOT
+        yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager "platforms;android-29"
+        yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager "system-images;android-29;google_apis;x86_64"
+        echo no | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/avdmanager create avd -n test -k "system-images;android-29;google_apis;x86_64" --force
+        $ANDROID_SDK_ROOT/emulator/emulator -avd test -no-audio -no-window -no-boot-anim -gpu swiftshader_indirect -camera-back none -dns-server 8.8.8.8 &
 
-      - name: Wait for emulator to start
-        run: |
-          while [ -z "$(adb shell getprop sys.boot_completed)" ]; do
-            echo "Waiting for emulator to start..."
-            sleep 1
-          done
+    - name: Wait for emulator to start
+      run: |
+        while [ -z "$(adb shell getprop sys.boot_completed)" ]; do
+          echo "Waiting for emulator to start..."
+          sleep 1
+        done
 
-      - name: Run tests
-        run: ./gradlew connectedCheck
+    - name: Run tests
+      run: ./gradlew connectedCheck
 
-      - name: Stop emulator
-        run: adb emu kill
+    - name: Stop emulator
+      run: adb emu kill
