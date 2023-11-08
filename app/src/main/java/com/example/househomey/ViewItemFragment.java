@@ -72,8 +72,6 @@ public class ViewItemFragment extends Fragment {
                 }
         );
 
-        // Do I pass the itemRef to this fragment or just query the db directly
-
         return rootView;
     }
 }

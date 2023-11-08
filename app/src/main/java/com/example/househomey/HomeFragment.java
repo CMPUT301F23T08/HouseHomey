@@ -43,13 +43,6 @@ public class HomeFragment extends Fragment implements FilterCallback {
     private ArrayAdapter<Item> itemAdapter;
 
     /**
-     * This constructs a new HomeFragment with the appropriate list of items
-     */
-    public HomeFragment() {
-        itemList = new ArrayList<>();
-    }
-
-    /**
      * @param inflater           The LayoutInflater object that can be used to inflate
      *                           any views in the fragment,
      * @param container          If non-null, this is the parent view that the fragment's
