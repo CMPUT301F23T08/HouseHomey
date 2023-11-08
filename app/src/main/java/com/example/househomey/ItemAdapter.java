@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,12 +20,13 @@ import java.util.ArrayList;
 
 /**
  * A child of ArrayAdapter this adapter specifically displays a list of class Item objects
- * @author Lukas Bonkowski, Matthew Neufeld
+ * @author Lukas Bonkowski, Matthew Neufeld, Sami Jagirdar
  * @see Item
  */
 public class ItemAdapter extends ArrayAdapter<Item> {
     private ArrayList<Item> items;
     private Context context;
+    private boolean selectState;
 
     /**
      * Constructs a new ItemAdapter with an ArrayList of items
@@ -37,6 +39,23 @@ public class ItemAdapter extends ArrayAdapter<Item> {
         this.context = context;
     }
 
+
+    /**
+     * Getter for whether items are in select state or not
+     * @return true or false indicating if itemAdapter is in select state or not
+     */
+    public boolean isSelectState() {
+        return selectState;
+    }
+
+    /**
+     * Setter for the select state of the item adapter
+     * @param selectState boolean value indicating if the items are in select state or not
+     */
+    public void setSelectState(boolean selectState) {
+        this.selectState = selectState;
+        notifyDataSetChanged();
+    }
 
     /**
      * Gets a view to display an items from this adapters ArrayList.
@@ -81,6 +100,19 @@ public class ItemAdapter extends ArrayAdapter<Item> {
             viewItemFragment.setArguments(args);
             navigateToFragmentPage(context, viewItemFragment);
         });
+
+        // Make checkboxes visible based on whether or not we are in select state
+        CheckBox itemCheckBox = view.findViewById(R.id.item_checkBox);
+        if (!this.isSelectState()) {
+            itemCheckBox.setChecked(false);
+        }
+        itemCheckBox.setVisibility(this.isSelectState() ? View.VISIBLE : View.GONE);
+
+        // ticking a checkbox should select corresponding item
+        itemCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            item.setSelected(isChecked);
+        });
+
 
         return view;
     }

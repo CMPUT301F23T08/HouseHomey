@@ -1,4 +1,15 @@
 <resources>
     <string name="app_name">HouseHomey</string>
     <string name="defaultError">An error occurred. Please try again later.</string>
+    <string name="filter_dropdown_description">filtering options.</string>
+    <string name="sort_button_description">sorting options.</string>
+    <string name="toggle_description">toggle between ascending and descending order.</string>
+    <string name="delete_action_description">delete items.</string>
+    <string name="tags_popup_description">Add tags to selected items</string>
+    <string name="select">Select</string>
+    <string name="cancel">Cancel</string>
+
+
+
+
 </resources>

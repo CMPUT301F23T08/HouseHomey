@@ -7,6 +7,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 
@@ -33,13 +34,15 @@ import java.util.Set;
 
 /**
  * This fragment represents the home screen containing the primary list of the user's inventory
- * @author Owen Cooke, Jared Drueco, Lukas Bonkowski
+ * It contains 2 children fragments based on the state of the page
+ * @see HomeSelectStateFragment
+ * @see HomeBaseStateFragment
+ * @author Owen Cooke, Jared Drueco, Lukas Bonkowski, Sami Jagirdar
  */
 public class HomeFragment extends Fragment {
-    private CollectionReference itemRef;
+    protected CollectionReference itemRef;
     protected ListView itemListView;
     protected ArrayList<Item> itemList = new ArrayList<>();
-    private Set<Filter> appliedFilters = new HashSet<>();
     protected ArrayAdapter<Item> itemAdapter;
 
     /**
@@ -52,40 +55,12 @@ public class HomeFragment extends Fragment {
     }
 
     /**
-     * @param inflater           The LayoutInflater object that can be used to inflate
-     *                           any views in the fragment,
-     * @param container          If non-null, this is the parent view that the fragment's
-     *                           UI should be attached to.  The fragment should not add the view itself,
-     *                           but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     *                           from a previous saved state as given here.
-     * @return the home fragment view containing the inventory list
-     */
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // Inflate the fragment's layout
-        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
-
-        itemListView = rootView.findViewById(R.id.item_list);
-        itemAdapter = new ItemAdapter(getContext(), itemList);
-        itemListView.setAdapter(itemAdapter);
-
-        itemRef.addSnapshotListener(this::setupItemListener);
-
-        View filterButton = rootView.findViewById(R.id.filter_dropdown_button);
-        filterButton.setOnClickListener(this::showFilterMenu);
-
-        return rootView;
-
-    }
-
-    /**
      * This method updates the itemAdapter with changes in the firestore database and creates new
      * item objects
      * @param querySnapshots The updated information on the inventory from the database
      * @param error Non-null if an error occurred in Firestore
      */
-    private void setupItemListener(QuerySnapshot querySnapshots, FirebaseFirestoreException error) {
+    protected void setupItemListener(QuerySnapshot querySnapshots, FirebaseFirestoreException error) {
         if (error != null) {
             Log.e("Firestore", error.toString());
             return;
@@ -95,9 +70,32 @@ public class HomeFragment extends Fragment {
             for (QueryDocumentSnapshot doc: querySnapshots) {
                 Map<String, Object> data = new HashMap<>(doc.getData());
                 itemList.add(new Item(doc.getId(), data));
-                itemAdapter.notifyDataSetChanged();
+                unselectAllItems();
             }
         }
+    }
+
+    /**
+     * This method unselects all the items in the list displayed and unchecks the corresponding
+     * checkboxes as well.
+     * @see Item
+     * @see ItemAdapter
+     */
+    protected void unselectAllItems() {
+
+        for (int i=0;i<itemList.size();i++) {
+
+            // unselect items
+            itemList.get(i).setSelected(false);
+
+            // uncheck selected checkboxes
+            View itemView = itemListView.getChildAt(i);
+            if (itemView!=null) {
+                CheckBox itemCheckBox = itemView.findViewById(R.id.item_checkBox);
+                itemCheckBox.setChecked(false);
+            }
+        }
+        itemAdapter.notifyDataSetChanged();
     }
 
 }

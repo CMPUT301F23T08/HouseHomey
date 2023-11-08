@@ -14,7 +14,7 @@ import java.util.Objects;
 
 /**
  * This class represents an inventory item with a variety of properties
- * @author Lukas Bonkowski, Matthew Neufeld, Owen Cooke
+ * @author Lukas Bonkowski, Matthew Neufeld, Owen Cooke,, Sami Jagirdar
  * @see ItemAdapter
  */
 public class Item implements Serializable {
@@ -26,6 +26,7 @@ public class Item implements Serializable {
     private String serialNumber = "";
     private String comment = "";
     private BigDecimal cost;
+    private boolean selected;
 
     /**
      * This constructs a new item from a Map of data with a reference to its Firestore document
@@ -140,4 +141,20 @@ public class Item implements Serializable {
      * @return comment for the item
      */
     public String getComment() { return comment; }
+
+    /**
+     * Getter for the attribute- selected
+     * @return true or false - whether item is selected or not
+     */
+    public boolean isSelected() {
+        return selected;
+    }
+
+    /**
+     * Setter for the attribute- selected
+     * @param selected boolean value indicating if item is selected or not
+     */
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
 }
