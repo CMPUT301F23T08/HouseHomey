@@ -65,7 +65,9 @@ jobs:
           key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             gradle-
-
+      - name: List available AVDs
+        run: $ANDROID_SDK_ROOT/emulator/emulator -list-avds
+        shell: bash
       - name: Cache Android SDK components
         uses: actions/cache@v3
         with:
@@ -74,7 +76,7 @@ jobs:
           key: android-sdk-${{ runner.os }}
           restore-keys: |
             android-sdk-
-
+      
       - name: Make gradlew executable
         run: chmod +x ./gradlew
         
