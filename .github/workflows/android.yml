@@ -68,6 +68,17 @@ jobs:
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
+
+      - name: Install Sdk
+        id: install-sdk
+        run: |
+          if command -v sdkmanager &>/dev/null; then
+            echo "SDK already installed, skipping installation."
+          else
+            yes Y | sdkmanager --licenses
+            sdkmanager --install ${ANDROID_SDK_PACKAGES}
+            echo "SDK installation complete."
+          fi
         
       - name: Add avdmanager and sdkmanager to system PATH
         run: |
