@@ -1,4 +1,5 @@
 #!/bin/bash
+# Credit to this android emulator workflow guide https://medium.com/innovies-club/run-android-emulator-out-of-the-box-with-github-actions-b84cba766e62
 
 BL='\033[0;34m'
 G='\033[0;32m'
