@@ -68,7 +68,7 @@ jobs:
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
-
+        
       - name: Create and start Android emulator
         run: |
           export ANDROID_SDK_ROOT=$RUNNER_WORKSPACE/android-sdk
