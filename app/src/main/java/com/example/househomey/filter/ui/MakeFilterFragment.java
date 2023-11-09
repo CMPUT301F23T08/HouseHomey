@@ -51,4 +51,9 @@ public class MakeFilterFragment extends FilterFragment {
         filterCallback.onFilterReset(this.makeFilter);
         dismiss();
     }
+
+    @Override
+    public void resetFilter() {
+        filterCallback.onFilterReset(MakeFilter.class);
+    }
 }

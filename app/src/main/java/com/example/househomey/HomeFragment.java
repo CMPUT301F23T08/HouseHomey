@@ -119,12 +119,6 @@ public class HomeFragment extends Fragment implements FilterCallback {
             } else if (itemId == R.id.filter_by_make) {
                 View makeFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_make, null);
                 MakeFilterFragment makeFilterFragment = new MakeFilterFragment("Modify Make Filter", makeFilterView, this);
-                for (Filter filter : appliedFilters) {
-                    MakeFilter makeFilter = (MakeFilter) filter;
-                    if (filter instanceof MakeFilter) {
-                        makeFilterFragment = new MakeFilterFragment("Modify Make Filter", makeFilterView, this, makeFilter);
-                    }
-                }
                 makeFilterFragment.show(requireActivity().getSupportFragmentManager(), "make_filter_dialog");
             } else if (itemId == R.id.filter_by_keywords) {
                 View keywordFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_keywords, null);
@@ -159,9 +153,13 @@ public class HomeFragment extends Fragment implements FilterCallback {
         applyFilters();
     }
 
-    public void onFilterReset(Filter filter) {
-        Log.i("DEBUGNSHIT", ((MakeFilter) filter).makeToFilterBy);
-        appliedFilters.remove(filter);
+
+    public void onFilterReset(Class<?> filterClass) {
+        for (Filter filter : appliedFilters) {
+            if (filterClass.isInstance(filter)) {
+                appliedFilters.remove(filter);
+            }
+        }
         applyFilters();
     }
 
@@ -172,7 +170,6 @@ public class HomeFragment extends Fragment implements FilterCallback {
      */
     private void applyFilters() {
         ArrayList<Item> filteredList = new ArrayList<>(itemList);
-
         for (Filter filter : appliedFilters) {
             filteredList = filter.filterList(filteredList);
         }

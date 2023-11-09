@@ -16,5 +16,7 @@ public class TagFilterFragment extends FilterFragment {
     }
 
     @Override
-    public void resetFilter() {}
+    public void resetFilter() {
+        // TODO: logic for resetting current filter
+    }
 }

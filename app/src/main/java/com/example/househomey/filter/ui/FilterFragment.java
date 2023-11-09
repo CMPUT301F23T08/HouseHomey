@@ -70,8 +70,8 @@ public abstract class FilterFragment extends DialogFragment {
     }
 
     /**
-     * This method should be implemented in subclasses to define filter-specific logic
-     * that extract filter properites from XML like dates, make, keywords, and tags.
+     * These methods should be implemented in subclasses to define filter-specific logic
+     * e.g. date, make, keywords, and tag filters.
      */
     public abstract void getFilterInput();
     public abstract void resetFilter();
