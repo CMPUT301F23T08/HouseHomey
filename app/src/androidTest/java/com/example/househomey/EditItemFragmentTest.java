@@ -34,7 +34,7 @@ public class EditItemFragmentTest extends TestSetup {
     @Before
     public void navigateToEditItemFragment() throws Exception {
         // Create mock initial item in DB
-        super.databaseRule.addMockItem(mockData);
+        database.addMockItem(mockData);
         // Click to view the item page
         onData(anything())
                 .inAdapterView(withId(R.id.item_list))
@@ -64,5 +64,11 @@ public class EditItemFragmentTest extends TestSetup {
         // Check that the unedited fields remain the same
         onView(withId(R.id.view_item_serial_number)).check(matches(withText(mockData.get("serialNumber").toString())));
         onView(withId(R.id.view_item_model)).check(matches(withText(mockData.get("model").toString())));
+    }
+
+    @Test
+    public void testBackButtonGoesToViewItemPage() {
+        onView(withId(R.id.add_item_back_button)).perform(click());
+        waitForView(withId(R.id.view_item_make));
     }
 }

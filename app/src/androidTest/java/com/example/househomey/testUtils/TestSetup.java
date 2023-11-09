@@ -19,14 +19,13 @@ import java.io.IOException;
 /**
  * An abstract class for setting up Espresso test functionality required for both
  * Firebase and our Github Actions CI pipeline. Simply extend your test class with this class.
- *
  * For methods that require a unique Firebase user, ensure the method name includes "WithNewUser"
  *
  * @author Owen Cooke
  */
 public abstract class TestSetup {
     @Rule
-    public DatabaseSetupRule<MainActivity> databaseRule = new DatabaseSetupRule<>(MainActivity.class);
+    public DatabaseSetupRule<MainActivity> database = new DatabaseSetupRule<>(MainActivity.class);
 
     @BeforeClass
     public static void dismissANRSystemDialog() throws UiObjectNotFoundException {
@@ -50,6 +49,6 @@ public abstract class TestSetup {
 
     @Before
     public void setup() {
-        databaseRule.setupActivity();
+        database.setupActivity();
     }
 }
