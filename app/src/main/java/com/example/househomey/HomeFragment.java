@@ -39,7 +39,7 @@ import java.util.Set;
 public class HomeFragment extends Fragment implements FilterCallback {
     private CollectionReference itemRef;
     private ListView itemListView;
-    private ArrayList<Item> itemList = new ArrayList<>();;
+    private ArrayList<Item> itemList = new ArrayList<>();
     private Set<Filter> appliedFilters = new HashSet<>();
     private ArrayAdapter<Item> itemAdapter;
 
