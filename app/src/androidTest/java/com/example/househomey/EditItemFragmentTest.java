@@ -6,10 +6,11 @@ import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static com.example.househomey.testUtils.TestHelpers.enterText;
-import static com.example.househomey.testUtils.TestHelpers.waitForView;
+import static com.example.househomey.testUtils.TestHelpers.waitFor;
 import static org.hamcrest.CoreMatchers.anything;
 
 import com.example.househomey.testUtils.TestSetup;
@@ -36,9 +37,8 @@ public class EditItemFragmentTest extends TestSetup {
     @Before
     public void navigateToEditItemFragment() throws Exception {
         // Create mock initial item in DB
-        database.addMockItem(mockData);
+        database.addTestItem(mockData);
         // Click to view the item page
-        waitForView(withId(R.id.item_list));
         onData(anything())
                 .inAdapterView(withId(R.id.item_list))
                 .atPosition(0)
@@ -60,19 +60,20 @@ public class EditItemFragmentTest extends TestSetup {
         // Click the confirm button to make edits
         onView(withId(R.id.add_item_confirm_button)).perform(click());
         // Check that edits appear on view item page
-        waitForView(withId(R.id.view_item_make));
-        onView(withId(R.id.view_item_cost)).check(matches(withText(cost)));
-        onView(withId(R.id.view_item_comment)).check(matches(withText(comment)));
-        onView(withId(R.id.view_item_make)).check(matches(withText(make)));
-        // Check that the unedited fields remain the same
-        onView(withId(R.id.view_item_serial_number)).check(matches(withText(mockData.get("serialNumber").toString())));
-        onView(withId(R.id.view_item_model)).check(matches(withText(mockData.get("model").toString())));
+        waitFor(() -> {
+            onView(withId(R.id.view_item_cost)).check(matches(withText(cost)));
+            onView(withId(R.id.view_item_comment)).check(matches(withText(comment)));
+            onView(withId(R.id.view_item_make)).check(matches(withText(make)));
+            // Check that the unedited fields remain the same
+            onView(withId(R.id.view_item_serial_number)).check(matches(withText(mockData.get("serialNumber").toString())));
+            onView(withId(R.id.view_item_model)).check(matches(withText(mockData.get("model").toString())));
+        });
     }
 
     @Test
     public void testBackButtonGoesToViewItemPage() {
         onView(withId(R.id.add_item_back_button)).perform(click());
-        waitForView(withId(R.id.view_item_make));
+        onView(withId(R.id.view_item_make)).check(matches(isDisplayed()));
     }
 
     @Test

@@ -3,15 +3,15 @@ package com.example.househomey;
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static com.example.househomey.testUtils.TestHelpers.enterText;
 import static com.example.househomey.testUtils.TestHelpers.hasListLength;
-import static com.example.househomey.testUtils.TestHelpers.waitForView;
+import static com.example.househomey.testUtils.TestHelpers.waitFor;
 import static org.hamcrest.CoreMatchers.anything;
 
 import androidx.test.espresso.matcher.RootMatchers;
@@ -58,14 +58,11 @@ public class AddItemFragmentTest extends TestSetup {
         enterText(R.id.add_item_make, "MyMake");
         enterText(R.id.add_item_model, "MyModel");
         enterText(R.id.add_item_serial_number, "1234567890");
-        onView(withId(R.id.add_item_comment)).perform(scrollTo());
-        waitForView(withId(R.id.add_item_comment));
         enterText(R.id.add_item_comment, "this is a comment");
         // Click the confirm button to add the item
         onView(withId(R.id.add_item_confirm_button)).perform(click());
-        // Check that we switch back to home page
-        waitForView(withId(R.id.item_list));
-        hasListLength(1);
+        // Wait for Firebase to update list on home page
+        waitFor(() ->  hasListLength(1));
         // Check that the item in list matches description, date, and cost
         onData(anything())
                 .inAdapterView(withId(R.id.item_list))
@@ -93,7 +90,7 @@ public class AddItemFragmentTest extends TestSetup {
     @Test
     public void testBackButtonGoesToHomePage() {
         onView(withId(R.id.add_item_back_button)).perform(click());
-        waitForView(withId(R.id.item_list));
+        onView(withId(R.id.item_list)).check(matches(isDisplayed()));
     }
 
     @Test

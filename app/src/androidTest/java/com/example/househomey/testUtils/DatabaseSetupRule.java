@@ -66,7 +66,7 @@ public class DatabaseSetupRule<T extends Activity> implements TestRule {
      * @throws RuntimeException if the mock data cannot create a valid Item, if adding the mock item to Firestore
      * fails, or if there is a timeout waiting for the operation to complete.
      */
-    public void addMockItem(Map<String, Object> itemDetails) throws Exception {
+    public void addTestItem(Map<String, Object> itemDetails) throws Exception {
         if (userDoc != null) {
             // Ensure that mock data can be used to create a valid Item
             Item item;
