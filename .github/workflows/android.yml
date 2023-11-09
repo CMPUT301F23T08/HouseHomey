@@ -92,7 +92,7 @@ jobs:
           EMULATOR_TIMEOUT=$EMULATOR_TIMEOUT EMULATOR_NAME=$EMULATOR_NAME ./start_emu_headless.sh
   
       - name: Run tests
-        run: ./gradlew connectedAndroidTest --info
-  
+        run: ./gradlew connectedAndroidTest --build-cache --debug
+
       - name: Stop emulator
         run: adb emu kill
