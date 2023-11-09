@@ -172,14 +172,21 @@
         android:orientation="horizontal"
         android:layout_marginTop="16dp">
 
+        <Space
+            android:layout_width="32dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
         <Button
             android:id="@+id/edit_button"
             android:layout_width="160dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:text="Edit Item"
-            android:layout_marginStart="64dp"
-            android:layout_marginEnd="32dp"
+            android:layout_weight="1"/>
+        <Space
+            android:layout_width="32dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"/>
 
         <Button
@@ -188,13 +195,16 @@
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
             android:layout_gravity="center"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="64dp"
+
             android:text="Delete"
             android:backgroundTint="@color/red"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/edit_button"
+            android:layout_weight="1"/>
+        <Space
+            android:layout_width="32dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"/>
     </LinearLayout>
 
