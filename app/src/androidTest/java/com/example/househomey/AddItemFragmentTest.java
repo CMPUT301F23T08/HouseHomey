@@ -3,6 +3,7 @@ package com.example.househomey;
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
@@ -57,6 +58,7 @@ public class AddItemFragmentTest extends TestSetup {
         enterText(R.id.add_item_make, "MyMake");
         enterText(R.id.add_item_model, "MyModel");
         enterText(R.id.add_item_serial_number, "1234567890");
+        onView(withId(R.id.add_item_comment)).perform(scrollTo());
         enterText(R.id.add_item_comment, "this is a comment");
         // Click the confirm button to add the item
         onView(withId(R.id.add_item_confirm_button)).perform(click());
