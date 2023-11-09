@@ -2,10 +2,6 @@ package com.example.househomey.testUtils;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
-import android.content.Intent;
-import android.os.Bundle;
-
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject;
@@ -13,10 +9,6 @@ import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
 import com.example.househomey.MainActivity;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -24,11 +16,17 @@ import org.junit.Rule;
 
 import java.io.IOException;
 
+/**
+ * An abstract class for setting up Espresso test functionality required for both
+ * Firebase and our Github Actions CI pipeline. Simply extend your test class with this class.
+ *
+ * For methods that require a unique Firebase user, ensure the method name includes "WithNewUser"
+ *
+ * @author Owen Cooke
+ */
 public abstract class TestSetup {
-    String testUser = "intent_test_user";
-
     @Rule
-    public ActivityScenarioRule<MainActivity> activityRule = new ActivityScenarioRule<>(MainActivity.class);
+    public DatabaseSetupRule<MainActivity> databaseRule = new DatabaseSetupRule<>(MainActivity.class);
 
     @BeforeClass
     public static void dismissANRSystemDialog() throws UiObjectNotFoundException {
@@ -51,31 +49,7 @@ public abstract class TestSetup {
     }
 
     @Before
-    public void deleteTestUserItems() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference itemRef = db.collection("user").document(testUser).collection("item");
-        // Delete each document in the collection
-        itemRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                QuerySnapshot querySnapshot = task.getResult();
-                for (DocumentSnapshot document : querySnapshot.getDocuments()) {
-                    document.getReference().delete();
-                }
-            } else {
-                throw new RuntimeException(task.getException());
-            }
-        });
-    }
-
-    @Before
-    public void loginTestUser() {
-        Bundle userData = new Bundle();
-        userData.putString("username", testUser);
-        // Pass the userData Bundle to MainActivity
-        activityRule.getScenario().onActivity(activity -> {
-            Intent intent = new Intent(activity, MainActivity.class);
-            intent.putExtra("userData", userData);
-            activity.startActivity(intent);
-        });
+    public void setup() {
+        databaseRule.setupActivity();
     }
 }

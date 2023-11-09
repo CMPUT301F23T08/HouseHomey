@@ -46,7 +46,7 @@ public class AddItemFragmentTest extends TestSetup {
     }
 
     @Test
-    public void testAddItemWithValidData() {
+    public void testAddItemWithNewUser() {
         // Add acquisition date
         String acquisitionDate = selectFirstDayOfMonth();
         // Add required description and estimated cost
