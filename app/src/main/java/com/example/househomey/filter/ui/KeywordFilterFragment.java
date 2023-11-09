@@ -14,4 +14,9 @@ public class KeywordFilterFragment extends FilterFragment {
     public void getFilterInput() {
         // TODO: get the filter properties from fragment inputs
     }
+
+    @Override
+    public void resetFilter() {
+        // TODO: logic for resetting current filter
+    }
 }

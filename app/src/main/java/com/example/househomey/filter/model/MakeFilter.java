@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
  * A filter class that filters a list of items based on a specific make value.
  */
 public class MakeFilter extends Filter {
-    private String makeToFilterBy;
+    public String makeToFilterBy;
 
     /**
      * Constructs a new MakeFilter with the specified make value.
@@ -24,7 +24,7 @@ public class MakeFilter extends Filter {
      * Filters the passed in list of items, retaining only those items that match the
      * make value specified in this filter.
      *
-     * @param itemList The original list of items to be filtered.
+     * @param itemList The list of items to be filtered.
      * @return A filtered list of items that have the specified make value.
      */
     @Override

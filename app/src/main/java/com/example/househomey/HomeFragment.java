@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.househomey.filter.model.MakeFilter;
 import com.example.househomey.filter.ui.DateFilterFragment;
 import com.example.househomey.filter.model.Filter;
 import com.example.househomey.filter.model.FilterCallback;
@@ -110,6 +111,12 @@ public class HomeFragment extends Fragment implements FilterCallback {
             } else if (itemId == R.id.filter_by_make) {
                 View makeFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_make, null);
                 MakeFilterFragment makeFilterFragment = new MakeFilterFragment("Modify Make Filter", makeFilterView, this);
+                for (Filter filter : appliedFilters) {
+                    if (filter instanceof MakeFilter) {
+                        MakeFilter makeFilter = (MakeFilter) filter;
+                        makeFilterFragment = new MakeFilterFragment("Modify Make Filter", makeFilterView, this, makeFilter);
+                    }
+                }
                 makeFilterFragment.show(requireActivity().getSupportFragmentManager(), "make_filter_dialog");
             } else if (itemId == R.id.filter_by_keywords) {
                 View keywordFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_keywords, null);
@@ -145,6 +152,17 @@ public class HomeFragment extends Fragment implements FilterCallback {
     }
 
     /**
+     * Resets filters of a specific class by removing all instances of a filter from the applied
+     * filters list and then re-applies the remaining filters.
+     *
+     * @param filter The filter to reset.
+     */
+    public void onFilterReset(Filter filter) {
+        appliedFilters.remove(filter);
+        applyFilters();
+    }
+
+    /**
      * Applies the list of filters to the item list, resulting in a filtered list of items.
      * This method iterates through the applied filters, applying each filter in sequence,
      * and then updates the item adapter with the filtered list of items.
@@ -154,8 +172,8 @@ public class HomeFragment extends Fragment implements FilterCallback {
         for (Filter filter : appliedFilters) {
             filteredList = filter.filterList(filteredList);
         }
-        itemAdapter.clear();
-        itemAdapter.addAll(filteredList);
-        itemAdapter.notifyDataSetChanged();
+
+        ItemAdapter filteredAdapter = new ItemAdapter(getContext(), filteredList);
+        itemListView.setAdapter(filteredAdapter);
     }
 }

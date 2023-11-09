@@ -107,4 +107,8 @@ public class DateFilterFragment extends FilterFragment {
         filterCallback.onFilterApplied(dateFilter);
         dismiss();
     }
+    @Override
+    public void resetFilter() {
+        // TODO: logic for resetting current filter
+    }
 }
