@@ -8,6 +8,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.test.core.app.ActivityScenario;
 
+import com.example.househomey.Item;
 import com.example.househomey.MainActivity;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -19,6 +20,7 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -53,6 +55,26 @@ public class DatabaseSetupRule<T extends Activity> implements TestRule {
             intent.putExtra("userData", userData);
             activity.startActivity(intent);
         });
+    }
+
+    public void addMockItem(Map<String, Object> itemDetails) throws Exception {
+        // Ensure that mock data can be used to create a valid Item
+        Item item;
+        try {
+            item = new Item("", itemDetails);
+        } catch (NullPointerException e) {
+            throw new RuntimeException("Mock data cannot create a valid Item: " + e.getMessage());
+        }
+        CountDownLatch latch = new CountDownLatch(1);
+        // Create new item in DB
+        userDoc.collection("item").add(item.getData()).addOnCompleteListener(task -> latch.countDown()).addOnFailureListener(e -> {
+            latch.countDown();
+            throw new RuntimeException("Adding mock item to Firestore failed with: " + e.getMessage());
+        });
+        // Wait for item creation to finish
+        if (!latch.await(10, TimeUnit.SECONDS)) {
+            throw new RuntimeException("Timeout waiting for test user creation.");
+        }
     }
 
     @Override
@@ -95,7 +117,7 @@ public class DatabaseSetupRule<T extends Activity> implements TestRule {
         }
     }
 
-    public void deleteTestUser() throws Exception {
+    private void deleteTestUser() throws Exception {
         if (userDoc != null) {
             CountDownLatch latch = new CountDownLatch(1);
             // Need to delete all nested collections before user doc can be deleted
