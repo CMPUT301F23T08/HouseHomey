@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  * A filter class that filters a list of items based on specific keywords.
  */
 public class KeywordFilter extends Filter{
-    ArrayList<String> keyWords;
+    public ArrayList<String> keyWords;
 
     /**
      * Constructs a new KeywordFilter with the specified keywords.

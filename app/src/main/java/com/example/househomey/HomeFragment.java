@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.househomey.filter.model.KeywordFilter;
 import com.example.househomey.filter.ui.DateFilterFragment;
 import com.example.househomey.filter.model.Filter;
 import com.example.househomey.filter.model.FilterCallback;
@@ -42,7 +43,6 @@ public class HomeFragment extends Fragment implements FilterCallback {
     private CollectionReference itemRef;
     private ListView itemListView;
     private ArrayList<Item> itemList = new ArrayList<>();
-
     private ArrayList<Item> filteredItemList = new ArrayList<>();
     private Set<Filter> appliedFilters = new HashSet<>();
     private ArrayAdapter<Item> itemAdapter;
@@ -126,6 +126,12 @@ public class HomeFragment extends Fragment implements FilterCallback {
             } else if (itemId == R.id.filter_by_keywords) {
                 View keywordFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_keywords, null);
                 KeywordFilterFragment keywordFilterFragment = new KeywordFilterFragment("Modify Keyword Filter", keywordFilterView, this);
+                for (Filter filter : appliedFilters) {
+                    if (filter instanceof KeywordFilter) {
+                        KeywordFilter myFilter = (KeywordFilter) filter;
+                        keywordFilterFragment = new KeywordFilterFragment("Modify Keyword Filter", keywordFilterView, this, myFilter);
+                    }
+                }
                 keywordFilterFragment.show(requireActivity().getSupportFragmentManager(), "keywords_filter_dialog");
             } else if (itemId == R.id.filter_by_tags) {
                 View tagFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_tags, null);
@@ -179,9 +185,9 @@ public class HomeFragment extends Fragment implements FilterCallback {
      */
     private void updateListData() {
         BigDecimal listSum = new BigDecimal(0.00);
-        int listCount = itemList.size();
+        int listCount = filteredItemList.size();
         for (int i = 0; i < listCount; i++) {
-            listSum = listSum.add(itemList.get(i).getCost());
+            listSum = listSum.add(filteredItemList.get(i).getCost());
         }
         this.listSumView.setText("$" + listSum.toString());
         this.listCountView.setText(Integer.toString(listCount));
