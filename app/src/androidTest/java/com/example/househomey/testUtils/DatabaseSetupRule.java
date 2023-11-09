@@ -36,6 +36,7 @@ public class DatabaseSetupRule<T extends Activity> implements TestRule {
     private final Class<T> activityClass;
     private DocumentReference userDoc;
     private boolean isDatabaseTest;
+    private final int dbTimeoutInSeconds = 30;
 
     public DatabaseSetupRule(Class<T> activityClass) {
         this.activityClass = activityClass;
@@ -81,7 +82,7 @@ public class DatabaseSetupRule<T extends Activity> implements TestRule {
                 throw new RuntimeException("Adding mock item to Firestore failed with: " + e.getMessage());
             });
             // Wait for item creation to finish
-            if (!latch.await(10, TimeUnit.SECONDS)) {
+            if (!latch.await(dbTimeoutInSeconds, TimeUnit.SECONDS)) {
                 throw new RuntimeException("Timeout waiting for test user creation.");
             }
         }
@@ -122,7 +123,7 @@ public class DatabaseSetupRule<T extends Activity> implements TestRule {
             }
         });
         // Wait for user creation to finish
-        if (!latch.await(10, TimeUnit.SECONDS)) {
+        if (!latch.await(dbTimeoutInSeconds, TimeUnit.SECONDS)) {
             throw new RuntimeException("Timeout waiting for test user creation.");
         }
     }
@@ -142,7 +143,7 @@ public class DatabaseSetupRule<T extends Activity> implements TestRule {
                         latch.countDown();
                     });
             // Wait for all deletions to finish
-            if (!latch.await(10, TimeUnit.SECONDS)) {
+            if (!latch.await(dbTimeoutInSeconds, TimeUnit.SECONDS)) {
                 throw new RuntimeException("Timeout waiting for test user deletion.");
             }
         }
