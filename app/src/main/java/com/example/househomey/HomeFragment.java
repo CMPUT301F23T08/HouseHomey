@@ -111,6 +111,12 @@ public class HomeFragment extends Fragment implements FilterCallback {
             } else if (itemId == R.id.filter_by_make) {
                 View makeFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_make, null);
                 MakeFilterFragment makeFilterFragment = new MakeFilterFragment("Modify Make Filter", makeFilterView, this);
+                for (Filter filter : appliedFilters) {
+                    if (filter instanceof MakeFilter) {
+                        MakeFilter makeFilter = (MakeFilter) filter;
+                        makeFilterFragment = new MakeFilterFragment("Modify Make Filter", makeFilterView, this, makeFilter);
+                    }
+                }
                 makeFilterFragment.show(requireActivity().getSupportFragmentManager(), "make_filter_dialog");
             } else if (itemId == R.id.filter_by_keywords) {
                 View keywordFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_keywords, null);
@@ -146,17 +152,13 @@ public class HomeFragment extends Fragment implements FilterCallback {
     }
 
     /**
-     * Resets filters of a specific class by removing all instances of that class from the applied
+     * Resets filters of a specific class by removing all instances of a filter from the applied
      * filters list and then re-applies the remaining filters.
      *
-     * @param filterClass The class of filter to reset.
+     * @param filter The filter to reset.
      */
-    public void onFilterReset(Class<?> filterClass) {
-        for (Filter filter : appliedFilters) {
-            if (filterClass.isInstance(filter)) {
-                appliedFilters.remove(filter);
-            }
-        }
+    public void onFilterReset(Filter filter) {
+        appliedFilters.remove(filter);
         applyFilters();
     }
 
