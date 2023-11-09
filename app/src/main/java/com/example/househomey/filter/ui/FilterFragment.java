@@ -52,19 +52,27 @@ public abstract class FilterFragment extends DialogFragment {
             }
         };
 
+        DialogInterface.OnClickListener onResetListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                resetFilter();
+            }
+        };
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
                 .setView(contentView)
                 .setTitle(title)
-                .setNegativeButton("Reset", null) // TODO: Logic for how resetting filters work
+                .setNegativeButton("Reset", onResetListener) // TODO: Logic for how resetting filters work
                 .setNeutralButton("Cancel", null)
                 .setPositiveButton("Apply", onApplyListener)
                 .create();
     }
 
     /**
-     * This method should be implemented in subclasses to define filter-specific logic
-     * that extract filter properites from XML like dates, make, keywords, and tags.
+     * These methods should be implemented in subclasses to define filter-specific logic
+     * e.g. date, make, keywords, and tag filters.
      */
     public abstract void getFilterInput();
+    public abstract void resetFilter();
 }

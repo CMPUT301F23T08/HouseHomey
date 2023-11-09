@@ -114,4 +114,9 @@ public class KeywordFilterFragment extends FilterFragment {
 
         return nonEmptyKeyWords;
     }
+
+    @Override
+    public void resetFilter() {
+        // TODO: logic for resetting current filter
+    }
 }

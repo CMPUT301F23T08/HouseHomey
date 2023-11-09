@@ -135,6 +135,7 @@ public abstract class ItemFormFragment extends Fragment {
                 .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
                 .setCalendarConstraints(constraintsBuilder.build())
                 .build();
+        
         datePicker.addOnPositiveButtonClickListener(selection -> {
             dateAcquired = new Date(selection);
             dateTextView.setText(datePicker.getHeaderText());

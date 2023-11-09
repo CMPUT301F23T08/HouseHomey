@@ -9,6 +9,9 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.househomey.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.DateValidatorPointBackward;
+import com.google.android.material.datepicker.MaterialDatePicker;
 
 /**
  * This is a utility class for fragment page navigation within an Android application.
@@ -49,6 +52,23 @@ public class FragmentUtils {
         if (fragmentManager.getBackStackEntryCount() > 0) {
             fragmentManager.popBackStack();
         }
+    }
+
+    /**
+     * Enables date picking for the calendar
+     * @return datePicker
+     */
+    public static MaterialDatePicker<Long> createDatePicker() {
+
+        // Create constraint to restrict dates to past/present
+        CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
+        constraintsBuilder.setEnd(System.currentTimeMillis());
+        constraintsBuilder.setValidator(DateValidatorPointBackward.now());
+
+        return MaterialDatePicker.Builder.datePicker()
+                .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
+                .setCalendarConstraints(constraintsBuilder.build())
+                .build();
     }
 }
 
