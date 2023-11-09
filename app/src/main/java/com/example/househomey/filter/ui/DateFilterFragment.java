@@ -1,9 +1,7 @@
 package com.example.househomey.filter.ui;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
@@ -33,23 +31,41 @@ public class DateFilterFragment extends FilterFragment {
     private Date startDate;
     private Date endDate;
 
+    /**
+     * Constructor for DateFilterFragment
+     * @param title title of date filter fragment
+     * @param contentView content view of date filter fragment
+     * @param filterCallback callback interface for handling filter changes
+     */
     public DateFilterFragment(String title, View contentView, FilterCallback filterCallback) {
         super(title, contentView, filterCallback);
     }
 
+    /**
+     * Creates dialog for date filter fragment
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
+     * @return dialog object for date filter fragment
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         Dialog builder = super.onCreateDialog(savedInstanceState);
 
-        startDateTextView = getDateTextView(contentView, R.id.start_date_filter, R.id.start_date_layout);
-        endDateTextView = getDateTextView(contentView, R.id.end_date_filter, R.id.end_date_layout);
+        startDateTextView = setDateTextView(contentView, R.id.start_date_filter, R.id.start_date_layout);
+        endDateTextView = setDateTextView(contentView, R.id.end_date_filter, R.id.end_date_layout);
 
         return builder;
 
     }
 
-    private TextInputEditText getDateTextView(View contentView, int dateViewId, int layoutId) {
+    /**
+     * sets dateTextView based on datePicker and whether user has picked start or end date
+     * @param contentView content view of date filter fragment
+     * @param dateViewId id of the date text view
+     * @param layoutId id of layout associated with  date text view
+     * @return TextInputEditText for the date selected
+     */
+    private TextInputEditText setDateTextView(View contentView, int dateViewId, int layoutId) {
 
         TextInputEditText dateTextView = contentView.findViewById(dateViewId);
 
@@ -69,6 +85,11 @@ public class DateFilterFragment extends FilterFragment {
         return dateTextView;
     }
 
+    /**
+     * sets the start or end date depending on which text view user is choosing
+     * @param dateTextView text view for selected date
+     * @param date user selected date
+     */
     private void setStartOrEndDate(EditText dateTextView, Date date) {
         if (dateTextView.getId() == R.id.start_date_filter) {
             startDate = date;
@@ -77,6 +98,9 @@ public class DateFilterFragment extends FilterFragment {
         }
     }
 
+    /**
+     * Gets the filter input (start and end date) and creates callback on the DateFilter
+     */
     @Override
     public void getFilterInput() {
         DateFilter dateFilter = new DateFilter(startDate, endDate);

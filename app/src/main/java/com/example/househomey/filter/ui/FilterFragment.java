@@ -11,8 +11,6 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.househomey.filter.model.FilterCallback;
 
-import java.text.ParseException;
-
 /**
  * Abstract class for creating filter fragments.
  */
