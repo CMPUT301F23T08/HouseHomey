@@ -1,14 +1,16 @@
 package com.example.househomey.filter.ui;
 
-import android.os.Bundle;
+import android.content.Context;
+import android.content.res.Resources;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.core.content.ContextCompat;
+
 import com.example.househomey.R;
 import com.example.househomey.filter.model.FilterCallback;
 import com.example.househomey.filter.model.KeywordFilter;
-import com.example.househomey.filter.model.MakeFilter;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -37,17 +39,13 @@ public class KeywordFilterFragment extends FilterFragment {
     public KeywordFilterFragment(String title, View contentView, FilterCallback filterCallback, KeywordFilter keywordFilter) {
         super(title, contentView, filterCallback);
         this.keywordFilter = keywordFilter;
-        autoFillFilter(this.keywordFilter.keyWords);
+        autoFillFilter(this.keywordFilter.getOgKeyWords());
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 List<String> keyWordArray = Arrays.asList(keyWords.getText().toString().split(" "));
-                for (String label : keyWordArray) {
-                    Chip chip = new Chip(contentView.getContext());
-                    chip.setText(label);
-                    chipGroup.addView(chip);
-                    chipTextVals.add(chip.getText().toString());
-                }
+                keyWordArray = removeEmptyStrings(keyWordArray);
+                autoFillFilter(keyWordArray);
                 keyWords.setText("");
             }
         });
@@ -65,12 +63,8 @@ public class KeywordFilterFragment extends FilterFragment {
             @Override
             public void onClick(View v) {
                 List<String> keyWordArray = Arrays.asList(keyWords.getText().toString().split(" "));
-                for (String label : keyWordArray) {
-                    Chip chip = new Chip(contentView.getContext());
-                    chip.setText(label);
-                    chipGroup.addView(chip);
-                    chipTextVals.add(chip.getText().toString());
-                }
+                keyWordArray = removeEmptyStrings(keyWordArray);
+                autoFillFilter(keyWordArray);
                 keyWords.setText("");
             }
         });
@@ -90,10 +84,34 @@ public class KeywordFilterFragment extends FilterFragment {
 
     public void autoFillFilter(List<String> keyWordArray) {
         for (String label : keyWordArray) {
-            Chip chip = new Chip(contentView.getContext());
+            Context context = contentView.getContext();
+            Chip chip = new Chip(context);
             chip.setText(label);
+            chip.setCloseIconVisible(true);
+            chip.setChipBackgroundColorResource(R.color.white);
+            chip.setChipStrokeColorResource(R.color.brown);
+            chip.setTextColor(ContextCompat.getColor(context , R.color.brown));
             chipGroup.addView(chip);
             chipTextVals.add(chip.getText().toString());
+            chip.setOnCloseIconClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    chipGroup.removeView(chip);
+                    chipTextVals.remove(chip.getText().toString());
+                }
+            });
         }
+    }
+
+    private List<String> removeEmptyStrings(List<String> listToFilter) {
+        List<String> nonEmptyKeyWords = new ArrayList<>();
+
+        for (String keyword : listToFilter) {
+            if (!keyword.trim().isEmpty()) { // Check if the keyword is not empty after trimming whitespace
+                nonEmptyKeyWords.add(keyword);
+            }
+        }
+
+        return nonEmptyKeyWords;
     }
 }

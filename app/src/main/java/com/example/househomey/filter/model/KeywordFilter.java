@@ -6,13 +6,15 @@ import com.google.android.material.chip.Chip;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
  * A filter class that filters a list of items based on specific keywords.
  */
 public class KeywordFilter extends Filter{
-    public ArrayList<String> keyWords;
+    private ArrayList<String> keyWords;
+    private ArrayList<String> ogKeyWords;
 
     /**
      * Constructs a new KeywordFilter with the specified keywords.
@@ -20,10 +22,15 @@ public class KeywordFilter extends Filter{
      * @param keyWords The keywords to filter by.
      */
     public KeywordFilter(ArrayList<String> keyWords) {
+        this.ogKeyWords = keyWords;
         this.keyWords = new ArrayList<>();
         for (String keyword : keyWords) {
-            this.keyWords.add(keyword.toLowerCase(Locale.ENGLISH));
+            if (!Objects.equals(keyword, "")){this.keyWords.add(keyword.toLowerCase(Locale.ENGLISH));}
         }
+    }
+
+    public ArrayList<String> getOgKeyWords() {
+        return ogKeyWords;
     }
 
     /**
