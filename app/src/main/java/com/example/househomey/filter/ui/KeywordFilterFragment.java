@@ -24,6 +24,8 @@ public class KeywordFilterFragment extends FilterFragment {
     private ChipGroup chipGroup = contentView.findViewById(R.id.chip_group_labels);
     private ArrayList<String> chipTextVals = new ArrayList<>();
     protected KeywordFilter keywordFilter;
+    Button addButton = contentView.findViewById(R.id.add_keyword_button);
+    EditText keyWords = contentView.findViewById(R.id.keyword_edit_text);
 
     /**
      * Constructs a new KeywordFilterFragment.
@@ -36,8 +38,6 @@ public class KeywordFilterFragment extends FilterFragment {
         super(title, contentView, filterCallback);
         this.keywordFilter = keywordFilter;
         autoFillFilter(this.keywordFilter.keyWords);
-        Button addButton = contentView.findViewById(R.id.add_keyword_button);
-        EditText keyWords = contentView.findViewById(R.id.keyword_edit_text);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -48,6 +48,7 @@ public class KeywordFilterFragment extends FilterFragment {
                     chipGroup.addView(chip);
                     chipTextVals.add(chip.getText().toString());
                 }
+                keyWords.setText("");
             }
         });
     }
@@ -60,8 +61,6 @@ public class KeywordFilterFragment extends FilterFragment {
      */
     public KeywordFilterFragment(String title, View contentView, FilterCallback filterCallback) {
         super(title, contentView, filterCallback);
-        Button addButton = contentView.findViewById(R.id.add_keyword_button);
-        EditText keyWords = contentView.findViewById(R.id.keyword_edit_text);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,6 +71,7 @@ public class KeywordFilterFragment extends FilterFragment {
                     chipGroup.addView(chip);
                     chipTextVals.add(chip.getText().toString());
                 }
+                keyWords.setText("");
             }
         });
     }
