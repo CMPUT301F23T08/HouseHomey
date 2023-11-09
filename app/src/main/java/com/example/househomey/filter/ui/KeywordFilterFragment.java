@@ -19,24 +19,7 @@ import java.util.ArrayList;
  */
 public class KeywordFilterFragment extends FilterFragment {
     private ChipGroup chipGroup = contentView.findViewById(R.id.chip_group_labels);
-    private ArrayList<String> chipTextVals;
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        System.err.println("Created");
-        if (savedInstanceState != null) {
-            chipTextVals = savedInstanceState.getStringArrayList("chipTextValues");
-        } else {
-            chipTextVals = new ArrayList<>();
-        }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-        System.err.println("Saved");
-        savedInstanceState.putStringArrayList("chipTextValues", chipTextVals);
-    }
+    private ArrayList<String> chipTextVals = new ArrayList<>();
 
     /**
      * Constructs a new KeywordFilterFragment.
@@ -71,14 +54,6 @@ public class KeywordFilterFragment extends FilterFragment {
     @Override
     public void getFilterInput() {
         // TODO: get the filter properties from fragment input
-        for (int i = 0; i < chipGroup.getChildCount(); i++) {
-            View view = chipGroup.getChildAt(i);
-            if (view instanceof Chip) {
-                Chip chip = (Chip) view;
-                chipTextVals.add(chip.getText().toString());
-            }
-        }
-
         KeywordFilter keywordFilter = new KeywordFilter(chipTextVals);
         filterCallback.onFilterApplied(keywordFilter);
 

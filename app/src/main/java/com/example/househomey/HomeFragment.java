@@ -42,6 +42,8 @@ public class HomeFragment extends Fragment implements FilterCallback {
     private CollectionReference itemRef;
     private ListView itemListView;
     private ArrayList<Item> itemList = new ArrayList<>();
+
+    private ArrayList<Item> filteredItemList = new ArrayList<>();
     private Set<Filter> appliedFilters = new HashSet<>();
     private ArrayAdapter<Item> itemAdapter;
     private TextView listCountView;
@@ -67,7 +69,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
         listSumView = rootView.findViewById(R.id.total_value_text);
 
         itemListView = rootView.findViewById(R.id.item_list);
-        itemAdapter = new ItemAdapter(getContext(), itemList);
+        itemAdapter = new ItemAdapter(getContext(), filteredItemList);
         itemListView.setAdapter(itemAdapter);
 
         itemRef.addSnapshotListener(this::setupItemListener);
@@ -96,8 +98,8 @@ public class HomeFragment extends Fragment implements FilterCallback {
             for (QueryDocumentSnapshot doc: querySnapshots) {
                 Map<String, Object> data = new HashMap<>(doc.getData());
                 itemList.add(new Item(doc.getId(), data));
-                itemAdapter.notifyDataSetChanged();
             }
+            applyFilters();
             updateListData();
         }
     }
@@ -161,14 +163,15 @@ public class HomeFragment extends Fragment implements FilterCallback {
      * and then updates the item adapter with the filtered list of items.
      */
     private void applyFilters() {
-        ArrayList<Item> filteredList = new ArrayList<>(itemList);
+        ArrayList<Item> tempList = itemList;
         for (Filter filter : appliedFilters) {
-            filteredList = filter.filterList(filteredList);
+            tempList = filter.filterList(tempList);
         }
-        itemAdapter.clear();
-        itemAdapter.addAll(filteredList);
+        filteredItemList.clear();
+        filteredItemList.addAll(tempList);
         itemAdapter.notifyDataSetChanged();
     }
+
     /**
      * Updates the displays above list containing information on Total Value and No. of Items
      * in the List. It works using the itemList array so it should be called whenever the
