@@ -2,8 +2,10 @@ package com.example.househomey;
 
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static com.example.househomey.testUtils.TestHelpers.enterText;
@@ -36,6 +38,7 @@ public class EditItemFragmentTest extends TestSetup {
         // Create mock initial item in DB
         database.addMockItem(mockData);
         // Click to view the item page
+        waitForView(withId(R.id.item_list));
         onData(anything())
                 .inAdapterView(withId(R.id.item_list))
                 .atPosition(0)
@@ -70,5 +73,19 @@ public class EditItemFragmentTest extends TestSetup {
     public void testBackButtonGoesToViewItemPage() {
         onView(withId(R.id.add_item_back_button)).perform(click());
         waitForView(withId(R.id.view_item_make));
+    }
+
+    @Test
+    public void testRemovingRequiredFieldWontSubmit() {
+        String defaultErrorMsg = "This field is required";
+        // Clear required fields
+        onView(withId(R.id.add_item_description)).perform(clearText());
+        onView(withId(R.id.add_item_date)).perform(clearText());
+        onView(withId(R.id.add_item_cost)).perform(clearText());
+        // Try submitting and check that error fields are shown
+        onView(withId(R.id.add_item_confirm_button)).perform(click());
+        onView(withId(R.id.add_item_description_layout)).check(matches(hasDescendant(withText(defaultErrorMsg))));
+        onView(withId(R.id.add_item_cost_layout)).check(matches(hasDescendant(withText(defaultErrorMsg))));
+        onView(withId(R.id.add_item_date_layout)).check(matches(hasDescendant(withText(defaultErrorMsg))));
     }
 }

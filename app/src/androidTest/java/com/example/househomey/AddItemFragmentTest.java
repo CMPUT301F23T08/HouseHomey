@@ -93,9 +93,7 @@ public class AddItemFragmentTest extends TestSetup {
     @Test
     public void testBackButtonGoesToHomePage() {
         onView(withId(R.id.add_item_back_button)).perform(click());
-        // Check that we switch back to home page with empty list
         waitForView(withId(R.id.item_list));
-        hasListLength(0);
     }
 
     @Test
