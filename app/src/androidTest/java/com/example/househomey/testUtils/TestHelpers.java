@@ -3,6 +3,7 @@ package com.example.househomey.testUtils;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.pressImeActionButton;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.matcher.ViewMatchers.hasChildCount;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -74,6 +75,6 @@ public class TestHelpers {
      * @param text   The text to be entered into the view.
      */
     public static void enterText(@IdRes int viewId, String text) {
-        onView(withId(viewId)).perform(typeText(text), pressImeActionButton(), closeSoftKeyboard());
+        onView(withId(viewId)).perform(scrollTo(), typeText(text), pressImeActionButton(), closeSoftKeyboard());
     }
 }
