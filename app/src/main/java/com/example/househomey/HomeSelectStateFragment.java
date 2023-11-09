@@ -2,7 +2,10 @@ package com.example.househomey;
 
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
 
+import static java.util.Optional.ofNullable;
+
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.os.BundleCompat;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Firebase;
@@ -33,15 +37,6 @@ public class HomeSelectStateFragment extends HomeFragment implements DeleteItems
     private ItemAdapter itemView;
 
     /**
-     * This constructs a new HomeFragment with the appropriate list of items
-     *
-     * @param itemRef A reference to the firestore collection containing the items to display
-     */
-    public HomeSelectStateFragment(CollectionReference itemRef) {
-        super(itemRef);
-    }
-
-    /**
      *
      * @param inflater The LayoutInflater object that can be used to inflate
      * any views in the fragment,
@@ -56,20 +51,25 @@ public class HomeSelectStateFragment extends HomeFragment implements DeleteItems
      */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        this.itemRef = ((MainActivity) requireActivity()).getItemRef();
         // Inflate the fragment's layout
         View rootView = inflater.inflate(R.layout.fragment_home_select, container, false);
 
+        //Populate the item list from bundle
+        Bundle args = getArguments();
+        if (args!=null){
+            this.itemList = BundleCompat.getParcelableArrayList(args, "itemList", Item.class);
+        }
         itemListView = rootView.findViewById(R.id.item_list);
         itemAdapter = new ItemAdapter(getContext(), itemList);
         itemListView.setAdapter(itemAdapter);
         itemView = (ItemAdapter) itemAdapter;
         itemView.setSelectState(true);
-        itemRef.addSnapshotListener(this::setupItemListener);
 
         final Button cancelButton = rootView.findViewById(R.id.cancel_select_button);
         cancelButton.setOnClickListener(v -> {
             unselectAllItems();
-            navigateToFragmentPage(getContext(), new HomeBaseStateFragment(itemRef));
+            navigateToFragmentPage(getContext(), new HomeBaseStateFragment());
         });
 
         final Button deleteButton = rootView.findViewById(R.id.action_delete);
@@ -108,6 +108,8 @@ public class HomeSelectStateFragment extends HomeFragment implements DeleteItems
                 .addOnFailureListener((error) -> {
                     Log.e("Firestore", "Failed to remove items.", error);
                 });
+
+        navigateToFragmentPage(getContext(), new HomeBaseStateFragment());
     }
 
     /**
@@ -128,9 +130,13 @@ public class HomeSelectStateFragment extends HomeFragment implements DeleteItems
      */
     public ArrayList<Item> getSelectedItems() {
         ArrayList<Item> selectedItems = new ArrayList<>();
-        for (Item item : itemList) {
-            if (item.isSelected()) {
-                selectedItems.add(item);
+        for (int i = 0; i< itemList.size(); i++) {
+            View itemView = itemListView.getChildAt(i);
+            if (itemView!=null) {
+               CheckBox checkBox = itemView.findViewById(R.id.item_checkBox);
+               if (checkBox.isChecked()) {
+                   selectedItems.add(itemList.get(i));
+               }
             }
         }
         return selectedItems;

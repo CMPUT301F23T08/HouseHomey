@@ -39,20 +39,11 @@ import java.util.Set;
  * @see HomeBaseStateFragment
  * @author Owen Cooke, Jared Drueco, Lukas Bonkowski, Sami Jagirdar
  */
-public class HomeFragment extends Fragment {
+public abstract class HomeFragment extends Fragment {
     protected CollectionReference itemRef;
     protected ListView itemListView;
-    protected ArrayList<Item> itemList = new ArrayList<>();
+    protected ArrayList<Item> itemList;
     protected ArrayAdapter<Item> itemAdapter;
-
-    /**
-     * This constructs a new HomeFragment with the appropriate list of items
-     * @param itemRef A reference to the firestore collection containing the items to display
-     */
-    public HomeFragment(CollectionReference itemRef) {
-        this.itemRef = itemRef;
-        itemList = new ArrayList<>();
-    }
 
     /**
      * This method updates the itemAdapter with changes in the firestore database and creates new
@@ -84,10 +75,6 @@ public class HomeFragment extends Fragment {
     protected void unselectAllItems() {
 
         for (int i=0;i<itemList.size();i++) {
-
-            // unselect items
-            itemList.get(i).setSelected(false);
-
             // uncheck selected checkboxes
             View itemView = itemListView.getChildAt(i);
             if (itemView!=null) {

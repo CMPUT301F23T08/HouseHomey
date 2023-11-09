@@ -31,11 +31,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // create or login a user, for now just assume...
-        user = new User("john_doe");
+        // Handle the test user data
+        Bundle userData = getIntent().getBundleExtra("userData");
+        if (userData != null) {
+            String username = userData.getString("username");
+            user = new User(username);
+        } else {
+            // create or login a user, for now just assume...
+            user = new User("john_doe");
+        }
 
         // Init home fragment
-        navigateToFragmentPage(this, new HomeBaseStateFragment(getItemRef()));
+        navigateToFragmentPage(this, new HomeBaseStateFragment());
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -43,13 +50,13 @@ public class MainActivity extends AppCompatActivity {
             Fragment fragment;
             if (id == R.id.action_home) {
                 // Go to Home page
-                fragment = new HomeBaseStateFragment(getItemRef());
+                fragment = new HomeBaseStateFragment();
             } else if (id == R.id.action_add) {
                 // Go to Add Item page
                 fragment = new AddItemFragment();
             } else {
                 // TODO: Go to Profile Page
-                fragment = new HomeBaseStateFragment(getItemRef());
+                fragment = new HomeBaseStateFragment();
             }
             navigateToFragmentPage(this, fragment);
             return true;

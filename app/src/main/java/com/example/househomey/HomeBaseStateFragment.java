@@ -33,16 +33,7 @@ import java.util.Set;
  */
 public class HomeBaseStateFragment extends HomeFragment implements FilterCallback {
     private Set<Filter> appliedFilters = new HashSet<>();
-    private ItemAdapter itemView;
 
-    /**
-     * This constructs a new HomeBaseStateFragment with the appropriate list of items
-     *
-     * @param itemRef A reference to the firestore collection containing the items to display
-     */
-    public HomeBaseStateFragment(CollectionReference itemRef) {
-        super(itemRef);
-    }
 
     /**
      * @param inflater           The LayoutInflater object that can be used to inflate
@@ -57,19 +48,25 @@ public class HomeBaseStateFragment extends HomeFragment implements FilterCallbac
      */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        this.itemRef = ((MainActivity) requireActivity()).getItemRef();
         // Inflate the fragment's layout
         View rootView = inflater.inflate(R.layout.fragment_home_base, container, false);
-
+        itemList = new ArrayList<>();
+        itemRef.addSnapshotListener(this::setupItemListener);
         itemListView = rootView.findViewById(R.id.item_list);
         itemAdapter = new ItemAdapter(getContext(), itemList);
         itemListView.setAdapter(itemAdapter);
-        itemView = (ItemAdapter) itemAdapter;
+        ItemAdapter itemView = (ItemAdapter) itemAdapter;
         itemView.setSelectState(false);
-        itemRef.addSnapshotListener(this::setupItemListener);
+
 
         final Button selectButton = rootView.findViewById(R.id.select_items_button);
         selectButton.setOnClickListener(v -> {
-            navigateToFragmentPage(getContext(), new HomeSelectStateFragment(itemRef));
+            HomeSelectStateFragment selectStateFragment = new HomeSelectStateFragment();
+            Bundle args = new Bundle();
+            args.putParcelableArrayList("itemList", itemList);
+            selectStateFragment.setArguments(args);
+            navigateToFragmentPage(getContext(), selectStateFragment);
         });
 
         View filterButton = rootView.findViewById(R.id.filter_dropdown_button);

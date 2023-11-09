@@ -108,12 +108,6 @@ public class ItemAdapter extends ArrayAdapter<Item> {
         }
         itemCheckBox.setVisibility(this.isSelectState() ? View.VISIBLE : View.GONE);
 
-        // ticking a checkbox should select corresponding item
-        itemCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            item.setSelected(isChecked);
-        });
-
-
         return view;
     }
 }
