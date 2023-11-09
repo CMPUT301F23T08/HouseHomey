@@ -153,7 +153,12 @@ public class HomeFragment extends Fragment implements FilterCallback {
         applyFilters();
     }
 
-
+    /**
+     * Resets filters of a specific class by removing all instances of that class from the applied
+     * filters list and then re-applies the remaining filters.
+     *
+     * @param filterClass The class of filter to reset.
+     */
     public void onFilterReset(Class<?> filterClass) {
         for (Filter filter : appliedFilters) {
             if (filterClass.isInstance(filter)) {

@@ -32,6 +32,9 @@ public class MakeFilterFragment extends FilterFragment {
         dismiss();
     }
 
+    /**
+     * Deletes the currently applied "Make" filter on the home fragment.
+     */
     @Override
     public void resetFilter() {
         filterCallback.onFilterReset(MakeFilter.class);
