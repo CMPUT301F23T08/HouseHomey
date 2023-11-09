@@ -141,4 +141,23 @@ public class HomeSelectStateFragment extends HomeFragment implements DeleteItems
         }
         return selectedItems;
     }
+
+    /**
+     * This method unselects all the items in the list displayed and unchecks the corresponding
+     * checkboxes as well.
+     * @see Item
+     * @see ItemAdapter
+     */
+    private void unselectAllItems() {
+
+        for (int i=0;i<itemList.size();i++) {
+            // uncheck selected checkboxes
+            View itemView = itemListView.getChildAt(i);
+            if (itemView!=null) {
+                CheckBox itemCheckBox = itemView.findViewById(R.id.item_checkBox);
+                itemCheckBox.setChecked(false);
+            }
+        }
+        itemAdapter.notifyDataSetChanged();
+    }
 }

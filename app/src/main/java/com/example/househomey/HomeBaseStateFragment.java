@@ -3,6 +3,7 @@ package com.example.househomey;
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
@@ -20,9 +21,14 @@ import com.example.househomey.filter.ui.KeywordFilterFragment;
 import com.example.househomey.filter.ui.MakeFilterFragment;
 import com.example.househomey.filter.ui.TagFilterFragment;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -75,6 +81,28 @@ public class HomeBaseStateFragment extends HomeFragment implements FilterCallbac
         return rootView;
 
     }
+
+    /**
+     * This method updates the itemAdapter with changes in the firestore database and creates new
+     * item objects
+     * @param querySnapshots The updated information on the inventory from the database
+     * @param error Non-null if an error occurred in Firestore
+     */
+    private void setupItemListener(QuerySnapshot querySnapshots, FirebaseFirestoreException error) {
+        if (error != null) {
+            Log.e("Firestore", error.toString());
+            return;
+        }
+        if (querySnapshots != null) {
+            itemList.clear();
+            for (QueryDocumentSnapshot doc: querySnapshots) {
+                Map<String, Object> data = new HashMap<>(doc.getData());
+                itemList.add(new Item(doc.getId(), data));
+                itemAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+
     /**
      * Displays the filter menu with options to select the appropriate filter
      * @param view The view to set the filter menu on

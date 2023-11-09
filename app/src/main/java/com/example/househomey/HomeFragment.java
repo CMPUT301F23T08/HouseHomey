@@ -45,44 +45,4 @@ public abstract class HomeFragment extends Fragment {
     protected ArrayList<Item> itemList;
     protected ArrayAdapter<Item> itemAdapter;
 
-    /**
-     * This method updates the itemAdapter with changes in the firestore database and creates new
-     * item objects
-     * @param querySnapshots The updated information on the inventory from the database
-     * @param error Non-null if an error occurred in Firestore
-     */
-    protected void setupItemListener(QuerySnapshot querySnapshots, FirebaseFirestoreException error) {
-        if (error != null) {
-            Log.e("Firestore", error.toString());
-            return;
-        }
-        if (querySnapshots != null) {
-            itemList.clear();
-            for (QueryDocumentSnapshot doc: querySnapshots) {
-                Map<String, Object> data = new HashMap<>(doc.getData());
-                itemList.add(new Item(doc.getId(), data));
-                unselectAllItems();
-            }
-        }
-    }
-
-    /**
-     * This method unselects all the items in the list displayed and unchecks the corresponding
-     * checkboxes as well.
-     * @see Item
-     * @see ItemAdapter
-     */
-    protected void unselectAllItems() {
-
-        for (int i=0;i<itemList.size();i++) {
-            // uncheck selected checkboxes
-            View itemView = itemListView.getChildAt(i);
-            if (itemView!=null) {
-                CheckBox itemCheckBox = itemView.findViewById(R.id.item_checkBox);
-                itemCheckBox.setChecked(false);
-            }
-        }
-        itemAdapter.notifyDataSetChanged();
-    }
-
 }
