@@ -1,9 +1,11 @@
 package com.example.househomey.filter.model;
 
 import com.example.househomey.Item;
+import com.google.android.material.chip.Chip;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 /**
@@ -17,7 +19,12 @@ public class KeywordFilter extends Filter{
      *
      * @param keyWords The keywords to filter by.
      */
-    public KeywordFilter(ArrayList<String> keyWords) {this.keyWords = keyWords;}
+    public KeywordFilter(ArrayList<String> keyWords) {
+        this.keyWords = new ArrayList<>();
+        for (String keyword : keyWords) {
+            this.keyWords.add(keyword.toLowerCase(Locale.ENGLISH));
+        }
+    }
 
     /**
      * Filters the passed in list of items, retaining only those items that match the
@@ -29,7 +36,7 @@ public class KeywordFilter extends Filter{
     @Override
     public ArrayList<Item> filterList(ArrayList<Item> itemList) {
         return itemList.stream()
-                .filter(item -> Arrays.stream(item.getDescription()
+                .filter(item -> Arrays.stream(item.getDescription().toLowerCase(Locale.ENGLISH)
                         .split(" ")).anyMatch(keyWords::contains))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
