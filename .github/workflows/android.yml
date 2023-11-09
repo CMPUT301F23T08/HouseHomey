@@ -13,7 +13,7 @@ env:
   ANDROID_BUILD_TOOLS_VERSION: 34.0.0
   ANDROID_SDK_PACKAGES: system-images;android-34;default;x86_64 platforms;android-34 build-tools;34.0.0 platform-tools emulator
   EMULATOR_TIMEOUT: 350
-  EMULATOR_NAME: nexus
+  EMULATOR_NAME: pixel
 
 jobs:
   buildUnitTest:
