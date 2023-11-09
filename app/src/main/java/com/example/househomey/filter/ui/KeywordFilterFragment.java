@@ -117,6 +117,7 @@ public class KeywordFilterFragment extends FilterFragment {
 
     @Override
     public void resetFilter() {
-        // TODO: logic for resetting current filter
+        filterCallback.onFilterReset(this.keywordFilter);
+        dismiss();
     }
 }
