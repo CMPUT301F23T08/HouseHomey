@@ -17,9 +17,9 @@ import com.example.househomey.filter.model.FilterCallback;
 public abstract class FilterFragment extends DialogFragment {
     /**
      * Constructs a new FilterFragment.
-     * @param title         The title of the filter dialog.
-     * @param contentView   The content view of the filter dialog.
-     * @param filterCallback The callback interface for handling filter changes.
+     * title         The title of the filter dialog.
+     * contentView   The content view of the filter dialog.
+     * filterCallback The callback interface for handling filter changes.
      */
     protected String title;
     protected View contentView;
@@ -45,19 +45,9 @@ public abstract class FilterFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        DialogInterface.OnClickListener onApplyListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                getFilterInput();
-            }
-        };
+        DialogInterface.OnClickListener onApplyListener = (dialog, which) -> getFilterInput();
 
-        DialogInterface.OnClickListener onResetListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                resetFilter();
-            }
-        };
+        DialogInterface.OnClickListener onResetListener = (dialog, which) -> resetFilter();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
