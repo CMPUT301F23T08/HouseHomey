@@ -23,6 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  * This fragment is a child of the home fragment containing the list of the user's inventory
@@ -33,6 +34,9 @@ import java.util.ArrayList;
 public class SelectFragment extends Fragment implements DeleteItemsFragment.DeleteCallBack{
     private CollectionReference itemRef;
     private ListView itemListView;
+    private Comparator<Item> currentSort;
+    private String currentSortName;
+    private boolean sortOrder;
     private ArrayList<Item> itemList;
     private ItemAdapter itemAdapter;
     /**
@@ -59,8 +63,9 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
         //Populate the item list from bundle
         Bundle args = getArguments();
         if (args!=null){
-            this.itemList = BundleCompat.getParcelableArrayList(args, "itemList", Item.class);
-
+            itemList = BundleCompat.getParcelableArrayList(args, "itemList", Item.class);
+            sortOrder = args.getBoolean("sortOrder");
+            currentSortName = args.getString("currentSortName");
             ((TextView) rootView.findViewById(R.id.total_value_text)).setText("$" + args.getString("listSum"));
             ((TextView) rootView.findViewById(R.id.total_count_text)).setText(Integer.toString(args.getInt("listCount")));
         }
@@ -72,7 +77,12 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
         final Button cancelButton = rootView.findViewById(R.id.cancel_select_button);
         cancelButton.setOnClickListener(v -> {
             unselectAllItems();
-            navigateToFragmentPage(getContext(), new HomeFragment());
+            HomeFragment homeFragment = new HomeFragment();
+            Bundle outgoing_args = new Bundle();
+            outgoing_args.putString("currentSortName",currentSortName);
+            outgoing_args.putBoolean("sortOrder", sortOrder);
+            homeFragment.setArguments(outgoing_args);
+            navigateToFragmentPage(getContext(),homeFragment);
         });
 
         final Button deleteButton = rootView.findViewById(R.id.action_delete);
