@@ -66,6 +66,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
     private int listCount = 0;
     private Map<String, Comparator<Item>> sortProperties;
     private Comparator<Item> currentSort;
+    private String currentSortName;
     private final boolean DESC = true;
     private final boolean ASC = false;
     private ToggleButton toggleOrder;
@@ -100,8 +101,18 @@ public class HomeFragment extends Fragment implements FilterCallback {
         sortProperties.put("date",new DateComparator());
         sortProperties.put("make", new MakeComparator());
         sortProperties.put("cost", new CostComparator());
-        currentSort = sortProperties.get("description"); //default sort property
-        sortOrder = ASC; //ascending order is default
+
+        Bundle received_args = getArguments();
+        if (received_args!=null){
+            currentSortName = received_args.getString("currentSortName");
+            currentSort = sortProperties.get(currentSortName);
+            sortOrder = received_args.getBoolean("sortOrder");
+        }
+        else {
+            currentSortName = "description";
+            currentSort = sortProperties.get("description"); //default sort property
+            sortOrder = ASC; //ascending order is default
+        }
 
         itemRef.addSnapshotListener(this::setupItemListener);
         itemListView = rootView.findViewById(R.id.item_list);
@@ -118,8 +129,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
             args.putInt("listCount", listCount);
             args.putString("listSum", listSum.toString());
             args.putBoolean("sortOrder",sortOrder);
-            //TODO: Have to make the sort Comparators Parcelable, so that sorting persists
-            // when we go back from select state to base state (can be done later)
+            args.putString("currentSortName",currentSortName);
             selectStateFragment.setArguments(args);
             navigateToFragmentPage(getContext(), selectStateFragment);
         });
@@ -130,7 +140,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
         //Sort dropdown functionality
         final Button sortButton = rootView.findViewById(R.id.sort_by_alpha_button);
         sortButton.setOnClickListener(v -> {
-            showSortMenu(sortButton, sortProperties);
+            showSortMenu(sortButton);
         });
 
         //Toggle sorting order functionality
@@ -283,9 +293,8 @@ public class HomeFragment extends Fragment implements FilterCallback {
     /**
      * Displays the sort menu with properties of items to sort by
      * @param view The view on which the pop up menu is displayed
-     * @param sortProperties A mapping of properties to their comparators
      */
-    private void showSortMenu(View view, Map<String, Comparator<Item>> sortProperties) {
+    private void showSortMenu(View view) {
         PopupMenu popupMenu = new PopupMenu(requireContext(), view);
         MenuInflater inflater = popupMenu.getMenuInflater();
         inflater.inflate(R.menu.sort, popupMenu.getMenu());
@@ -294,16 +303,17 @@ public class HomeFragment extends Fragment implements FilterCallback {
         popupMenu.setOnMenuItemClickListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.sort_by_description) {
-                currentSort = sortProperties.get("description");
+                currentSortName = "description";
             } else if (itemId == R.id.sort_by_date) {
-                currentSort = sortProperties.get("date");
+                currentSortName = "date";
             } else if (itemId == R.id.sort_by_make) {
-                currentSort = sortProperties.get("make");
+                currentSortName = "make";
             } else if (itemId == R.id.sort_by_estimatedValue) {
-                currentSort = sortProperties.get("cost");
+                currentSortName = "cost";
             } else {
                 return false;
             }
+            currentSort = sortProperties.get(currentSortName);
             sortItems();
             return true;
         });
