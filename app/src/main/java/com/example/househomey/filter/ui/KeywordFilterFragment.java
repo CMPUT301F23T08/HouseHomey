@@ -37,15 +37,11 @@ public class KeywordFilterFragment extends FilterFragment {
      */
     public KeywordFilterFragment(String title, View contentView, FilterCallback filterCallback) {
         super(title, contentView, filterCallback);
-        autoFillFilter(this.keywordFilter.getOgKeyWords());
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                List<String> keyWordArray = Arrays.asList(keyWords.getText().toString().split(" "));
-                keyWordArray = removeEmptyStrings(keyWordArray);
-                autoFillFilter(keyWordArray);
-                keyWords.setText("");
-            }
+        addButton.setOnClickListener(v -> {
+            ArrayList<String> keyWordArray = new ArrayList<>(Arrays.asList(keyWords.getText().toString().split(" ")));
+            keyWordArray.removeIf(e -> e.trim().isEmpty());
+            autoFillFilter(keyWordArray);
+            keyWords.setText("");
         });
     }
 
