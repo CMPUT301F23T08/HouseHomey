@@ -64,7 +64,6 @@ public class HomeFragment extends Fragment implements FilterCallback {
     private TextView listSumView;
     private BigDecimal listSum = new BigDecimal("0.00");
     private int listCount = 0;
-
     private Map<String, Comparator<Item>> sortProperties;
     private Comparator<Item> currentSort;
     private final boolean DESC = true;
@@ -86,6 +85,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         this.itemRef = ((MainActivity) requireActivity()).getItemRef();
+
         // Inflate the fragment's layout
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         rootView.findViewById(R.id.base_toolbar).setVisibility(View.VISIBLE);
@@ -127,7 +127,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
         //Sort dropdown functionality
         final Button sortButton = rootView.findViewById(R.id.sort_by_alpha_button);
         sortButton.setOnClickListener(v -> {
-            showSortMenu(getView(), sortProperties);
+            showSortMenu(sortButton, sortProperties);
         });
 
         //Toggle sorting order functionality
@@ -138,11 +138,11 @@ public class HomeFragment extends Fragment implements FilterCallback {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     sortOrder = DESC;
-                    sortItems(itemList,currentSort,sortOrder);
+                    sortItems(filteredItemList,currentSort,sortOrder);
                 }
                 else {
                     sortOrder = ASC;
-                    sortItems(itemList,currentSort,sortOrder);
+                    sortItems(filteredItemList,currentSort,sortOrder);
                 }
             }
         });
@@ -169,8 +169,9 @@ public class HomeFragment extends Fragment implements FilterCallback {
                 Map<String, Object> data = new HashMap<>(doc.getData());
                 itemList.add(new Item(doc.getId(), data));
             }
-            sortItems(itemList, currentSort, sortOrder);
+
             applyFilters();
+            sortItems(filteredItemList, currentSort, sortOrder);
         }
     }
 
@@ -286,17 +287,11 @@ public class HomeFragment extends Fragment implements FilterCallback {
         this.listCountView.setText(Integer.toString(listCount));
     }
 
-
-    private void sortItems(ArrayList<Item> itemList, Comparator<Item> currentSort, boolean descending) {
-        if (!descending){
-            Collections.sort(itemList, currentSort);
-        }
-        else {
-            Collections.sort(itemList, Collections.reverseOrder(currentSort));
-        }
-        itemAdapter.notifyDataSetChanged();
-    }
-
+    /**
+     * Displays the sort menu with properties of items to sort by
+     * @param view The view on which the pop up menu is displayed
+     * @param sortProperties A mapping of properties to their comparators
+     */
     private void showSortMenu(View view, Map<String, Comparator<Item>> sortProperties) {
         PopupMenu popupMenu = new PopupMenu(requireContext(), view);
         MenuInflater inflater = popupMenu.getMenuInflater();
@@ -307,16 +302,16 @@ public class HomeFragment extends Fragment implements FilterCallback {
             int itemId = item.getItemId();
             if (itemId == R.id.sort_by_description) {
                 currentSort = sortProperties.get("description");
-                sortItems(itemList, currentSort, sortOrder);
+                sortItems(filteredItemList, currentSort, sortOrder);
             } else if (itemId == R.id.sort_by_date) {
                 currentSort = sortProperties.get("date");
-                sortItems(itemList, currentSort, sortOrder);
+                sortItems(filteredItemList, currentSort, sortOrder);
             } else if (itemId == R.id.sort_by_make) {
                 currentSort = sortProperties.get("make");
-                sortItems(itemList, currentSort, sortOrder);
+                sortItems(filteredItemList, currentSort, sortOrder);
             } else if (itemId == R.id.sort_by_estimatedValue) {
                 currentSort = sortProperties.get("cost");
-                sortItems(itemList, currentSort, sortOrder);
+                sortItems(filteredItemList, currentSort, sortOrder);
             } else {
                 return false;
             }
@@ -325,5 +320,25 @@ public class HomeFragment extends Fragment implements FilterCallback {
 
         popupMenu.show();
     }
+
+    /**
+     * Sorts the item list on the homepage based the provided Comparator in either descending
+     * or ascending order
+     * @param itemList List of items to sort
+     * @param currentSort Comparator for the property by which we are sorting
+     * @param descending Whether to sort in descending order or not
+     */
+    private void sortItems(ArrayList<Item> itemList, Comparator<Item> currentSort, boolean descending) {
+
+        if (!descending){
+            itemList.sort(currentSort);
+        }
+        else {
+            itemList.sort(Collections.reverseOrder(currentSort));
+        }
+        itemAdapter.notifyDataSetChanged();
+    }
+
+
 
 }

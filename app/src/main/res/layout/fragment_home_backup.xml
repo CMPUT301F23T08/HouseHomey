@@ -63,16 +63,16 @@
                 app:iconTint="@color/black"
                 android:contentDescription="@string/sort_button_description"/>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/sort_order_toggle"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="48dp"
-                android:layout_height="wrap_content"
-                android:padding="2dp"
-                app:icon="@drawable/swap_vert_24px"
-                app:iconSize="30dp"
-                app:iconTint="@color/black"
-                android:contentDescription="@string/toggle_description"/>
+<!--            <com.google.android.material.button.MaterialButton-->
+<!--                android:id="@+id/sort_order_toggle"-->
+<!--                style="?android:attr/borderlessButtonStyle"-->
+<!--                android:layout_width="48dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:padding="2dp"-->
+<!--                app:icon="@drawable/swap_vert_24px"-->
+<!--                app:iconSize="30dp"-->
+<!--                app:iconTint="@color/black"-->
+<!--                android:contentDescription="@string/toggle_description"/>-->
         </LinearLayout>
 
         <LinearLayout
