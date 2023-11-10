@@ -108,6 +108,11 @@ public class KeywordFilterFragment extends FilterFragment {
         }
     }
 
+    /**
+     * Takes in a list of strings and returns the list with all empty entries removed.
+     * @param listToFilter - The List of strings that we want to remove entries from
+     * @return - Returns a list with all empty entries removed.
+     */
     private List<String> removeEmptyStrings(List<String> listToFilter) {
         List<String> nonEmptyKeyWords = new ArrayList<>();
 
@@ -120,6 +125,9 @@ public class KeywordFilterFragment extends FilterFragment {
         return nonEmptyKeyWords;
     }
 
+    /**
+     * Resets the list that was changed by the keyword filter.
+     */
     @Override
     public void resetFilter() {
         filterCallback.onFilterReset(this.keywordFilter);
