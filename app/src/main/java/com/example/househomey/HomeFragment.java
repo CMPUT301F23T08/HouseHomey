@@ -101,7 +101,6 @@ public class HomeFragment extends Fragment implements FilterCallback {
                 itemList.add(new Item(doc.getId(), data));
             }
             applyFilters();
-            updateListData();
         }
     }
 
@@ -167,7 +166,6 @@ public class HomeFragment extends Fragment implements FilterCallback {
             appliedFilters.add(filter);
         }
         applyFilters();
-        updateListData();
     }
 
     /**
@@ -179,7 +177,6 @@ public class HomeFragment extends Fragment implements FilterCallback {
     public void onFilterReset(Filter filter) {
         appliedFilters.remove(filter);
         applyFilters();
-        updateListData();
     }
 
     /**
@@ -195,6 +192,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
         filteredItemList.clear();
         filteredItemList.addAll(tempList);
         itemAdapter.notifyDataSetChanged();
+        updateListData();
     }
 
     /**

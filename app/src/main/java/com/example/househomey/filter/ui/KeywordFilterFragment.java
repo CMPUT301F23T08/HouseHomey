@@ -35,20 +35,14 @@ public class KeywordFilterFragment extends FilterFragment {
      * @param title         The title of the "Keyword" filter dialog.
      * @param contentView   The content view of the "Keyword" filter dialog.
      * @param filterCallback The callback interface for handling filter changes.
-     * @param keywordFilter The previous filter instance
      */
-    public KeywordFilterFragment(String title, View contentView, FilterCallback filterCallback, KeywordFilter keywordFilter) {
+    public KeywordFilterFragment(String title, View contentView, FilterCallback filterCallback) {
         super(title, contentView, filterCallback);
-        this.keywordFilter = keywordFilter;
-        autoFillFilter(this.keywordFilter.getOgKeyWords());
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                List<String> keyWordArray = Arrays.asList(keyWords.getText().toString().split(" "));
-                keyWordArray = removeEmptyStrings(keyWordArray);
-                autoFillFilter(keyWordArray);
-                keyWords.setText("");
-            }
+        addButton.setOnClickListener(v -> {
+            ArrayList<String> keyWordArray = new ArrayList<>(Arrays.asList(keyWords.getText().toString().split(" ")));
+            keyWordArray.removeIf(e -> e.trim().isEmpty());
+            autoFillFilter(keyWordArray);
+            keyWords.setText("");
         });
     }
 
@@ -57,19 +51,14 @@ public class KeywordFilterFragment extends FilterFragment {
      * @param title         The title of the "Keyword" filter dialog.
      * @param contentView   The content view of the "Keyword" filter dialog.
      * @param filterCallback The callback interface for handling filter changes.
+     * @param keywordFilter The previous filter instance
      */
-    public KeywordFilterFragment(String title, View contentView, FilterCallback filterCallback) {
-        super(title, contentView, filterCallback);
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                List<String> keyWordArray = Arrays.asList(keyWords.getText().toString().split(" "));
-                keyWordArray = removeEmptyStrings(keyWordArray);
-                autoFillFilter(keyWordArray);
-                keyWords.setText("");
-            }
-        });
+    public KeywordFilterFragment(String title, View contentView, FilterCallback filterCallback, KeywordFilter keywordFilter) {
+        this(title, contentView, filterCallback);
+        this.keywordFilter = keywordFilter;
+        autoFillFilter(this.keywordFilter.getOgKeyWords());
     }
+
 
     /**
      * Extracts the "Keyword" filter values from the chip group.
@@ -98,31 +87,11 @@ public class KeywordFilterFragment extends FilterFragment {
             chip.setTextColor(ContextCompat.getColor(context , R.color.brown));
             chipGroup.addView(chip);
             chipTextVals.add(chip.getText().toString());
-            chip.setOnCloseIconClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    chipGroup.removeView(chip);
-                    chipTextVals.remove(chip.getText().toString());
-                }
+            chip.setOnCloseIconClickListener(v -> {
+                chipGroup.removeView(chip);
+                chipTextVals.remove(chip.getText().toString());
             });
         }
-    }
-
-    /**
-     * Takes in a list of strings and returns the list with all empty entries removed.
-     * @param listToFilter - The List of strings that we want to remove entries from
-     * @return - Returns a list with all empty entries removed.
-     */
-    private List<String> removeEmptyStrings(List<String> listToFilter) {
-        List<String> nonEmptyKeyWords = new ArrayList<>();
-
-        for (String keyword : listToFilter) {
-            if (!keyword.trim().isEmpty()) { // Check if the keyword is not empty after trimming whitespace
-                nonEmptyKeyWords.add(keyword);
-            }
-        }
-
-        return nonEmptyKeyWords;
     }
 
     /**
