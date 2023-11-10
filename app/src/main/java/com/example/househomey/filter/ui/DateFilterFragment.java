@@ -26,19 +26,31 @@ import java.util.TimeZone;
  */
 public class DateFilterFragment extends FilterFragment {
 
-    private TextInputEditText startDateTextView;
-    private TextInputEditText endDateTextView;
-    private Date startDate;
-    private Date endDate;
+
+    protected DateFilter dateFilter;
 
     /**
-     * Constructor for DateFilterFragment
+     * Constructs a new DateFilterFragment when a date filter is already applied
+     * @param title title of date filter fragment
+     * @param contentView content view of date filter fragment
+     * @param filterCallback callback interface for handling filter changes
+     * @param dateFilter The existing filter applied
+     */
+    public DateFilterFragment(String title, View contentView, FilterCallback filterCallback, DateFilter dateFilter) {
+        super(title, contentView, filterCallback);
+        this.dateFilter = dateFilter;
+        autoFillLastFilter(dateFilter);
+    }
+
+    /**
+     * Constructs a new DateFilterFragment when no date filter has been applied yet
      * @param title title of date filter fragment
      * @param contentView content view of date filter fragment
      * @param filterCallback callback interface for handling filter changes
      */
     public DateFilterFragment(String title, View contentView, FilterCallback filterCallback) {
         super(title, contentView, filterCallback);
+        dateFilter = new DateFilter();
     }
 
     /**
@@ -51,8 +63,8 @@ public class DateFilterFragment extends FilterFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         Dialog builder = super.onCreateDialog(savedInstanceState);
 
-        startDateTextView = setDateTextView(contentView, R.id.start_date_filter, R.id.start_date_layout);
-        endDateTextView = setDateTextView(contentView, R.id.end_date_filter, R.id.end_date_layout);
+        setDateTextView(contentView, R.id.start_date_filter, R.id.start_date_layout);
+        setDateTextView(contentView, R.id.end_date_filter, R.id.end_date_layout);
 
         return builder;
 
@@ -65,24 +77,20 @@ public class DateFilterFragment extends FilterFragment {
      * @param layoutId id of layout associated with  date text view
      * @return TextInputEditText for the date selected
      */
-    private TextInputEditText setDateTextView(View contentView, int dateViewId, int layoutId) {
+    private void setDateTextView(View contentView, int dateViewId, int layoutId) {
 
         TextInputEditText dateTextView = contentView.findViewById(dateViewId);
 
         MaterialDatePicker<Long> datePicker = FragmentUtils.createDatePicker();
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-
         datePicker.addOnPositiveButtonClickListener(selection -> {
             Date date = new Date(selection);
-            dateTextView.setText(dateFormat.format(date));
+            dateTextView.setText(FragmentUtils.formatDate(date));
             ((TextInputLayout) contentView.findViewById(layoutId)).setError(null);
             setStartOrEndDate(dateTextView, date);
         });
 
         dateTextView.setOnClickListener(v -> datePicker.show(getParentFragmentManager(), "Date Picker"));
-        return dateTextView;
     }
 
     /**
@@ -92,10 +100,24 @@ public class DateFilterFragment extends FilterFragment {
      */
     private void setStartOrEndDate(EditText dateTextView, Date date) {
         if (dateTextView.getId() == R.id.start_date_filter) {
-            startDate = date;
+            dateFilter.setStartDate(date);
         } else if (dateTextView.getId() == R.id.end_date_filter) {
-            endDate = date;
+            dateFilter.setEndDate(date);
         }
+    }
+
+    /**
+     * Populates start and end date fields with the dateFilter previously applied
+     * @param dateFilter the previous dateFilter used
+     */
+    public void autoFillLastFilter(DateFilter dateFilter) {
+        EditText startDateEditText = contentView.findViewById(R.id.start_date_filter);
+        EditText endDateEditText = contentView.findViewById(R.id.end_date_filter);
+
+        if (dateFilter.getStartDate() != null)
+            startDateEditText.setText(FragmentUtils.formatDate(dateFilter.getStartDate()));
+        if (dateFilter.getEndDate() != null)
+            endDateEditText.setText(FragmentUtils.formatDate(dateFilter.getEndDate()));
     }
 
     /**
@@ -103,12 +125,16 @@ public class DateFilterFragment extends FilterFragment {
      */
     @Override
     public void getFilterInput() {
-        DateFilter dateFilter = new DateFilter(startDate, endDate);
         filterCallback.onFilterApplied(dateFilter);
         dismiss();
     }
+
+    /**
+     * Deletes the currently applied "Date" filter on the home fragment.
+     */
     @Override
     public void resetFilter() {
-        // TODO: logic for resetting current filter
+        filterCallback.onFilterReset(this.dateFilter);
+        dismiss();
     }
 }

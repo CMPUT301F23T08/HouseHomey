@@ -1,5 +1,6 @@
 package com.example.househomey;
 
+import static com.example.househomey.utils.FragmentUtils.formatDate;
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
 
 import android.content.Context;
@@ -14,9 +15,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-import java.util.TimeZone;
 import java.util.ArrayList;
 
 /**
@@ -27,7 +25,6 @@ import java.util.ArrayList;
 public class ItemAdapter extends ArrayAdapter<Item> {
     private ArrayList<Item> items;
     private Context context;
-    private SimpleDateFormat dateFormat;
 
     /**
      * Constructs a new ItemAdapter with an ArrayList of items
@@ -38,8 +35,6 @@ public class ItemAdapter extends ArrayAdapter<Item> {
         super(context, 0, items);
         this.items = items;
         this.context = context;
-        dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.CANADA);
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
 
 
@@ -71,7 +66,7 @@ public class ItemAdapter extends ArrayAdapter<Item> {
 
         // Set all the text views to their appropriate values
         ((TextView) view.findViewById(R.id.item_description_text)).setText(item.getDescription());
-        String dateCost = dateFormat.format(item.getAcquisitionDate()) + " | $" + item.getCost();
+        String dateCost = formatDate(item.getAcquisitionDate()) + " | $" + item.getCost();
         ((TextView) view.findViewById(R.id.item_text)).setText(dateCost);
 
         // Initialize button for viewing details of the item
