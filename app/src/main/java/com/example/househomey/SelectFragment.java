@@ -7,10 +7,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -52,12 +52,17 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         this.itemRef = ((MainActivity) requireActivity()).getItemRef();
         // Inflate the fragment's layout
-        View rootView = inflater.inflate(R.layout.fragment_home_select, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+        rootView.findViewById(R.id.base_toolbar).setVisibility(View.GONE);
+        rootView.findViewById(R.id.select_toolbar).setVisibility(View.VISIBLE);
 
         //Populate the item list from bundle
         Bundle args = getArguments();
         if (args!=null){
             this.itemList = BundleCompat.getParcelableArrayList(args, "itemList", Item.class);
+
+            ((TextView) rootView.findViewById(R.id.total_value_text)).setText("$" + args.getString("listSum"));
+            ((TextView) rootView.findViewById(R.id.total_count_text)).setText(Integer.toString(args.getInt("listCount")));
         }
         itemListView = rootView.findViewById(R.id.item_list);
         itemAdapter = new ItemAdapter(getContext(), itemList);

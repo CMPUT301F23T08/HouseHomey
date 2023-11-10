@@ -1,10 +1,6 @@
 package com.example.househomey;
 
-import static android.app.PendingIntent.getActivity;
-import static androidx.core.content.ContentProviderCompat.requireContext;
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
-
-import static java.security.AccessController.getContext;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -12,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -28,7 +23,6 @@ import com.example.househomey.filter.model.MakeFilter;
 import com.example.househomey.filter.ui.DateFilterFragment;
 import com.example.househomey.filter.model.Filter;
 import com.example.househomey.filter.model.FilterCallback;
-import com.example.househomey.filter.ui.DateFilterFragment;
 import com.example.househomey.filter.ui.KeywordFilterFragment;
 import com.example.househomey.filter.ui.MakeFilterFragment;
 import com.example.househomey.filter.ui.TagFilterFragment;
@@ -38,8 +32,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-
-import java.util.Date;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -62,6 +54,8 @@ public class HomeFragment extends Fragment implements FilterCallback {
     private Set<Filter> appliedFilters = new HashSet<>();
     private TextView listCountView;
     private TextView listSumView;
+    private BigDecimal listSum = new BigDecimal("0.00");
+    private int listCount = 0;
 
     /**
      * @param inflater           The LayoutInflater object that can be used to inflate
@@ -79,6 +73,8 @@ public class HomeFragment extends Fragment implements FilterCallback {
         this.itemRef = ((MainActivity) requireActivity()).getItemRef();
         // Inflate the fragment's layout
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+        rootView.findViewById(R.id.base_toolbar).setVisibility(View.VISIBLE);
+        rootView.findViewById(R.id.select_toolbar).setVisibility(View.GONE);
 
         listCountView = rootView.findViewById(R.id.total_count_text);
         listSumView = rootView.findViewById(R.id.total_value_text);
@@ -95,6 +91,8 @@ public class HomeFragment extends Fragment implements FilterCallback {
             SelectFragment selectStateFragment = new SelectFragment();
             Bundle args = new Bundle();
             args.putParcelableArrayList("itemList", itemList);
+            args.putInt("listCount", listCount);
+            args.putString("listSum", listSum.toString());
             selectStateFragment.setArguments(args);
             navigateToFragmentPage(getContext(), selectStateFragment);
         });
@@ -230,8 +228,8 @@ public class HomeFragment extends Fragment implements FilterCallback {
      * list is modified.
      */
     private void updateListData() {
-        BigDecimal listSum = new BigDecimal(0.00);
-        int listCount = filteredItemList.size();
+        listSum = new BigDecimal("0.00");
+        listCount = filteredItemList.size();
         for (int i = 0; i < listCount; i++) {
             listSum = listSum.add(filteredItemList.get(i).getCost());
         }
