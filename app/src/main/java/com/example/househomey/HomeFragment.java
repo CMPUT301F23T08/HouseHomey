@@ -114,9 +114,12 @@ public class HomeFragment extends Fragment implements FilterCallback {
         selectButton.setOnClickListener(v -> {
             SelectFragment selectStateFragment = new SelectFragment();
             Bundle args = new Bundle();
-            args.putParcelableArrayList("itemList", itemList);
+            args.putParcelableArrayList("itemList", filteredItemList);
             args.putInt("listCount", listCount);
             args.putString("listSum", listSum.toString());
+            args.putBoolean("sortOrder",sortOrder);
+            //TODO: Have to make the sort Comparators Parcelable, so that sorting persists
+            // when we go back from select state to base state (can be done later)
             selectStateFragment.setArguments(args);
             navigateToFragmentPage(getContext(), selectStateFragment);
         });
@@ -133,20 +136,10 @@ public class HomeFragment extends Fragment implements FilterCallback {
         //Toggle sorting order functionality
         toggleOrder = rootView.findViewById(R.id.sort_order_toggle);
         toggleOrder.setChecked(sortOrder);
-        toggleOrder.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    sortOrder = DESC;
-                    sortItems(filteredItemList,currentSort,sortOrder);
-                }
-                else {
-                    sortOrder = ASC;
-                    sortItems(filteredItemList,currentSort,sortOrder);
-                }
-            }
+        toggleOrder.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            sortOrder = isChecked? DESC : ASC;
+            sortItems();
         });
-
 
         return rootView;
 
@@ -171,7 +164,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
             }
 
             applyFilters();
-            sortItems(filteredItemList, currentSort, sortOrder);
+            sortItems();
         }
     }
 
@@ -302,16 +295,16 @@ public class HomeFragment extends Fragment implements FilterCallback {
             int itemId = item.getItemId();
             if (itemId == R.id.sort_by_description) {
                 currentSort = sortProperties.get("description");
-                sortItems(filteredItemList, currentSort, sortOrder);
+                sortItems();
             } else if (itemId == R.id.sort_by_date) {
                 currentSort = sortProperties.get("date");
-                sortItems(filteredItemList, currentSort, sortOrder);
+                sortItems();
             } else if (itemId == R.id.sort_by_make) {
                 currentSort = sortProperties.get("make");
-                sortItems(filteredItemList, currentSort, sortOrder);
+                sortItems();
             } else if (itemId == R.id.sort_by_estimatedValue) {
                 currentSort = sortProperties.get("cost");
-                sortItems(filteredItemList, currentSort, sortOrder);
+                sortItems();
             } else {
                 return false;
             }
@@ -323,18 +316,15 @@ public class HomeFragment extends Fragment implements FilterCallback {
 
     /**
      * Sorts the item list on the homepage based the provided Comparator in either descending
-     * or ascending order
-     * @param itemList List of items to sort
-     * @param currentSort Comparator for the property by which we are sorting
-     * @param descending Whether to sort in descending order or not
+     * or ascending order and displays the list
      */
-    private void sortItems(ArrayList<Item> itemList, Comparator<Item> currentSort, boolean descending) {
+    private void sortItems() {
 
-        if (!descending){
-            itemList.sort(currentSort);
+        if (!sortOrder){
+            filteredItemList.sort(currentSort);
         }
         else {
-            itemList.sort(Collections.reverseOrder(currentSort));
+            filteredItemList.sort(Collections.reverseOrder(currentSort));
         }
         itemAdapter.notifyDataSetChanged();
     }
