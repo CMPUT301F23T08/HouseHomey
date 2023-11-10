@@ -2,24 +2,22 @@ package com.example.househomey;
 
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
 
-import static java.util.Optional.ofNullable;
-
 import android.os.Bundle;
-import android.os.IBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.os.BundleCompat;
+import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.Firebase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.WriteBatch;
@@ -32,10 +30,11 @@ import java.util.ArrayList;
  * @see HomeFragment
  * @author Sami Jagirdar
  */
-public class HomeSelectStateFragment extends HomeFragment implements DeleteItemsFragment.DeleteCallBack{
-
-    private ItemAdapter itemView;
-
+public class SelectFragment extends Fragment implements DeleteItemsFragment.DeleteCallBack{
+    private CollectionReference itemRef;
+    private ListView itemListView;
+    private ArrayList<Item> itemList;
+    private ItemAdapter itemAdapter;
     /**
      *
      * @param inflater The LayoutInflater object that can be used to inflate
@@ -63,13 +62,12 @@ public class HomeSelectStateFragment extends HomeFragment implements DeleteItems
         itemListView = rootView.findViewById(R.id.item_list);
         itemAdapter = new ItemAdapter(getContext(), itemList);
         itemListView.setAdapter(itemAdapter);
-        itemView = (ItemAdapter) itemAdapter;
-        itemView.setSelectState(true);
+        itemAdapter.setSelectState(true);
 
         final Button cancelButton = rootView.findViewById(R.id.cancel_select_button);
         cancelButton.setOnClickListener(v -> {
             unselectAllItems();
-            navigateToFragmentPage(getContext(), new HomeBaseStateFragment());
+            navigateToFragmentPage(getContext(), new HomeFragment());
         });
 
         final Button deleteButton = rootView.findViewById(R.id.action_delete);
@@ -109,7 +107,7 @@ public class HomeSelectStateFragment extends HomeFragment implements DeleteItems
                     Log.e("Firestore", "Failed to remove items.", error);
                 });
 
-        navigateToFragmentPage(getContext(), new HomeBaseStateFragment());
+        navigateToFragmentPage(getContext(), new HomeFragment());
     }
 
     /**

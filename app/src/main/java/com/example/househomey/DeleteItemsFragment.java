@@ -56,7 +56,7 @@ public class DeleteItemsFragment extends DialogFragment {
 
     /**
      * A Callback interface for handling deletion of items in the applicable context
-     * @see HomeSelectStateFragment
+     * @see SelectFragment
      */
     public interface DeleteCallBack {
         void onOKPressed(ArrayList<Item> selectedItems);
