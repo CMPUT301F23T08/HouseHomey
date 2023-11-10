@@ -8,6 +8,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.test.core.app.ActivityScenario;
 
+import com.example.househomey.Item;
 import com.example.househomey.MainActivity;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -19,6 +20,7 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -34,6 +36,7 @@ public class DatabaseSetupRule<T extends Activity> implements TestRule {
     private final Class<T> activityClass;
     private DocumentReference userDoc;
     private boolean isDatabaseTest;
+    private final int dbTimeoutInSeconds = 30;
 
     public DatabaseSetupRule(Class<T> activityClass) {
         this.activityClass = activityClass;
@@ -42,17 +45,47 @@ public class DatabaseSetupRule<T extends Activity> implements TestRule {
     /**
      * Sets up the activity by launching it, providing user data via an intent.
      * The user data includes the user document's ID, or null if the test does not require a unique user.
-     * TODO: we can replace the "null" test user with an actual username, and prepopulate that user
-     *      in Firebase for testing non-DB updates (such as list formatting, item filtering, sorting, etc.)
+     * ESPRESSO_GENERAL_USER exists in Firebase for testing general, non-DB changing tests
+     * ex) proper page navigation, field validation, etc.
      */
     public void setupActivity() {
         Bundle userData = new Bundle();
-        userData.putString("username", isDatabaseTest ? userDoc.getId() : "null");
+        userData.putString("username", isDatabaseTest ? userDoc.getId() : "ESPRESSO_GENERAL_USER");
         ActivityScenario.launch(activityClass).onActivity(activity -> {
             Intent intent = new Intent(activity, MainActivity.class);
             intent.putExtra("userData", userData);
             activity.startActivity(intent);
         });
+    }
+
+    /**
+     * Adds a mock item to the Firestore database using the provided item details.
+     * NOTE: this method is IGNORED if the test does not require/create a unique user
+     *
+     * @param itemDetails A Map<String, Object> containing the details of the mock Item to be added.
+     * @throws RuntimeException if the mock data cannot create a valid Item, if adding the mock item to Firestore
+     * fails, or if there is a timeout waiting for the operation to complete.
+     */
+    public void addTestItem(Map<String, Object> itemDetails) throws Exception {
+        if (userDoc != null) {
+            // Ensure that mock data can be used to create a valid Item
+            Item item;
+            try {
+                item = new Item("", itemDetails);
+            } catch (NullPointerException e) {
+                throw new RuntimeException("Mock data cannot create a valid Item: " + e.getMessage());
+            }
+            CountDownLatch latch = new CountDownLatch(1);
+            // Create new item in DB
+            userDoc.collection("item").add(item.getData()).addOnCompleteListener(task -> latch.countDown()).addOnFailureListener(e -> {
+                latch.countDown();
+                throw new RuntimeException("Adding mock item to Firestore failed with: " + e.getMessage());
+            });
+            // Wait for item creation to finish
+            if (!latch.await(dbTimeoutInSeconds, TimeUnit.SECONDS)) {
+                throw new RuntimeException("Timeout waiting for test user creation.");
+            }
+        }
     }
 
     @Override
@@ -90,12 +123,12 @@ public class DatabaseSetupRule<T extends Activity> implements TestRule {
             }
         });
         // Wait for user creation to finish
-        if (!latch.await(10, TimeUnit.SECONDS)) {
+        if (!latch.await(dbTimeoutInSeconds, TimeUnit.SECONDS)) {
             throw new RuntimeException("Timeout waiting for test user creation.");
         }
     }
 
-    public void deleteTestUser() throws Exception {
+    private void deleteTestUser() throws Exception {
         if (userDoc != null) {
             CountDownLatch latch = new CountDownLatch(1);
             // Need to delete all nested collections before user doc can be deleted
@@ -110,7 +143,7 @@ public class DatabaseSetupRule<T extends Activity> implements TestRule {
                         latch.countDown();
                     });
             // Wait for all deletions to finish
-            if (!latch.await(10, TimeUnit.SECONDS)) {
+            if (!latch.await(dbTimeoutInSeconds, TimeUnit.SECONDS)) {
                 throw new RuntimeException("Timeout waiting for test user deletion.");
             }
         }

@@ -1,46 +1,42 @@
 package com.example.househomey.testUtils;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.pressImeActionButton;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
-import static androidx.test.espresso.matcher.ViewMatchers.hasChildCount;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-
-import android.view.View;
-
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.hasChildCount;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 import androidx.annotation.IdRes;
 
 import com.example.househomey.R;
 
-import org.hamcrest.Matcher;
-
 /**
  * Helper methods for Espresso testing in Android applications.
+ *
  * @author Owen Cooke
  */
 public class TestHelpers {
-    private static final long TIMEOUT = 5000; // Timeout in milliseconds
+    private static final long TIMEOUT = 10000; // Timeout in milliseconds
     private static final long POLLING_INTERVAL = 500; // Polling interval in milliseconds
 
     /**
-     * Wait for a view to be displayed within a specified timeout (5s).
+     * Wait for a lambda function to execute without error within a specified timeout.
+     * Intended use is for wrapping Espresso statements that rely on Firebase changes,
+     * which potentially take additional time to update.
      *
-     * @param viewMatcher The Matcher for the view to wait for.
+     * @param lambda The Espresso statement to execute.
      */
-    public static void waitForView(Matcher<View> viewMatcher) {
+    public static void waitFor(Runnable lambda) {
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0;
-
-        // Try to match multiple times during timeout
         while (elapsedTime < TIMEOUT) {
             try {
-                onView(viewMatcher).check(matches(isDisplayed()));
-                return; // View is displayed, exit
+                lambda.run();
+                return; // Statement executed successfully, exit
             } catch (Exception ignore) {
             }
             try {
@@ -49,11 +45,11 @@ public class TestHelpers {
             }
             elapsedTime = System.currentTimeMillis() - startTime;
         }
-        // Try one last time, otherwise error out with added description
+        // Retry one last time, otherwise error out with added description
         try {
-            onView(viewMatcher).check(matches(isDisplayed()));
+            lambda.run();
         } catch (Exception e) {
-            throw new AssertionError("View matching the given Matcher was not displayed within the timeout. " + e);
+            throw new AssertionError("Espresso statement did not succeed within the timeout. " + e.getMessage());
         }
     }
 
@@ -75,6 +71,6 @@ public class TestHelpers {
      * @param text   The text to be entered into the view.
      */
     public static void enterText(@IdRes int viewId, String text) {
-        onView(withId(viewId)).perform(scrollTo(), typeText(text), pressImeActionButton(), closeSoftKeyboard());
+        onView(withId(viewId)).perform(scrollTo(), clearText(), typeText(text), pressImeActionButton(), closeSoftKeyboard());
     }
 }

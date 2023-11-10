@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">HouseHomey</string>
     <string name="defaultError">An error occurred. Please try again later.</string>
+    <string name="total_value">Total Value</string>
 </resources>

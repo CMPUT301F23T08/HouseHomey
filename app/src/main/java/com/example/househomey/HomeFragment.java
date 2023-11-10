@@ -9,12 +9,14 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.househomey.filter.model.DateFilter;
+import com.example.househomey.filter.model.KeywordFilter;
 import com.example.househomey.filter.model.MakeFilter;
 import com.example.househomey.filter.ui.DateFilterFragment;
 import com.example.househomey.filter.model.Filter;
@@ -28,6 +30,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Date;
+
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -43,8 +47,11 @@ public class HomeFragment extends Fragment implements FilterCallback {
     private CollectionReference itemRef;
     private ListView itemListView;
     private ArrayList<Item> itemList = new ArrayList<>();
+    private ArrayList<Item> filteredItemList = new ArrayList<>();
     private Set<Filter> appliedFilters = new HashSet<>();
     private ArrayAdapter<Item> itemAdapter;
+    private TextView listCountView;
+    private TextView listSumView;
 
     /**
      * @param inflater           The LayoutInflater object that can be used to inflate
@@ -62,8 +69,11 @@ public class HomeFragment extends Fragment implements FilterCallback {
         // Inflate the fragment's layout
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
+        listCountView = rootView.findViewById(R.id.total_count_text);
+        listSumView = rootView.findViewById(R.id.total_value_text);
+
         itemListView = rootView.findViewById(R.id.item_list);
-        itemAdapter = new ItemAdapter(getContext(), itemList);
+        itemAdapter = new ItemAdapter(getContext(), filteredItemList);
         itemListView.setAdapter(itemAdapter);
 
         itemRef.addSnapshotListener(this::setupItemListener);
@@ -87,12 +97,13 @@ public class HomeFragment extends Fragment implements FilterCallback {
             return;
         }
         if (querySnapshots != null) {
+
             itemList.clear();
             for (QueryDocumentSnapshot doc: querySnapshots) {
                 Map<String, Object> data = new HashMap<>(doc.getData());
                 itemList.add(new Item(doc.getId(), data));
-                itemAdapter.notifyDataSetChanged();
             }
+            applyFilters();
         }
     }
 
@@ -130,6 +141,12 @@ public class HomeFragment extends Fragment implements FilterCallback {
             } else if (itemId == R.id.filter_by_keywords) {
                 View keywordFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_keywords, null);
                 KeywordFilterFragment keywordFilterFragment = new KeywordFilterFragment("Modify Keyword Filter", keywordFilterView, this);
+                for (Filter filter : appliedFilters) {
+                    if (filter instanceof KeywordFilter) {
+                        KeywordFilter myFilter = (KeywordFilter) filter;
+                        keywordFilterFragment = new KeywordFilterFragment("Modify Keyword Filter", keywordFilterView, this, myFilter);
+                    }
+                }
                 keywordFilterFragment.show(requireActivity().getSupportFragmentManager(), "keywords_filter_dialog");
             } else if (itemId == R.id.filter_by_tags) {
                 View tagFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_tags, null);
@@ -177,12 +194,28 @@ public class HomeFragment extends Fragment implements FilterCallback {
      * and then updates the item adapter with the filtered list of items.
      */
     private void applyFilters() {
-        ArrayList<Item> filteredList = new ArrayList<>(itemList);
+        ArrayList<Item> tempList = itemList;
         for (Filter filter : appliedFilters) {
-            filteredList = filter.filterList(filteredList);
+            tempList = filter.filterList(tempList);
         }
+        filteredItemList.clear();
+        filteredItemList.addAll(tempList);
+        itemAdapter.notifyDataSetChanged();
+        updateListData();
+    }
 
-        ItemAdapter filteredAdapter = new ItemAdapter(getContext(), filteredList);
-        itemListView.setAdapter(filteredAdapter);
+    /**
+     * Updates the displays above list containing information on Total Value and No. of Items
+     * in the List. It works using the itemList array so it should be called whenever the
+     * list is modified.
+     */
+    private void updateListData() {
+        BigDecimal listSum = new BigDecimal(0.00);
+        int listCount = filteredItemList.size();
+        for (int i = 0; i < listCount; i++) {
+            listSum = listSum.add(filteredItemList.get(i).getCost());
+        }
+        this.listSumView.setText("$" + listSum.toString());
+        this.listCountView.setText(Integer.toString(listCount));
     }
 }
