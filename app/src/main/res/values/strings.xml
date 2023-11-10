@@ -9,4 +9,6 @@
     <string name="select">Select</string>
     <string name="cancel">Cancel</string>
     <string name="total_value">Total Value</string>
+    <string name="ascending_alias">Asc</string>
+    <string name="descending_alias">Desc</string>
 </resources>

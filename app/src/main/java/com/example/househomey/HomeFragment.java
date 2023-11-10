@@ -9,9 +9,11 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,6 +28,10 @@ import com.example.househomey.filter.model.FilterCallback;
 import com.example.househomey.filter.ui.KeywordFilterFragment;
 import com.example.househomey.filter.ui.MakeFilterFragment;
 import com.example.househomey.filter.ui.TagFilterFragment;
+import com.example.househomey.sort.CostComparator;
+import com.example.househomey.sort.DateComparator;
+import com.example.househomey.sort.DescriptionComparator;
+import com.example.househomey.sort.MakeComparator;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -34,6 +40,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -57,6 +65,13 @@ public class HomeFragment extends Fragment implements FilterCallback {
     private BigDecimal listSum = new BigDecimal("0.00");
     private int listCount = 0;
 
+    private Map<String, Comparator<Item>> sortProperties;
+    private Comparator<Item> currentSort;
+    private final boolean DESC = true;
+    private final boolean ASC = false;
+    private ToggleButton toggleOrder;
+    private boolean sortOrder;
+
     /**
      * @param inflater           The LayoutInflater object that can be used to inflate
      *                           any views in the fragment,
@@ -79,6 +94,15 @@ public class HomeFragment extends Fragment implements FilterCallback {
         listCountView = rootView.findViewById(R.id.total_count_text);
         listSumView = rootView.findViewById(R.id.total_value_text);
 
+        //initalize sorting properties
+        sortProperties = new HashMap<>();
+        sortProperties.put("description", new DescriptionComparator());
+        sortProperties.put("date",new DateComparator());
+        sortProperties.put("make", new MakeComparator());
+        sortProperties.put("cost", new CostComparator());
+        currentSort = sortProperties.get("description"); //default sort property
+        sortOrder = ASC; //ascending order is default
+
         itemRef.addSnapshotListener(this::setupItemListener);
         itemListView = rootView.findViewById(R.id.item_list);
         itemAdapter = new ItemAdapter(getContext(), filteredItemList);
@@ -99,6 +123,30 @@ public class HomeFragment extends Fragment implements FilterCallback {
 
         View filterButton = rootView.findViewById(R.id.filter_dropdown_button);
         filterButton.setOnClickListener(this::showFilterMenu);
+
+        //Sort dropdown functionality
+        final Button sortButton = rootView.findViewById(R.id.sort_by_alpha_button);
+        sortButton.setOnClickListener(v -> {
+            showSortMenu(getView(), sortProperties);
+        });
+
+        //Toggle sorting order functionality
+        toggleOrder = rootView.findViewById(R.id.sort_order_toggle);
+        toggleOrder.setChecked(sortOrder);
+        toggleOrder.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    sortOrder = DESC;
+                    sortItems(itemList,currentSort,sortOrder);
+                }
+                else {
+                    sortOrder = ASC;
+                    sortItems(itemList,currentSort,sortOrder);
+                }
+            }
+        });
+
 
         return rootView;
 
@@ -121,6 +169,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
                 Map<String, Object> data = new HashMap<>(doc.getData());
                 itemList.add(new Item(doc.getId(), data));
             }
+            sortItems(itemList, currentSort, sortOrder);
             applyFilters();
         }
     }
@@ -236,4 +285,45 @@ public class HomeFragment extends Fragment implements FilterCallback {
         this.listSumView.setText("$" + listSum.toString());
         this.listCountView.setText(Integer.toString(listCount));
     }
+
+
+    private void sortItems(ArrayList<Item> itemList, Comparator<Item> currentSort, boolean descending) {
+        if (!descending){
+            Collections.sort(itemList, currentSort);
+        }
+        else {
+            Collections.sort(itemList, Collections.reverseOrder(currentSort));
+        }
+        itemAdapter.notifyDataSetChanged();
+    }
+
+    private void showSortMenu(View view, Map<String, Comparator<Item>> sortProperties) {
+        PopupMenu popupMenu = new PopupMenu(requireContext(), view);
+        MenuInflater inflater = popupMenu.getMenuInflater();
+        inflater.inflate(R.menu.sort, popupMenu.getMenu());
+
+        sortOrder = toggleOrder.isChecked();
+        popupMenu.setOnMenuItemClickListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.sort_by_description) {
+                currentSort = sortProperties.get("description");
+                sortItems(itemList, currentSort, sortOrder);
+            } else if (itemId == R.id.sort_by_date) {
+                currentSort = sortProperties.get("date");
+                sortItems(itemList, currentSort, sortOrder);
+            } else if (itemId == R.id.sort_by_make) {
+                currentSort = sortProperties.get("make");
+                sortItems(itemList, currentSort, sortOrder);
+            } else if (itemId == R.id.sort_by_estimatedValue) {
+                currentSort = sortProperties.get("cost");
+                sortItems(itemList, currentSort, sortOrder);
+            } else {
+                return false;
+            }
+            return true;
+        });
+
+        popupMenu.show();
+    }
+
 }
