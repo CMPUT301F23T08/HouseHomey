@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-/**
+/*
  * A JUnit TestRule that provides the ability to create and delete a unique test user document for each test.
  * NOTE: this Rule will only create a unique user for the test IF
  *      the test method contains the `methodMatcher` as part of its name.
@@ -42,7 +42,7 @@ public class DatabaseSetupRule<T extends Activity> implements TestRule {
         this.activityClass = activityClass;
     }
 
-    /**
+    /*
      * Sets up the activity by launching it, providing user data via an intent.
      * The user data includes the user document's ID, or null if the test does not require a unique user.
      * ESPRESSO_GENERAL_USER exists in Firebase for testing general, non-DB changing tests
@@ -58,11 +58,11 @@ public class DatabaseSetupRule<T extends Activity> implements TestRule {
         });
     }
 
-    /**
+    /*
      * Adds a mock item to the Firestore database using the provided item details.
      * NOTE: this method is IGNORED if the test does not require/create a unique user
      *
-     * @param itemDetails A Map<String, Object> containing the details of the mock Item to be added.
+     * @param itemDetails A Map containing the details of the mock Item to be added.
      * @throws RuntimeException if the mock data cannot create a valid Item, if adding the mock item to Firestore
      * fails, or if there is a timeout waiting for the operation to complete.
      */

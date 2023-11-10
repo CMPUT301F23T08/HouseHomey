@@ -14,7 +14,7 @@ import androidx.annotation.IdRes;
 
 import com.example.househomey.R;
 
-/**
+/*
  * Helper methods for Espresso testing in Android applications.
  *
  * @author Owen Cooke
@@ -23,7 +23,7 @@ public class TestHelpers {
     private static final long TIMEOUT = 10000; // Timeout in milliseconds
     private static final long POLLING_INTERVAL = 500; // Polling interval in milliseconds
 
-    /**
+    /*
      * Wait for a lambda function to execute without error within a specified timeout.
      * Intended use is for wrapping Espresso statements that rely on Firebase changes,
      * which potentially take additional time to update.
@@ -53,7 +53,7 @@ public class TestHelpers {
         }
     }
 
-    /**
+    /*
      * Check if the list of Items has the expected number of Items.
      *
      * @param expectedCount The expected number of child elements in the list view.
@@ -62,7 +62,7 @@ public class TestHelpers {
         onView(withId(R.id.item_list)).check(matches(hasChildCount(expectedCount)));
     }
 
-    /**
+    /*
      * Types text into an EditText field.
      * Presses the IME action button, for actions like "Done," "Search," or "Next"
      * that follow entering text. Also ensures the keyboard is closed.
