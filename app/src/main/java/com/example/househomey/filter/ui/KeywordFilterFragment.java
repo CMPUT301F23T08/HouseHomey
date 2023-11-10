@@ -1,7 +1,6 @@
 package com.example.househomey.filter.ui;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,11 +37,15 @@ public class KeywordFilterFragment extends FilterFragment {
      */
     public KeywordFilterFragment(String title, View contentView, FilterCallback filterCallback) {
         super(title, contentView, filterCallback);
-        addButton.setOnClickListener(v -> {
-            ArrayList<String> keyWordArray = new ArrayList<>(Arrays.asList(keyWords.getText().toString().split(" ")));
-            keyWordArray.removeIf(e -> e.trim().isEmpty());
-            autoFillFilter(keyWordArray);
-            keyWords.setText("");
+        autoFillFilter(this.keywordFilter.getOgKeyWords());
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<String> keyWordArray = Arrays.asList(keyWords.getText().toString().split(" "));
+                keyWordArray = removeEmptyStrings(keyWordArray);
+                autoFillFilter(keyWordArray);
+                keyWords.setText("");
+            }
         });
     }
 
@@ -58,7 +61,6 @@ public class KeywordFilterFragment extends FilterFragment {
         this.keywordFilter = keywordFilter;
         autoFillFilter(this.keywordFilter.getOgKeyWords());
     }
-
 
     /**
      * Extracts the "Keyword" filter values from the chip group.
