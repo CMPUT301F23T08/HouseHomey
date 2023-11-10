@@ -122,7 +122,12 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
                     Log.e("Firestore", "Failed to remove items.", error);
                 });
 
-        navigateToFragmentPage(getContext(), new HomeFragment());
+        HomeFragment homeFragment = new HomeFragment();
+        Bundle outgoing_args = new Bundle();
+        outgoing_args.putString("currentSortName",currentSortName);
+        outgoing_args.putBoolean("sortOrder", sortOrder);
+        homeFragment.setArguments(outgoing_args);
+        navigateToFragmentPage(getContext(),homeFragment);
     }
 
     /**
