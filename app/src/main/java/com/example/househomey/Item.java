@@ -1,5 +1,8 @@
 package com.example.househomey;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 
 import com.google.firebase.Timestamp;
@@ -14,10 +17,10 @@ import java.util.Objects;
 
 /**
  * This class represents an inventory item with a variety of properties
- * @author Lukas Bonkowski, Matthew Neufeld, Owen Cooke
+ * @author Lukas Bonkowski, Matthew Neufeld, Owen Cooke, Sami Jagirdar
  * @see ItemAdapter
  */
-public class Item implements Serializable {
+public class Item implements Serializable, Parcelable {
     private String id;
     private String description;
     private Date acquisitionDate;
@@ -29,7 +32,8 @@ public class Item implements Serializable {
 
     /**
      * This constructs a new item from a Map of data with a reference to its Firestore document
-     * @param id The id of this object's document in the firestore database
+     *
+     * @param id   The id of this object's document in the firestore database
      * @param data The data from that document to initialize the instance
      * @throws NullPointerException if a null required field is given
      */
@@ -57,6 +61,7 @@ public class Item implements Serializable {
 
     /**
      * Convenient getter for map of properties to be used for Firestore queries
+     *
      * @return A Map containing all the properties of this object as key-value pairs
      */
     public Map<String, Object> getData() {
@@ -86,6 +91,7 @@ public class Item implements Serializable {
 
     /**
      * Getter for id
+     *
      * @return The id of this item in firestore
      */
     public String getId() {
@@ -94,6 +100,7 @@ public class Item implements Serializable {
 
     /**
      * Getter for acquisitionDate
+     *
      * @return The acquisition date of this item
      */
     public Date getAcquisitionDate() {
@@ -102,6 +109,7 @@ public class Item implements Serializable {
 
     /**
      * Getter for description
+     *
      * @return The brief description of this item
      */
     public String getDescription() {
@@ -111,6 +119,7 @@ public class Item implements Serializable {
 
     /**
      * Getter for cost
+     *
      * @return The cost of this item
      */
     public BigDecimal getCost() {
@@ -119,25 +128,92 @@ public class Item implements Serializable {
 
     /**
      * Getter for make
+     *
      * @return make of the item
      */
-    public String getMake() { return make; }
+    public String getMake() {
+        return make;
+    }
 
     /**
      * Getter for model
+     *
      * @return model of the item
      */
-    public String getModel() { return model; }
+    public String getModel() {
+        return model;
+    }
 
     /**
      * Getter for serial number
+     *
      * @return serial number of the item
      */
-    public String getSerialNumber() { return serialNumber; }
+    public String getSerialNumber() {
+        return serialNumber;
+    }
 
     /**
      * Getter for comment
+     *
      * @return comment for the item
      */
-    public String getComment() { return comment; }
+    public String getComment() {
+        return comment;
+    }
+
+
+    //Creating the Parcelable CREATOR and
+    //Implementing the Parcelable Interface below
+    public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {
+        public Item createFromParcel(Parcel in) {
+            return new Item(in);
+        }
+        public Item[] newArray(int size) {
+            return new Item[size];
+        }
+    };
+
+    /**
+     * This method determines how an item object is written to a Parcel
+     * @param out The Parcel in which the object should be written.
+     * @param flags Additional flags about how the object should be written.
+     * May be 0 or {@link #PARCELABLE_WRITE_RETURN_VALUE}.
+     */
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeString(id);
+        out.writeString(description);
+        out.writeLong(acquisitionDate.getTime());
+        out.writeString(make); //Note: You can pass null values to Parcel
+        out.writeString(model);
+        out.writeString(serialNumber);
+        out.writeString(comment);
+        out.writeSerializable(cost.toString());
+    }
+
+    /**
+     * Constructs an item object by reading its attributes from a Parcel object
+     * @param in The parcel object that reads the data
+     */
+    protected Item(Parcel in) {
+        this.id = in.readString();
+        this.description = in.readString();
+        this.acquisitionDate = new Date(in.readLong());
+        this.make = in.readString();
+        this.model = in.readString();
+        this.serialNumber = in.readString();
+        this.comment = in.readString();
+        this.cost = new BigDecimal(in.readString()).setScale(2, RoundingMode.HALF_UP);
+    }
+
+    /**
+     * Interface method that provides the CONTENTS_FILE_DESCRIPTOR
+     * for when a FileDescriptor object is to be put in a Parcelable
+     * @return 0 since we don't use FileDescriptor objects in this project
+     */
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 }

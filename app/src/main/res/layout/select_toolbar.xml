@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/select_state_options"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="4dp">
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/cancel_select_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel"
+        android:textSize="20sp"
+        android:padding="0dp"
+        android:textStyle="bold"
+        android:backgroundTint="@color/subTitle" />
+
+    <LinearLayout
+        android:id="@+id/select_state_tools"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="end">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/action_delete"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="2dp"
+            android:layout_marginEnd="8dp"
+            app:icon="@drawable/baseline_delete_24"
+            app:iconSize="30dp"
+            app:iconTint="@color/black"
+            android:contentDescription="@string/delete_action_description"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/action_tags"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:padding="2dp"
+            app:icon="@drawable/sell_24px"
+            app:iconSize="30dp"
+            app:iconTint="@color/black"
+            android:contentDescription="@string/tags_popup_description"/>
+    </LinearLayout>
+
+</FrameLayout>

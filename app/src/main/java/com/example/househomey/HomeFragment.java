@@ -1,19 +1,21 @@
 package com.example.househomey;
 
+import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
-import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.example.househomey.filter.model.DateFilter;
 import com.example.househomey.filter.model.KeywordFilter;
@@ -29,29 +31,31 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.Date;
+import java.util.ArrayList;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-
-import java.util.ArrayList;
 import java.util.Set;
 
 /**
- * This fragment represents the home screen containing the primary list of the user's inventory
- * @author Owen Cooke, Jared Drueco, Lukas Bonkowski
+ * This fragment is a child of the home fragment containing the list of the user's inventory
+ * This fragment represents a state where items are selectable
+ * @see HomeFragment
+ * @author Owen Cooke, Jared Drueco, Lukas Bonkowski, Sami Jagirdar
  */
 public class HomeFragment extends Fragment implements FilterCallback {
     private CollectionReference itemRef;
     private ListView itemListView;
     private ArrayList<Item> itemList = new ArrayList<>();
     private ArrayList<Item> filteredItemList = new ArrayList<>();
+    private ItemAdapter itemAdapter;
     private Set<Filter> appliedFilters = new HashSet<>();
-    private ArrayAdapter<Item> itemAdapter;
     private TextView listCountView;
     private TextView listSumView;
+    private BigDecimal listSum = new BigDecimal("0.00");
+    private int listCount = 0;
 
     /**
      * @param inflater           The LayoutInflater object that can be used to inflate
@@ -62,21 +66,36 @@ public class HomeFragment extends Fragment implements FilterCallback {
      * @param savedInstanceState If non-null, this fragment is being re-constructed
      *                           from a previous saved state as given here.
      * @return the home fragment view containing the inventory list
+     * in its base state where items are not selectable
      */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         this.itemRef = ((MainActivity) requireActivity()).getItemRef();
         // Inflate the fragment's layout
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+        rootView.findViewById(R.id.base_toolbar).setVisibility(View.VISIBLE);
+        rootView.findViewById(R.id.select_toolbar).setVisibility(View.GONE);
 
         listCountView = rootView.findViewById(R.id.total_count_text);
         listSumView = rootView.findViewById(R.id.total_value_text);
 
+        itemRef.addSnapshotListener(this::setupItemListener);
         itemListView = rootView.findViewById(R.id.item_list);
         itemAdapter = new ItemAdapter(getContext(), filteredItemList);
         itemListView.setAdapter(itemAdapter);
+        itemAdapter.setSelectState(false);
 
-        itemRef.addSnapshotListener(this::setupItemListener);
+
+        final Button selectButton = rootView.findViewById(R.id.select_items_button);
+        selectButton.setOnClickListener(v -> {
+            SelectFragment selectStateFragment = new SelectFragment();
+            Bundle args = new Bundle();
+            args.putParcelableArrayList("itemList", itemList);
+            args.putInt("listCount", listCount);
+            args.putString("listSum", listSum.toString());
+            selectStateFragment.setArguments(args);
+            navigateToFragmentPage(getContext(), selectStateFragment);
+        });
 
         View filterButton = rootView.findViewById(R.id.filter_dropdown_button);
         filterButton.setOnClickListener(this::showFilterMenu);
@@ -97,7 +116,6 @@ public class HomeFragment extends Fragment implements FilterCallback {
             return;
         }
         if (querySnapshots != null) {
-
             itemList.clear();
             for (QueryDocumentSnapshot doc: querySnapshots) {
                 Map<String, Object> data = new HashMap<>(doc.getData());
@@ -210,8 +228,8 @@ public class HomeFragment extends Fragment implements FilterCallback {
      * list is modified.
      */
     private void updateListData() {
-        BigDecimal listSum = new BigDecimal(0.00);
-        int listCount = filteredItemList.size();
+        listSum = new BigDecimal("0.00");
+        listCount = filteredItemList.size();
         for (int i = 0; i < listCount; i++) {
             listSum = listSum.add(filteredItemList.get(i).getCost());
         }
