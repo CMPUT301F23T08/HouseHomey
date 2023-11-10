@@ -21,6 +21,7 @@ import java.util.List;
 
 /**
  * Fragment for applying "Keyword" filter criteria.
+ * @author Antonio Lech Martin-Ozimek
  */
 public class KeywordFilterFragment extends FilterFragment {
     private ChipGroup chipGroup = contentView.findViewById(R.id.chip_group_labels);
@@ -82,6 +83,10 @@ public class KeywordFilterFragment extends FilterFragment {
         dismiss();
     }
 
+    /**
+     * Takes a list of keywords in and auto fills the chip group with them.
+     * @param keyWordArray The list of keywords to fill the chip group with.
+     */
     public void autoFillFilter(List<String> keyWordArray) {
         for (String label : keyWordArray) {
             Context context = contentView.getContext();

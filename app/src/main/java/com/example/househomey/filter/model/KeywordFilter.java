@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 /**
  * A filter class that filters a list of items based on specific keywords.
+ * @author Antonio Lech Martin-Ozimek
  */
 public class KeywordFilter extends Filter{
     private ArrayList<String> keyWords;
