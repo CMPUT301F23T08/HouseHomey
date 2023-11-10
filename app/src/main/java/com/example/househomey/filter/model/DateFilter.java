@@ -25,6 +25,22 @@ public class DateFilter extends Filter {
     }
 
     /**
+     * Gets the start date of the filter.
+     * @return The start date.
+     */
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    /**
+     * Gets the end date of the filter
+     * @return end date.
+     */
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    /**
      * Filters the passed in list of items, retains only items that are within the bounds of the
      * start and end dates.
      * @param itemList The original list of items to be filtered.

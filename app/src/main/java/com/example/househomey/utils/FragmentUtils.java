@@ -13,6 +13,10 @@ import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 /**
  * This is a utility class for fragment page navigation within an Android application.
  * @author Owen Cooke
@@ -69,6 +73,17 @@ public class FragmentUtils {
                 .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
                 .setCalendarConstraints(constraintsBuilder.build())
                 .build();
+    }
+
+    /**
+     * Formats given date as a string in "yyyy-MM-dd" format.
+     * @param date date to be formatted
+     * @return formatted date
+     */
+    public static String formatDate(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return dateFormat.format(date);
     }
 }
 

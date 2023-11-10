@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.househomey.filter.model.DateFilter;
 import com.example.househomey.filter.model.MakeFilter;
 import com.example.househomey.filter.ui.DateFilterFragment;
 import com.example.househomey.filter.model.Filter;
@@ -25,6 +26,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -107,6 +110,12 @@ public class HomeFragment extends Fragment implements FilterCallback {
             if (itemId == R.id.filter_by_dates) {
                 View dateFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_dates, null);
                 DateFilterFragment dateFilterFragment = new DateFilterFragment("Modify Date Filter", dateFilterView, this);
+                for (Filter filter : appliedFilters) {
+                    if (filter instanceof DateFilter) {
+                        DateFilter dateFilter = (DateFilter) filter;
+                        dateFilterFragment = new DateFilterFragment("Modify Make Filter", dateFilterView, this, dateFilter);
+                    }
+                }
                 dateFilterFragment.show(requireActivity().getSupportFragmentManager(), "dates_filter_dialog");
             } else if (itemId == R.id.filter_by_make) {
                 View makeFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_make, null);
