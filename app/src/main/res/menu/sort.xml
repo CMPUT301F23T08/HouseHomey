@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/sort_by_description"
+        android:title="Description"
+        />
+    <item
+        android:id="@+id/sort_by_date"
+        android:title="Acquisition date"
+        />
+    <item
+        android:id="@+id/sort_by_make"
+        android:title="Make"
+        />
+    <item
+        android:id="@+id/sort_by_estimatedValue"
+        android:title="Estimated Value"
+        />
+</menu>
