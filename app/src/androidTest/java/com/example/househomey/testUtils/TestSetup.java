@@ -11,7 +11,6 @@ import androidx.test.uiautomator.UiSelector;
 import com.example.househomey.MainActivity;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 
 import java.io.IOException;
@@ -27,8 +26,8 @@ public abstract class TestSetup {
     @Rule
     public DatabaseSetupRule<MainActivity> database = new DatabaseSetupRule<>(MainActivity.class);
 
-    @BeforeClass
-    public static void dismissANRSystemDialog() throws UiObjectNotFoundException {
+    @Before
+    public void dismissANRSystemDialog() throws UiObjectNotFoundException {
         UiDevice device = UiDevice.getInstance(getInstrumentation());
         // If the device is running in English Locale
         UiObject waitButton = device.findObject(new UiSelector().textContains("wait"));
@@ -37,8 +36,8 @@ public abstract class TestSetup {
         }
     }
 
-    @BeforeClass
-    public static void dismissAppCrashSystemDialogIfShown() {
+    @Before
+    public void dismissAppCrashSystemDialogIfShown() {
         try {
             UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
                     .executeShellCommand("am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS");
