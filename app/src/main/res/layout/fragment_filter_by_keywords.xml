@@ -26,7 +26,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/filter_dropdown_button"
+            android:id="@+id/add_keyword_button"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="30dp"
             android:layout_height="30dp"
@@ -44,23 +44,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:singleLine="false">
-
-        <!-- Example chips, these should be added dynamically based on user input -->
-        <com.google.android.material.chip.Chip
-            android:id="@+id/keyword_filter_one"
-            style="@style/Widget.MaterialComponents.Chip.Entry"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Keyword 1"
-            app:closeIconVisible="true"/>
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/keyword_filter_two"
-            style="@style/Widget.MaterialComponents.Chip.Entry"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Keyword 2"
-            app:closeIconVisible="true"/>
     </com.google.android.material.chip.ChipGroup>
 
 </LinearLayout>
