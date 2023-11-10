@@ -29,6 +29,9 @@ public class MakeFilter extends Filter {
      */
     @Override
     public ArrayList<Item> filterList(ArrayList<Item> itemList) {
+        if (makeToFilterBy == null || makeToFilterBy.isEmpty()) {
+            return itemList;
+        }
         return itemList.stream()
                 .filter(item -> item.getMake().equals(makeToFilterBy))
                 .collect(Collectors.toCollection(ArrayList::new));
