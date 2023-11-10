@@ -304,19 +304,16 @@ public class HomeFragment extends Fragment implements FilterCallback {
             int itemId = item.getItemId();
             if (itemId == R.id.sort_by_description) {
                 currentSortName = "description";
-                currentSort = sortProperties.get(currentSortName);
             } else if (itemId == R.id.sort_by_date) {
                 currentSortName = "date";
-                currentSort = sortProperties.get(currentSortName);
             } else if (itemId == R.id.sort_by_make) {
                 currentSortName = "make";
-                currentSort = sortProperties.get(currentSortName);
             } else if (itemId == R.id.sort_by_estimatedValue) {
                 currentSortName = "cost";
-                currentSort = sortProperties.get(currentSortName);
             } else {
                 return false;
             }
+            currentSort = sortProperties.get(currentSortName);
             sortItems();
             return true;
         });
