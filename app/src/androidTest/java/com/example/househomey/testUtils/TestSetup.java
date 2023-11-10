@@ -15,7 +15,7 @@ import org.junit.Rule;
 
 import java.io.IOException;
 
-/**
+/*
  * An abstract class for setting up Espresso test functionality required for both
  * Firebase and our Github Actions CI pipeline. Simply extend your test class with this class.
  * For methods that require a unique Firebase user, ensure the method name includes "WithNewUser"
