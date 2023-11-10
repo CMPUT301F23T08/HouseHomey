@@ -1,5 +1,6 @@
 package com.example.househomey.form;
 
+import static com.example.househomey.utils.FragmentUtils.formatDate;
 import static com.example.househomey.utils.FragmentUtils.goBack;
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
 
@@ -16,9 +17,6 @@ import com.example.househomey.R;
 import com.example.househomey.ViewItemFragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
-
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 /**
  * This fragment is responsible for editing an existing item in the database.
@@ -80,8 +78,7 @@ public class EditItemFragment extends ItemFormFragment {
 
             // Set the acquisition Date object and prefill with its formatted text
             dateAcquired = item.getAcquisitionDate();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
-            ((TextInputEditText) rootView.findViewById(R.id.add_item_date)).setText(dateFormat.format(dateAcquired));
+            ((TextInputEditText) rootView.findViewById(R.id.add_item_date)).setText(formatDate(dateAcquired));
         }
     }
 

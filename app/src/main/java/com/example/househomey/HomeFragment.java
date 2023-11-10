@@ -16,11 +16,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.househomey.filter.model.DateFilter;
+import com.example.househomey.filter.model.KeywordFilter;
+import com.example.househomey.filter.model.MakeFilter;
+import com.example.househomey.filter.ui.DateFilterFragment;
 import com.example.househomey.filter.model.Filter;
 import com.example.househomey.filter.model.FilterCallback;
 import com.example.househomey.filter.ui.DateFilterFragment;
@@ -33,6 +38,10 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+
+import java.util.Date;
+
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -47,10 +56,12 @@ import java.util.Set;
 public class HomeFragment extends Fragment implements FilterCallback {
     private CollectionReference itemRef;
     private ListView itemListView;
-    private ArrayList<Item> itemList;
+    private ArrayList<Item> itemList = new ArrayList<>();
+    private ArrayList<Item> filteredItemList = new ArrayList<>();
     private ItemAdapter itemAdapter;
     private Set<Filter> appliedFilters = new HashSet<>();
-
+    private TextView listCountView;
+    private TextView listSumView;
 
     /**
      * @param inflater           The LayoutInflater object that can be used to inflate
@@ -67,11 +78,14 @@ public class HomeFragment extends Fragment implements FilterCallback {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         this.itemRef = ((MainActivity) requireActivity()).getItemRef();
         // Inflate the fragment's layout
-        View rootView = inflater.inflate(R.layout.fragment_home_base, container, false);
-        itemList = new ArrayList<>();
+        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+
+        listCountView = rootView.findViewById(R.id.total_count_text);
+        listSumView = rootView.findViewById(R.id.total_value_text);
+
         itemRef.addSnapshotListener(this::setupItemListener);
         itemListView = rootView.findViewById(R.id.item_list);
-        itemAdapter = new ItemAdapter(getContext(), itemList);
+        itemAdapter = new ItemAdapter(getContext(), filteredItemList);
         itemListView.setAdapter(itemAdapter);
         itemAdapter.setSelectState(false);
 
@@ -108,8 +122,8 @@ public class HomeFragment extends Fragment implements FilterCallback {
             for (QueryDocumentSnapshot doc: querySnapshots) {
                 Map<String, Object> data = new HashMap<>(doc.getData());
                 itemList.add(new Item(doc.getId(), data));
-                itemAdapter.notifyDataSetChanged();
             }
+            applyFilters();
         }
     }
 
@@ -127,14 +141,32 @@ public class HomeFragment extends Fragment implements FilterCallback {
             if (itemId == R.id.filter_by_dates) {
                 View dateFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_dates, null);
                 DateFilterFragment dateFilterFragment = new DateFilterFragment("Modify Date Filter", dateFilterView, this);
+                for (Filter filter : appliedFilters) {
+                    if (filter instanceof DateFilter) {
+                        DateFilter dateFilter = (DateFilter) filter;
+                        dateFilterFragment = new DateFilterFragment("Modify Make Filter", dateFilterView, this, dateFilter);
+                    }
+                }
                 dateFilterFragment.show(requireActivity().getSupportFragmentManager(), "dates_filter_dialog");
             } else if (itemId == R.id.filter_by_make) {
                 View makeFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_make, null);
                 MakeFilterFragment makeFilterFragment = new MakeFilterFragment("Modify Make Filter", makeFilterView, this);
+                for (Filter filter : appliedFilters) {
+                    if (filter instanceof MakeFilter) {
+                        MakeFilter makeFilter = (MakeFilter) filter;
+                        makeFilterFragment = new MakeFilterFragment("Modify Make Filter", makeFilterView, this, makeFilter);
+                    }
+                }
                 makeFilterFragment.show(requireActivity().getSupportFragmentManager(), "make_filter_dialog");
             } else if (itemId == R.id.filter_by_keywords) {
                 View keywordFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_keywords, null);
                 KeywordFilterFragment keywordFilterFragment = new KeywordFilterFragment("Modify Keyword Filter", keywordFilterView, this);
+                for (Filter filter : appliedFilters) {
+                    if (filter instanceof KeywordFilter) {
+                        KeywordFilter myFilter = (KeywordFilter) filter;
+                        keywordFilterFragment = new KeywordFilterFragment("Modify Keyword Filter", keywordFilterView, this, myFilter);
+                    }
+                }
                 keywordFilterFragment.show(requireActivity().getSupportFragmentManager(), "keywords_filter_dialog");
             } else if (itemId == R.id.filter_by_tags) {
                 View tagFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_tags, null);
@@ -166,17 +198,44 @@ public class HomeFragment extends Fragment implements FilterCallback {
     }
 
     /**
+     * Resets filters of a specific class by removing all instances of a filter from the applied
+     * filters list and then re-applies the remaining filters.
+     *
+     * @param filter The filter to reset.
+     */
+    public void onFilterReset(Filter filter) {
+        appliedFilters.remove(filter);
+        applyFilters();
+    }
+
+    /**
      * Applies the list of filters to the item list, resulting in a filtered list of items.
      * This method iterates through the applied filters, applying each filter in sequence,
      * and then updates the item adapter with the filtered list of items.
      */
     private void applyFilters() {
-        ArrayList<Item> filteredList = new ArrayList<>(itemList);
+        ArrayList<Item> tempList = itemList;
         for (Filter filter : appliedFilters) {
-            filteredList = filter.filterList(filteredList);
+            tempList = filter.filterList(tempList);
         }
-        itemAdapter.clear();
-        itemAdapter.addAll(filteredList);
+        filteredItemList.clear();
+        filteredItemList.addAll(tempList);
         itemAdapter.notifyDataSetChanged();
+        updateListData();
+    }
+
+    /**
+     * Updates the displays above list containing information on Total Value and No. of Items
+     * in the List. It works using the itemList array so it should be called whenever the
+     * list is modified.
+     */
+    private void updateListData() {
+        BigDecimal listSum = new BigDecimal(0.00);
+        int listCount = filteredItemList.size();
+        for (int i = 0; i < listCount; i++) {
+            listSum = listSum.add(filteredItemList.get(i).getCost());
+        }
+        this.listSumView.setText("$" + listSum.toString());
+        this.listCountView.setText(Integer.toString(listCount));
     }
 }

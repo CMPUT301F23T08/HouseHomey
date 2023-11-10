@@ -81,4 +81,14 @@ public class ItemTest {
         assertThrows(NullPointerException.class, () -> new Item(id, inputMap));
     }
 
+    @Test
+    public void testGetData(){
+        inputMap.put("make", "Mikasa");
+        inputMap.put("model", "Tall glass");
+        inputMap.put("serialNumber", "123456");
+        inputMap.put("comment", "chipped");
+        Item item = new Item(id, inputMap);
+        assertEquals(item.getData(), inputMap);
+    }
+
 }

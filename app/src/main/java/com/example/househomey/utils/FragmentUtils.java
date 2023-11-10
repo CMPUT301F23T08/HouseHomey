@@ -9,6 +9,13 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.househomey.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.DateValidatorPointBackward;
+import com.google.android.material.datepicker.MaterialDatePicker;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * This is a utility class for fragment page navigation within an Android application.
@@ -49,6 +56,34 @@ public class FragmentUtils {
         if (fragmentManager.getBackStackEntryCount() > 0) {
             fragmentManager.popBackStack();
         }
+    }
+
+    /**
+     * Enables date picking for the calendar
+     * @return datePicker
+     */
+    public static MaterialDatePicker<Long> createDatePicker() {
+
+        // Create constraint to restrict dates to past/present
+        CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
+        constraintsBuilder.setEnd(System.currentTimeMillis());
+        constraintsBuilder.setValidator(DateValidatorPointBackward.now());
+
+        return MaterialDatePicker.Builder.datePicker()
+                .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
+                .setCalendarConstraints(constraintsBuilder.build())
+                .build();
+    }
+
+    /**
+     * Formats given date as a string in "yyyy-MM-dd" format.
+     * @param date date to be formatted
+     * @return formatted date
+     */
+    public static String formatDate(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return dateFormat.format(date);
     }
 }
 

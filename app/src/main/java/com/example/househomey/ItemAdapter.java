@@ -1,5 +1,6 @@
 package com.example.househomey;
 
+import static com.example.househomey.utils.FragmentUtils.formatDate;
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
 
 import android.content.Context;
@@ -15,7 +16,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
@@ -85,8 +85,7 @@ public class ItemAdapter extends ArrayAdapter<Item> {
 
         // Set all the text views to their appropriate values
         ((TextView) view.findViewById(R.id.item_description_text)).setText(item.getDescription());
-
-        String dateCost = new SimpleDateFormat("yyyy-MM-dd").format(item.getAcquisitionDate()) + " | $" + item.getCost();
+        String dateCost = formatDate(item.getAcquisitionDate()) + " | $" + item.getCost();
         ((TextView) view.findViewById(R.id.item_text)).setText(dateCost);
 
         // Initialize button for viewing details of the item

@@ -8,8 +8,5 @@
     <string name="tags_popup_description">Add tags to selected items</string>
     <string name="select">Select</string>
     <string name="cancel">Cancel</string>
-
-
-
-
+    <string name="total_value">Total Value</string>
 </resources>

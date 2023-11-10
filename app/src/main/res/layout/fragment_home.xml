@@ -1,10 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/item_list"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:divider="@android:color/transparent"
-    android:dividerHeight="5.0sp"
-    android:padding="8dp"
-    />
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="78dp"
+        android:background="@color/brown"
+        android:paddingVertical="24dp"
+        android:paddingHorizontal="32dp"
+        android:orientation="horizontal">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="Inventory"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/logo"
+            app:tint="@color/white" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/cards"
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <androidx.cardview.widget.CardView
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="0dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:contentPadding="24dp"
+            app:cardBackgroundColor="@color/green">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:gravity="start"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/total_value"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/total_value_text"
+                    android:gravity="start"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="$0.00"
+                    android:textSize="28sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <Space
+            android:layout_width="10dp"
+            android:layout_height="match_parent" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_marginStart="0dp"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:contentPadding="24dp"
+            app:cardBackgroundColor="@color/lightGreen">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:gravity="start"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="No. of Items"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/total_count_text"
+                    android:gravity="start"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="28sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dropdown_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:padding="4dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/filter_dropdown_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="0dp"
+            android:layout_marginEnd="8dp"
+            app:icon="@drawable/baseline_tune_24"
+            app:iconSize="30dp"
+            app:iconTint="@color/black" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/item_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="5.0sp"
+        android:padding="8dp"></ListView>
+</LinearLayout>

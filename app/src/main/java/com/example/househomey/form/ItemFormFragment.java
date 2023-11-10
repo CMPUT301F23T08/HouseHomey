@@ -1,5 +1,6 @@
 package com.example.househomey.form;
 
+import static com.example.househomey.utils.FragmentUtils.createDatePicker;
 import static java.util.Objects.requireNonNull;
 
 import android.os.Bundle;
@@ -15,8 +16,6 @@ import androidx.fragment.app.Fragment;
 import com.example.househomey.Item;
 import com.example.househomey.MainActivity;
 import com.example.househomey.R;
-import com.google.android.material.datepicker.CalendarConstraints;
-import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -127,14 +126,8 @@ public abstract class ItemFormFragment extends Fragment {
     protected void initDatePicker(View rootView) {
         dateTextView = rootView.findViewById(R.id.add_item_date);
 
-        // Create constraint to restrict dates to past/present
-        CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
-        constraintsBuilder.setEnd(System.currentTimeMillis());
-        constraintsBuilder.setValidator(DateValidatorPointBackward.now());
-        MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
-                .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
-                .setCalendarConstraints(constraintsBuilder.build())
-                .build();
+        MaterialDatePicker<Long> datePicker = createDatePicker();
+        
         datePicker.addOnPositiveButtonClickListener(selection -> {
             dateAcquired = new Date(selection);
             dateTextView.setText(datePicker.getHeaderText());
