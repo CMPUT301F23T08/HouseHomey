@@ -41,14 +41,11 @@ public class KeywordFilterFragment extends FilterFragment {
         super(title, contentView, filterCallback);
         this.keywordFilter = keywordFilter;
         autoFillFilter(this.keywordFilter.getOgKeyWords());
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                List<String> keyWordArray = Arrays.asList(keyWords.getText().toString().split(" "));
-                keyWordArray = removeEmptyStrings(keyWordArray);
-                autoFillFilter(keyWordArray);
-                keyWords.setText("");
-            }
+        addButton.setOnClickListener(v -> {
+            List<String> keyWordArray = Arrays.asList(keyWords.getText().toString().split(" "));
+            keyWordArray = removeEmptyStrings(keyWordArray);
+            autoFillFilter(keyWordArray);
+            keyWords.setText("");
         });
     }
 
@@ -98,12 +95,9 @@ public class KeywordFilterFragment extends FilterFragment {
             chip.setTextColor(ContextCompat.getColor(context , R.color.brown));
             chipGroup.addView(chip);
             chipTextVals.add(chip.getText().toString());
-            chip.setOnCloseIconClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    chipGroup.removeView(chip);
-                    chipTextVals.remove(chip.getText().toString());
-                }
+            chip.setOnCloseIconClickListener(v -> {
+                chipGroup.removeView(chip);
+                chipTextVals.remove(chip.getText().toString());
             });
         }
     }

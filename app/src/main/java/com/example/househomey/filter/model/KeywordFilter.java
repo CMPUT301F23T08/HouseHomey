@@ -43,10 +43,13 @@ public class KeywordFilter extends Filter{
      */
     @Override
     public ArrayList<Item> filterList(ArrayList<Item> itemList) {
-        return itemList.stream()
-                .filter(item -> Arrays.stream(item.getDescription().toLowerCase(Locale.ENGLISH)
-                        .split(" ")).anyMatch(keyWords::contains))
-                .collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Item> myItems = itemList.stream().filter(item -> Arrays.stream(
+                item.getDescription().toLowerCase(Locale.ENGLISH).split(" "))
+                .anyMatch(keyWords::contains)).collect(Collectors.toCollection(ArrayList::new));
+        if (myItems.isEmpty()) {
+            return itemList;
+        }
+        return myItems;
     }
 
 }
