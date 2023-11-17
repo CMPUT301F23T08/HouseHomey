@@ -1,13 +1,10 @@
 package com.example.househomey.form;
 
-import static android.app.Activity.RESULT_OK;
 import static com.example.househomey.utils.FragmentUtils.createDatePicker;
 import static java.util.Objects.requireNonNull;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -15,8 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,13 +39,13 @@ import java.util.UUID;
  *
  * @author Owen Cooke
  */
-public abstract class ItemFormFragment extends Fragment {
+public abstract class ItemFormFragment extends Fragment implements ImagePickerDialog.OnImagePickedListener {
     protected Date dateAcquired;
     private TextInputEditText dateTextView;
     protected CollectionReference itemRef;
-    private ActivityResultLauncher<Intent> pickImageLauncher;
     protected ArrayList<String> photoUris = new ArrayList<>();
     protected PhotoAdapter photoAdapter;
+    private ImagePickerDialog imagePickerDialog;
 
     /**
      * Creates the basic view for a validated Item form.
@@ -71,11 +66,6 @@ public abstract class ItemFormFragment extends Fragment {
         // Get item collection reference from main activity
         itemRef = ((MainActivity) requireActivity()).getItemRef();
         return rootView;
-    }
-
-    private void addNewPhoto() {
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        pickImageLauncher.launch(galleryIntent);
     }
 
     protected String uploadImageToFirebase(String imageUri) {
@@ -224,14 +214,16 @@ public abstract class ItemFormFragment extends Fragment {
         ((RecyclerView) rootView.findViewById(R.id.add_photo_grid)).setAdapter(photoAdapter);
 
         // Add listeners for photo adding
-        rootView.findViewById(R.id.add_photo_button).setOnClickListener(v -> addNewPhoto());
-        pickImageLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-            if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                // User selected an image from their photos app
-                Uri imageUri = result.getData().getData();
-                photoUris.add(imageUri.toString());
-                photoAdapter.notifyItemInserted(photoAdapter.getItemCount() - 1);
-            }
-        });
+        imagePickerDialog = new ImagePickerDialog();
+        imagePickerDialog.setOnImagePickedListener(this);
+        rootView.findViewById(R.id.add_photo_button)
+                .setOnClickListener(v -> imagePickerDialog.show(getParentFragmentManager(), imagePickerDialog.getTag()));
+    }
+
+    @Override
+    public void onImagePicked(String imageUri) {
+        imagePickerDialog.dismiss();
+        photoUris.add(imageUri);
+        photoAdapter.notifyItemInserted(photoAdapter.getItemCount() - 1);
     }
 }

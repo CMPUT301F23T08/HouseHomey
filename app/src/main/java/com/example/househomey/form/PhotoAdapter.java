@@ -37,8 +37,8 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String imagePath = imageUris.get(position);
-        if (imagePath.contains("content")) {
-            // Local file URI, use directly
+        if (imagePath.contains("content://") || imagePath.contains("file://")) {
+            // Local file URI, load directly
             Glide.with(context)
                     .load(imagePath)
                     .diskCacheStrategy(DiskCacheStrategy.DATA)
