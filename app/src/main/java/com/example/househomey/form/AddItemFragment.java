@@ -44,12 +44,8 @@ public class AddItemFragment extends ItemFormFragment {
      * Adds the user input data to a new item in a user's Firestore item collection
      */
     private void addItem() {
-        Item newItem = validateItem("");
+        Item newItem = prepareItem("");
         if (newItem == null) return;
-
-        // Upload new photos (if any) to Cloud Storage
-        photoUris.replaceAll(this::uploadImageToFirebase);
-        newItem.setPhotoIds(photoUris);
 
         // Create new item document in Firestore
         itemRef.add(newItem.getData()).addOnSuccessListener(documentReference -> {

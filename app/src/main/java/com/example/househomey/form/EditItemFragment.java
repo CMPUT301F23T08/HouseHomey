@@ -83,7 +83,7 @@ public class EditItemFragment extends ItemFormFragment {
             // Add image URLs (if any) to the photo gallery adapter
             photoUris.clear();
             photoUris.addAll(item.getPhotoIds());
-            photoAdapter.notifyDataSetChanged();
+            photoAdapter.notifyItemRangeInserted(0, photoUris.size());
         }
     }
 
@@ -91,7 +91,7 @@ public class EditItemFragment extends ItemFormFragment {
      * Edits an existing Item in the user's Firestore item collection.
      */
     private void editItem() {
-        Item updatedItem = validateItem(item.getId());
+        Item updatedItem = prepareItem(item.getId());
         if (updatedItem == null) return;
 
         // Update the existing item document in Firestore

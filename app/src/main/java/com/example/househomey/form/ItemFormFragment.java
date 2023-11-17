@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,29 +69,14 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         return rootView;
     }
 
-    protected String uploadImageToFirebase(String imageUri) {
-        // Create a unique reference for the image in Cloud Storage
-        String imageId = UUID.randomUUID().toString();
-        StorageReference imageRef = FirebaseStorage.getInstance().getReference().child("images/" + imageId);
-
-        // Upload the image to Cloud Storage
-        // TODO: discuss error handling or logging
-        imageRef.putFile(Uri.parse(imageUri))
-                .addOnSuccessListener(taskSnapshot -> {
-
-                })
-                .addOnFailureListener(e -> {
-                });
-        return imageId;
-    }
-
     /**
      * Validates the user input and constructs an Item object if the input is valid.
+     * If validation succeeds, uploads new attached photos to Firebase Cloud Storage.
      *
      * @param itemId The unique identifier of the item, if it exists, or an empty string for new items.
      * @return An Item object representing the validated item data, or null if validation fails.
      */
-    protected Item validateItem(String itemId) {
+    protected Item prepareItem(String itemId) {
         // Check that required fields are filled before validating
         boolean invalidDesc = isRequiredFieldEmpty(R.id.add_item_description_layout);
         boolean invalidDate = isRequiredFieldEmpty(R.id.add_item_date_layout);
@@ -109,11 +95,17 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         data.put("photos", photoUris);
 
         // Ensure that form data can be used to create a valid Item
+        Item item;
         try {
-            return new Item(itemId, data);
+            item = new Item(itemId, data);
         } catch (NullPointerException e) {
             return null;
         }
+
+        // Item is valid, upload new photos (if any) to Cloud Storage
+        photoUris.replaceAll(this::uploadImageToFirebase);
+        item.setPhotoIds(photoUris);
+        return item;
     }
 
     /**
@@ -225,5 +217,21 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         imagePickerDialog.dismiss();
         photoUris.add(imageUri);
         photoAdapter.notifyItemInserted(photoAdapter.getItemCount() - 1);
+    }
+
+    private String uploadImageToFirebase(String imageUri) {
+        if (imageUri.contains("content://") || imageUri.contains("file://")) {
+            // New image to upload, create a unique storage reference
+            String imageId = UUID.randomUUID().toString();
+            StorageReference imageRef = FirebaseStorage.getInstance().getReference().child("images/" + imageId);
+
+            // Upload the image to Cloud Storage
+            imageRef.putFile(Uri.parse(imageUri))
+                    .addOnSuccessListener(taskSnapshot -> Log.d("IMAGE_UPLOAD", "Successfully uploaded image to: " + taskSnapshot.getStorage()))
+                    .addOnFailureListener(e -> Log.e("IMAGE_UPLOAD", "Failed to upload image: " + e));
+            return imageId;
+        }
+        // Already uploaded to Firebase / is a unique ID
+        return imageUri;
     }
 }
