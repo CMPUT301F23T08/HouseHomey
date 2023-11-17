@@ -42,10 +42,10 @@ import java.util.UUID;
  */
 public abstract class ItemFormFragment extends Fragment implements ImagePickerDialog.OnImagePickedListener, PhotoAdapter.OnAddButtonClickListener {
     protected Date dateAcquired;
-    private TextInputEditText dateTextView;
     protected CollectionReference itemRef;
     protected ArrayList<String> photoUris = new ArrayList<>();
     protected PhotoAdapter photoAdapter;
+    private TextInputEditText dateTextView;
     private ImagePickerDialog imagePickerDialog;
 
     /**
@@ -147,7 +147,7 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         dateTextView = rootView.findViewById(R.id.add_item_date);
 
         MaterialDatePicker<Long> datePicker = createDatePicker();
-        
+
         datePicker.addOnPositiveButtonClickListener(selection -> {
             dateAcquired = new Date(selection);
             dateTextView.setText(datePicker.getHeaderText());
@@ -200,6 +200,12 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         });
     }
 
+    /**
+     * Initializes photo components for the fragment (photo adapter,
+     * and image picker dialog) as well as sets this fragment to the components' listeners.
+     *
+     * @param rootView The root view of the fragment.
+     */
     private void initAddImageHandler(View rootView) {
         // Set up adapter for gallery and listener for adding photos
         photoAdapter = new PhotoAdapter(getContext(), photoUris);
@@ -211,11 +217,19 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         imagePickerDialog.setOnImagePickedListener(this);
     }
 
+    /**
+     * Callback method for when the Add button in the photo gallery is clicked.
+     */
     @Override
     public void onAddButtonClicked() {
         imagePickerDialog.show(getParentFragmentManager(), imagePickerDialog.getTag());
     }
 
+    /**
+     * Callback method for handling the image URI returned from image picker dialog.
+     *
+     * @param imageUri The URI of the selected/taken image.
+     */
     @Override
     public void onImagePicked(String imageUri) {
         imagePickerDialog.dismiss();
@@ -223,6 +237,12 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         photoAdapter.notifyItemInserted(photoAdapter.getItemCount() - 1);
     }
 
+    /**
+     * Uploads a local image to Firebase Cloud Storage and returns its UUID.
+     *
+     * @param imageUri The local URI of the image to be uploaded.
+     * @return The UUID of the uploaded image.
+     */
     private String uploadImageToFirebase(String imageUri) {
         if (imageUri.contains("content://") || imageUri.contains("file://")) {
             // New image to upload, create a unique storage reference

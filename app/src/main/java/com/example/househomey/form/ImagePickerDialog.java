@@ -23,19 +23,34 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**
+ * A bottom sheet dialog fragment for capturing images from the camera or
+ * selecting them from the user's photo gallery.
+ *
+ * @author Owen Cooke
+ */
 public class ImagePickerDialog extends BottomSheetDialogFragment {
     private ActivityResultLauncher<Intent> pickImageLauncher;
     private boolean fromGallery;
     private OnImagePickedListener onImagePickedListener;
 
+    /**
+     * Sets the listener to receive picked images.
+     *
+     * @param listener The listener to be notified when an image is picked.
+     */
     public void setOnImagePickedListener(OnImagePickedListener listener) {
         this.onImagePickedListener = listener;
     }
 
-    public interface OnImagePickedListener {
-        void onImagePicked(String imageUri);
-    }
-
+    /**
+     * Creates and returns the view hierarchy associated with this dialog.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate views.
+     * @param container          If non-null, this is the parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
+     * @return Return the View for the dialog's UI.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.dialog_photo_choices, container, false);
@@ -50,6 +65,12 @@ public class ImagePickerDialog extends BottomSheetDialogFragment {
         return rootView;
     }
 
+    /**
+     * Launches an image intent based on the user's choice of from the camera or gallery.
+     *
+     * @param fromGallery A boolean, true if the image should be picked from the gallery,
+     *                    false for if the camera should be opened.
+     */
     private void launchImageIntent(boolean fromGallery) {
         this.fromGallery = fromGallery;
         Intent imageIntent = fromGallery
@@ -58,6 +79,10 @@ public class ImagePickerDialog extends BottomSheetDialogFragment {
         pickImageLauncher.launch(imageIntent);
     }
 
+    /**
+     * Initializes the activity result handler for image capture/picking.
+     * Returns the image's URI to the listener via onImagePicked.
+     */
     private void initImageResultHandler() {
         pickImageLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             Uri imageUri;
@@ -85,6 +110,13 @@ public class ImagePickerDialog extends BottomSheetDialogFragment {
                 }
             }
         });
+    }
+
+    /**
+     * Interface definition for a callback when an image is picked.
+     */
+    public interface OnImagePickedListener {
+        void onImagePicked(String imageUri);
     }
 }
 

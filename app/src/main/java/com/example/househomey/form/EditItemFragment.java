@@ -81,7 +81,6 @@ public class EditItemFragment extends ItemFormFragment {
             ((TextInputEditText) rootView.findViewById(R.id.add_item_date)).setText(formatDate(dateAcquired));
 
             // Add image URLs (if any) to the photo gallery adapter
-            photoUris.clear();
             photoUris.addAll(item.getPhotoIds());
             photoAdapter.notifyItemRangeInserted(0, photoUris.size());
         }

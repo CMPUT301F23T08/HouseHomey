@@ -171,10 +171,20 @@ public class Item implements Serializable, Parcelable {
         return comment;
     }
 
+    /**
+     * Getter for photoIds
+     *
+     * @return List of Cloud Storage photo IDs associated with this Item
+     */
     public List<String> getPhotoIds() {
         return photoIds;
     }
 
+    /**
+     * Setter for photoIds
+     *
+     * @param photoIds List of Cloud Storage photo IDs to set for this Item
+     */
     public void setPhotoIds(List<String> photoIds) {
         this.photoIds = photoIds;
     }
@@ -206,6 +216,7 @@ public class Item implements Serializable, Parcelable {
         out.writeString(serialNumber);
         out.writeString(comment);
         out.writeSerializable(cost.toString());
+        out.writeSerializable(photoIds.toArray());
     }
 
     /**
@@ -221,6 +232,7 @@ public class Item implements Serializable, Parcelable {
         this.serialNumber = in.readString();
         this.comment = in.readString();
         this.cost = new BigDecimal(in.readString()).setScale(2, RoundingMode.HALF_UP);
+        this.photoIds = in.createStringArrayList();
     }
 
     /**
