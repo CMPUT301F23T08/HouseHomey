@@ -7,8 +7,8 @@ import static androidx.test.espresso.action.ViewActions.pressImeActionButton;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.hasChildCount;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import androidx.annotation.IdRes;
 
@@ -59,7 +59,7 @@ public class TestHelpers {
      * @param expectedCount The expected number of child elements in the list view.
      */
     public static void hasListLength(int expectedCount) {
-        onView(withId(R.id.item_list)).check(matches(hasChildCount(expectedCount)));
+        onView(withId(R.id.total_count_text)).check(matches(withText(String.valueOf(expectedCount))));
     }
 
     /*
