@@ -47,6 +47,10 @@ public class AddItemFragment extends ItemFormFragment {
         Item newItem = validateItem("");
         if (newItem == null) return;
 
+        // Upload new photos (if any) to Cloud Storage
+        photoUris.replaceAll(this::uploadImageToFirebase);
+        newItem.setPhotoIds(photoUris);
+
         // Create new item document in Firestore
         itemRef.add(newItem.getData()).addOnSuccessListener(documentReference -> {
                     Log.d("Firestore", "Successfully created new item with id:" + documentReference.getId());

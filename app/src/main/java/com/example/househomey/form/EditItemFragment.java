@@ -79,6 +79,11 @@ public class EditItemFragment extends ItemFormFragment {
             // Set the acquisition Date object and prefill with its formatted text
             dateAcquired = item.getAcquisitionDate();
             ((TextInputEditText) rootView.findViewById(R.id.add_item_date)).setText(formatDate(dateAcquired));
+
+            // Add image URLs (if any) to the photo gallery adapter
+            photoUris.clear();
+            photoUris.addAll(item.getPhotoIds());
+            photoAdapter.notifyDataSetChanged();
         }
     }
 
