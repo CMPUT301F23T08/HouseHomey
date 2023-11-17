@@ -40,7 +40,7 @@ import java.util.UUID;
  *
  * @author Owen Cooke
  */
-public abstract class ItemFormFragment extends Fragment implements ImagePickerDialog.OnImagePickedListener {
+public abstract class ItemFormFragment extends Fragment implements ImagePickerDialog.OnImagePickedListener, PhotoAdapter.OnAddButtonClickListener {
     protected Date dateAcquired;
     private TextInputEditText dateTextView;
     protected CollectionReference itemRef;
@@ -201,15 +201,19 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
     }
 
     private void initAddImageHandler(View rootView) {
-        // Set up adapter for gallery RecyclerView
+        // Set up adapter for gallery and listener for adding photos
         photoAdapter = new PhotoAdapter(getContext(), photoUris);
         ((RecyclerView) rootView.findViewById(R.id.add_photo_grid)).setAdapter(photoAdapter);
+        photoAdapter.setOnAddButtonClickListener(this);
 
-        // Add listeners for photo adding
+        // Add listener for when image is taken/selected
         imagePickerDialog = new ImagePickerDialog();
         imagePickerDialog.setOnImagePickedListener(this);
-        rootView.findViewById(R.id.add_photo_button)
-                .setOnClickListener(v -> imagePickerDialog.show(getParentFragmentManager(), imagePickerDialog.getTag()));
+    }
+
+    @Override
+    public void onAddButtonClicked() {
+        imagePickerDialog.show(getParentFragmentManager(), imagePickerDialog.getTag());
     }
 
     @Override
