@@ -3,7 +3,6 @@ package com.example.househomey.filter.model;
 import com.example.househomey.Item;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -12,7 +11,7 @@ import java.util.stream.Collectors;
  * @author Jared Drueco
  */
 public class TagFilter extends Filter {
-    private Map<String, Boolean> tagSelectionMap;
+    public Map<String, Boolean> tagSelectionMap;
 
     /**
      * Constructs a new TagFilter with the specified keywords.
@@ -32,7 +31,7 @@ public class TagFilter extends Filter {
      */
     @Override
     public ArrayList<Item> filterList(ArrayList<Item> itemList) {
-        if (tagSelectionMap.isEmpty()) return itemList;
+        if (!tagSelectionMap.values().stream().anyMatch(Boolean::booleanValue)) return itemList;
         return itemList.stream()
                 .filter(item ->
                         item.getTags().stream()
