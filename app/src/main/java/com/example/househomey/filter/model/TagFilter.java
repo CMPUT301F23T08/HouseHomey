@@ -34,9 +34,8 @@ public class TagFilter extends Filter {
         if (!tagSelectionMap.values().stream().anyMatch(Boolean::booleanValue)) return itemList;
         return itemList.stream()
                 .filter(item ->
-                        item.getTags().stream()
-                                .map(String::toLowerCase)
-                                .anyMatch(tagSelectionMap::get)
+                    item.getTags().stream()
+                        .anyMatch(tagSelectionMap::get)
                 )
                 .collect(Collectors.toCollection(ArrayList::new));
     }
