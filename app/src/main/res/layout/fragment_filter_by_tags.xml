@@ -10,24 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:singleLine="false">
-
-        <!-- Example chips, these should be added dynamically based on user input -->
-        <com.google.android.material.chip.Chip
-            android:id="@+id/tag_filter_one"
-            style="@style/Widget.MaterialComponents.Chip.Entry"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tag 1"
-            app:closeIconVisible="false"/>
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/tag_filter_two"
-            style="@style/Widget.MaterialComponents.Chip.Entry"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tag 2"
-            app:closeIconVisible="false"/>
-
     </com.google.android.material.chip.ChipGroup>
 
 </LinearLayout>

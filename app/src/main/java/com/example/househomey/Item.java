@@ -10,6 +10,7 @@ import com.google.firebase.Timestamp;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +30,7 @@ public class Item implements Serializable, Parcelable {
     private String serialNumber = "";
     private String comment = "";
     private BigDecimal cost;
+    private ArrayList<String> tags;
 
     /**
      * This constructs a new item from a Map of data with a reference to its Firestore document
@@ -56,6 +58,9 @@ public class Item implements Serializable, Parcelable {
         }
         if (data.containsKey("comment")) {
             this.comment = (String) data.get("comment");
+        }
+        if (data.containsKey("tags")) {
+            this.tags = (ArrayList<String>) data.get("tags");
         }
     }
 
@@ -162,6 +167,14 @@ public class Item implements Serializable, Parcelable {
         return comment;
     }
 
+    /**
+     * Getter for the item's tags
+     *
+     * @return tags of the item
+     */
+    public ArrayList<String> getTags() {
+        return tags;
+    }
 
     //Creating the Parcelable CREATOR and
     //Implementing the Parcelable Interface below
