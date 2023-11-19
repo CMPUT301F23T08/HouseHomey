@@ -78,11 +78,7 @@ public class KeywordFilterFragment extends FilterFragment {
     public void autoFillFilter(List<String> keyWordArray) {
         for (String label : keyWordArray) {
             Context context = contentView.getContext();
-            Chip chip = new Chip(context);
-            FragmentUtils.addChip(label, chip, true, chipGroup);
-            chip.setChipBackgroundColorResource(R.color.white);
-            chip.setChipStrokeColorResource(R.color.brown);
-            chip.setTextColor(ContextCompat.getColor(context , R.color.brown));
+            Chip chip = FragmentUtils.makeChip(label, true, chipGroup, context, R.color.white, R.color.brown, R.color.brown);
             chipTextVals.add(chip.getText().toString());
             chip.setOnCloseIconClickListener(v -> {
                 chipGroup.removeView(chip);

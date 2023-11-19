@@ -1,9 +1,12 @@
 package com.example.househomey.utils;
 
+import static androidx.core.content.ContentProviderCompat.requireContext;
+
 import android.content.Context;
-import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -29,6 +32,7 @@ public class FragmentUtils {
     /**
      * Navigates to a specified fragment page by replacing the fragment
      * within the provided AppCompatActivity's fragment container.
+     *
      * @param context The AppCompatActivity instance used for accessing the FragmentManager.
      * @param page    The Fragment to navigate to and replace the current fragment with.
      */
@@ -43,6 +47,7 @@ public class FragmentUtils {
     /**
      * Specialized method for navigating back to the HomeFragment
      * while also setting the selected item in the BottomNavigationView
+     *
      * @param context The AppCompatActivity context from which the navigation is initiated.
      */
     public static void navigateHomeWithIndicator(Context context) {
@@ -52,6 +57,7 @@ public class FragmentUtils {
 
     /**
      * Navigates the fragment manager back to the previous fragment if there is a fragment in the back stack.
+     *
      * @param context The AppCompatActivity context where the navigation is called.
      */
     public static void goBack(Context context) {
@@ -63,6 +69,7 @@ public class FragmentUtils {
 
     /**
      * Enables date picking for the calendar
+     *
      * @return datePicker
      */
     public static MaterialDatePicker<Long> createDatePicker() {
@@ -80,6 +87,7 @@ public class FragmentUtils {
 
     /**
      * Formats given date as a string in "yyyy-MM-dd" format.
+     *
      * @param date date to be formatted
      * @return formatted date
      */
@@ -90,17 +98,20 @@ public class FragmentUtils {
     }
 
     /**
-     * Adds a chip to a chipGroup
-     * @param label text that is displayed on the chip
-     * @param chip the chip to be added
+     * makes a chip and adds it to a chip group
+     * @param label               text that is displayed on the chip
      * @param closeIconVisibility boolean value, if true show close icon, if false don't show it
-     * @param chipGroup the chip group that the chip will be added to
+     * @param chipGroup           the chip group that the chip will be added to
      */
-    public static void addChip(String label, Chip chip, Boolean closeIconVisibility, ChipGroup chipGroup) {
+    public static Chip makeChip(String label, Boolean closeIconVisibility, ChipGroup chipGroup, Context context, int backgroundColour, int strokeColour, int textColour) {
+        Chip chip = new Chip(context);
         chip.setText(label);
         chip.setCloseIconVisible(closeIconVisibility);
+        chip.setChipBackgroundColorResource(backgroundColour);
+        chip.setChipStrokeColorResource(strokeColour);
+        chip.setTextColor(ContextCompat.getColor(context, textColour));
         chipGroup.addView(chip);
+        return chip;
     }
 }
-
 
