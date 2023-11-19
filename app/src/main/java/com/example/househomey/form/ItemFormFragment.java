@@ -207,14 +207,9 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
      * @param rootView The root view of the fragment.
      */
     private void initAddImageHandler(View rootView) {
-        // Set up adapter for gallery and listener for adding photos
-        photoAdapter = new PhotoAdapter(getContext(), photoUris);
-        ((RecyclerView) rootView.findViewById(R.id.add_photo_grid)).setAdapter(photoAdapter);
-        photoAdapter.setOnAddButtonClickListener(this);
-
-        // Add listener for when image is taken/selected
         imagePickerDialog = new ImagePickerDialog();
-        imagePickerDialog.setOnImagePickedListener(this);
+        photoAdapter = new PhotoAdapter(getContext(), photoUris, this);
+        ((RecyclerView) rootView.findViewById(R.id.add_photo_grid)).setAdapter(photoAdapter);
     }
 
     /**
@@ -222,7 +217,7 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
      */
     @Override
     public void onAddButtonClicked() {
-        imagePickerDialog.show(getParentFragmentManager(), imagePickerDialog.getTag());
+        imagePickerDialog.show(getChildFragmentManager(), imagePickerDialog.getTag());
     }
 
     /**

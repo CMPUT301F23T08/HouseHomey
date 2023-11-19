@@ -15,6 +15,7 @@ import android.widget.Button;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.fragment.app.Fragment;
 
 import com.example.househomey.R;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -35,15 +36,6 @@ public class ImagePickerDialog extends BottomSheetDialogFragment {
     private OnImagePickedListener onImagePickedListener;
 
     /**
-     * Sets the listener to receive picked images.
-     *
-     * @param listener The listener to be notified when an image is picked.
-     */
-    public void setOnImagePickedListener(OnImagePickedListener listener) {
-        this.onImagePickedListener = listener;
-    }
-
-    /**
      * Creates and returns the view hierarchy associated with this dialog.
      *
      * @param inflater           The LayoutInflater object that can be used to inflate views.
@@ -61,6 +53,14 @@ public class ImagePickerDialog extends BottomSheetDialogFragment {
         galleryButton.setOnClickListener(v -> launchImageIntent(true));
         cameraButton.setOnClickListener(v -> launchImageIntent(false));
         initImageResultHandler();
+
+        // Define listener for image result
+        Fragment parent = requireParentFragment();
+        if (parent instanceof OnImagePickedListener) {
+            onImagePickedListener = (OnImagePickedListener) parent;
+        } else {
+            throw new ClassCastException(parent + " must implement OnImagePickedListener");
+        }
 
         return rootView;
     }

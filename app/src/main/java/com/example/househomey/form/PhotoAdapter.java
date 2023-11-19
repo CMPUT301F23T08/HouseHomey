@@ -28,7 +28,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private static final int VIEW_TYPE_IMAGE = 1;
     private final Context context;
     private final List<String> imageUris;
-    private OnAddButtonClickListener onAddButtonClickListener;
+    private final OnAddButtonClickListener onAddButtonClickListener;
 
     /**
      * Constructs a PhotoAdapter with the given context and a list of image URIs to display.
@@ -36,17 +36,9 @@ public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      * @param context   The context.
      * @param imageUris The list of image URIs.
      */
-    public PhotoAdapter(Context context, List<String> imageUris) {
+    public PhotoAdapter(Context context, List<String> imageUris, OnAddButtonClickListener listener) {
         this.context = context;
         this.imageUris = imageUris;
-    }
-
-    /**
-     * Sets a listener for the add photo button click event.
-     *
-     * @param listener The listener to be notified when the add button is clicked.
-     */
-    public void setOnAddButtonClickListener(OnAddButtonClickListener listener) {
         this.onAddButtonClickListener = listener;
     }
 
