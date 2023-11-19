@@ -5,8 +5,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import androidx.core.content.ContextCompat;
-
 import com.example.househomey.R;
 import com.example.househomey.filter.model.FilterCallback;
 import com.example.househomey.filter.model.KeywordFilter;
