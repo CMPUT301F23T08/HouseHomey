@@ -10,8 +10,10 @@ import com.google.firebase.Timestamp;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -29,6 +31,7 @@ public class Item implements Serializable, Parcelable {
     private String serialNumber = "";
     private String comment = "";
     private BigDecimal cost;
+    private List<String> photoIds = new ArrayList<>();
 
     /**
      * This constructs a new item from a Map of data with a reference to its Firestore document
@@ -57,6 +60,9 @@ public class Item implements Serializable, Parcelable {
         if (data.containsKey("comment")) {
             this.comment = (String) data.get("comment");
         }
+        if (data.containsKey("photoIds")) {
+            this.photoIds = new ArrayList<>((List<String>) data.get("photoIds"));
+        }
     }
 
     /**
@@ -84,6 +90,9 @@ public class Item implements Serializable, Parcelable {
         }
         if (!comment.isEmpty()) {
             itemData.put("comment", comment);
+        }
+        if (!photoIds.isEmpty()) {
+            itemData.put("photoIds", photoIds);
         }
         return itemData;
     }
@@ -162,6 +171,23 @@ public class Item implements Serializable, Parcelable {
         return comment;
     }
 
+    /**
+     * Getter for photoIds
+     *
+     * @return List of Cloud Storage photo IDs associated with this Item
+     */
+    public List<String> getPhotoIds() {
+        return photoIds;
+    }
+
+    /**
+     * Setter for photoIds
+     *
+     * @param photoIds List of Cloud Storage photo IDs to set for this Item
+     */
+    public void setPhotoIds(List<String> photoIds) {
+        this.photoIds = photoIds;
+    }
 
     //Creating the Parcelable CREATOR and
     //Implementing the Parcelable Interface below
@@ -190,6 +216,7 @@ public class Item implements Serializable, Parcelable {
         out.writeString(serialNumber);
         out.writeString(comment);
         out.writeSerializable(cost.toString());
+        out.writeSerializable(photoIds.toArray());
     }
 
     /**
@@ -205,6 +232,7 @@ public class Item implements Serializable, Parcelable {
         this.serialNumber = in.readString();
         this.comment = in.readString();
         this.cost = new BigDecimal(in.readString()).setScale(2, RoundingMode.HALF_UP);
+        this.photoIds = in.createStringArrayList();
     }
 
     /**
