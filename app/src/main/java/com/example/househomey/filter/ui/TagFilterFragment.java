@@ -93,18 +93,18 @@ public class TagFilterFragment extends FilterFragment {
         chip.setChipStrokeColorResource(R.color.brown);
         chip.setTextColor(ContextCompat.getColor(context, R.color.brown));
 
-        autofillLastSelectedChip(chip, tag);
+        autoFillLastSelectedChip(chip, tag);
         setChipListener(chip, tag);
         return chip;
     }
 
     /**
-     * Autofills the last selected state of the chip based on the tagSelectionMap.
+     * Auto fills the last selected state of the chip based on the tagSelectionMap.
      *
-     * @param chip The chip to be autofilled.
+     * @param chip The chip to be auto filled.
      * @param tag  The tag associated with the chip.
      */
-    private void autofillLastSelectedChip(Chip chip, String tag) {
+    private void autoFillLastSelectedChip(Chip chip, String tag) {
         boolean isSelected = tagSelectionMap.containsKey(tag) && Boolean.TRUE.equals(tagSelectionMap.get(tag));
         chip.setChecked(isSelected);
         chip.setChipBackgroundColorResource(isSelected ? R.color.grey : R.color.white);

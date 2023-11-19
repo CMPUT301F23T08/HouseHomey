@@ -30,7 +30,7 @@ public class Item implements Serializable, Parcelable {
     private String serialNumber = "";
     private String comment = "";
     private BigDecimal cost;
-    private ArrayList<String> tags;
+    private ArrayList<String> tags = new ArrayList<>();
 
     /**
      * This constructs a new item from a Map of data with a reference to its Firestore document
