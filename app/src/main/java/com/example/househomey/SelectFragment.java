@@ -40,6 +40,7 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
     private boolean sortOrder;
     private ArrayList<Item> itemList;
     private ItemAdapter itemAdapter;
+
     /**
      *
      * @param inflater The LayoutInflater object that can be used to inflate
@@ -100,8 +101,7 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
             }
         });
 
-        // Open TagFragment when tag button is pressed.
-        Button actionTagsButton = rootView.findViewById(R.id.action_tags);
+        final Button actionTagsButton = rootView.findViewById(R.id.action_tags);
         actionTagsButton.setOnClickListener(v -> {
             openTagDialog();
         });
