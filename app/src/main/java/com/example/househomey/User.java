@@ -1,7 +1,6 @@
 package com.example.househomey;
 
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
@@ -9,10 +8,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * @author Lukas Bonkowski, Owen Cooke
  */
 public class User {
-    private String username;
-    private FirebaseFirestore db;
-    private DocumentReference userRef;
-    private CollectionReference itemRef;
+    private final String username;
+    private final CollectionReference itemRef;
 
     /**
      * This constructs a new user getting references to their firestore information
@@ -20,10 +17,8 @@ public class User {
      *                 item collection
      */
     public User(String username) {
-        db = FirebaseFirestore.getInstance();
         this.username = username;
-        userRef = db.collection("user").document(username);
-        itemRef = userRef.collection("item");
+        itemRef = FirebaseFirestore.getInstance().collection("user/" + username + "/item");
     }
 
     /**
@@ -32,5 +27,13 @@ public class User {
      */
     public CollectionReference getItemRef() {
         return itemRef;
+    }
+
+    /**
+     * Getter for username
+     * @return The user's unique username as a String
+     */
+    public String getUsername() {
+        return username;
     }
 }

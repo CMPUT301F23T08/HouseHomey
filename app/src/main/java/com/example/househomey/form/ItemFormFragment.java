@@ -24,7 +24,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.math.BigDecimal;
@@ -242,7 +241,7 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         if (imageUri.contains("content://") || imageUri.contains("file://")) {
             // New image to upload, create a unique storage reference
             String imageId = UUID.randomUUID().toString();
-            StorageReference imageRef = FirebaseStorage.getInstance().getReference().child("images/" + imageId);
+            StorageReference imageRef = ((MainActivity) requireActivity()).getImageRef(imageId);
 
             // Upload the image to Cloud Storage
             imageRef.putFile(Uri.parse(imageUri))
@@ -250,7 +249,7 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
                     .addOnFailureListener(e -> Log.e("IMAGE_UPLOAD", "Failed to upload image: " + e));
             return imageId;
         }
-        // Already uploaded to Firebase / is a unique ID
+        // Already uploaded to Firebase
         return imageUri;
     }
 }

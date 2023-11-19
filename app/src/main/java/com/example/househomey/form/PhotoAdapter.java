@@ -13,9 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.househomey.MainActivity;
 import com.example.househomey.R;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
@@ -91,10 +90,8 @@ public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             // Local file URI, load directly
             requestBuilder.load(imagePath);
         } else {
-            // Cloud Storage URI, create a Firebase reference and fetch
-            imagePath = "images/" + imagePath;
-            StorageReference storageReference = FirebaseStorage.getInstance().getReference(imagePath);
-            requestBuilder.load(storageReference);
+            // Cloud Storage URI, fetch from Firebase
+            requestBuilder.load(((MainActivity) context).getImageRef(imagePath));
         }
         requestBuilder.diskCacheStrategy(DiskCacheStrategy.DATA).into(imageView);
     }
