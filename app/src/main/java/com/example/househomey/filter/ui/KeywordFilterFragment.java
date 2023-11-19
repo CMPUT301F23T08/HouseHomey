@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat;
 import com.example.househomey.R;
 import com.example.househomey.filter.model.FilterCallback;
 import com.example.househomey.filter.model.KeywordFilter;
+import com.example.househomey.utils.FragmentUtils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -78,12 +79,10 @@ public class KeywordFilterFragment extends FilterFragment {
         for (String label : keyWordArray) {
             Context context = contentView.getContext();
             Chip chip = new Chip(context);
-            chip.setText(label);
-            chip.setCloseIconVisible(true);
+            FragmentUtils.addChip(label, chip, true, chipGroup);
             chip.setChipBackgroundColorResource(R.color.white);
             chip.setChipStrokeColorResource(R.color.brown);
             chip.setTextColor(ContextCompat.getColor(context , R.color.brown));
-            chipGroup.addView(chip);
             chipTextVals.add(chip.getText().toString());
             chip.setOnCloseIconClickListener(v -> {
                 chipGroup.removeView(chip);

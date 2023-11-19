@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.househomey.R;
+import com.example.househomey.utils.FragmentUtils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -63,20 +64,12 @@ public class TagFragment extends DialogFragment {
      */
     private void addTag() {
         String tagText = tagEditText.getText().toString().trim();
-
-        // Check if the tag is not empty
         if (!tagText.isEmpty()) {
-            // Create a new Chip and set its properties
             Chip chip = new Chip(requireContext());
-            chip.setText(tagText);
-            chip.setCloseIconVisible(false);
+            FragmentUtils.addChip(tagText, chip, false, chipGroup);
             chip.setOnCloseIconClickListener(v -> chipGroup.removeView(chip)); // for deleting tags, keep for later
-
-            // Add the chip to the ChipGroup and clear the EditText
-            chipGroup.addView(chip);
             tagEditText.getText().clear();
         } else {
-            // Display a toast if the tag is empty
             Toast.makeText(requireContext(), "Tag cannot be empty", Toast.LENGTH_SHORT).show();
         }
     }

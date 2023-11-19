@@ -1,6 +1,7 @@
 package com.example.househomey.utils;
 
 import android.content.Context;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -9,6 +10,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.househomey.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -84,6 +87,19 @@ public class FragmentUtils {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         return dateFormat.format(date);
+    }
+
+    /**
+     * Adds a chip to a chipGroup
+     * @param label text that is displayed on the chip
+     * @param chip the chip to be added
+     * @param closeIconVisibility boolean value, if true show close icon, if false don't show it
+     * @param chipGroup the chip group that the chip will be added to
+     */
+    public static void addChip(String label, Chip chip, Boolean closeIconVisibility, ChipGroup chipGroup) {
+        chip.setText(label);
+        chip.setCloseIconVisible(closeIconVisibility);
+        chipGroup.addView(chip);
     }
 }
 
