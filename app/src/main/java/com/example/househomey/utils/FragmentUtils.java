@@ -98,10 +98,15 @@ public class FragmentUtils {
     }
 
     /**
-     * makes a chip and adds it to a chip group
-     * @param label               text that is displayed on the chip
-     * @param closeIconVisibility boolean value, if true show close icon, if false don't show it
-     * @param chipGroup           the chip group that the chip will be added to
+     * Makes a chip and adds it to a chip group
+     * @param label label that will go on the chip
+     * @param closeIconVisibility boolean: if true, closeIcon is visible, if false, not visible
+     * @param chipGroup group of chips the chip will be added to
+     * @param context the given context
+     * @param backgroundColour background colour of the chip
+     * @param strokeColour stroke colour of the chip
+     * @param textColour text colour of the chip
+     * @return a new chip
      */
     public static Chip makeChip(String label, Boolean closeIconVisibility, ChipGroup chipGroup, Context context, int backgroundColour, int strokeColour, int textColour) {
         Chip chip = new Chip(context);
