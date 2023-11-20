@@ -1,9 +1,5 @@
 package com.example.househomey.utils;
-
-import static androidx.core.content.ContentProviderCompat.requireContext;
-
 import android.content.Context;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -25,7 +21,7 @@ import java.util.TimeZone;
 
 /**
  * This is a utility class for fragment page navigation within an Android application.
- * @author Owen Cooke
+ * @author Owen Cooke, Matthew Neufeld
  */
 public class FragmentUtils {
 
