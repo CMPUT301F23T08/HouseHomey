@@ -1,14 +1,16 @@
 package com.example.househomey.utils;
-
 import android.content.Context;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.househomey.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -19,13 +21,14 @@ import java.util.TimeZone;
 
 /**
  * This is a utility class for fragment page navigation within an Android application.
- * @author Owen Cooke
+ * @author Owen Cooke, Matthew Neufeld
  */
 public class FragmentUtils {
 
     /**
      * Navigates to a specified fragment page by replacing the fragment
      * within the provided AppCompatActivity's fragment container.
+     *
      * @param context The AppCompatActivity instance used for accessing the FragmentManager.
      * @param page    The Fragment to navigate to and replace the current fragment with.
      */
@@ -40,6 +43,7 @@ public class FragmentUtils {
     /**
      * Specialized method for navigating back to the HomeFragment
      * while also setting the selected item in the BottomNavigationView
+     *
      * @param context The AppCompatActivity context from which the navigation is initiated.
      */
     public static void navigateHomeWithIndicator(Context context) {
@@ -49,6 +53,7 @@ public class FragmentUtils {
 
     /**
      * Navigates the fragment manager back to the previous fragment if there is a fragment in the back stack.
+     *
      * @param context The AppCompatActivity context where the navigation is called.
      */
     public static void goBack(Context context) {
@@ -60,6 +65,7 @@ public class FragmentUtils {
 
     /**
      * Enables date picking for the calendar
+     *
      * @return datePicker
      */
     public static MaterialDatePicker<Long> createDatePicker() {
@@ -77,6 +83,7 @@ public class FragmentUtils {
 
     /**
      * Formats given date as a string in "yyyy-MM-dd" format.
+     *
      * @param date date to be formatted
      * @return formatted date
      */
@@ -85,6 +92,27 @@ public class FragmentUtils {
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         return dateFormat.format(date);
     }
-}
 
+    /**
+     * Makes a chip and adds it to a chip group
+     * @param label label that will go on the chip
+     * @param closeIconVisibility boolean: if true, closeIcon is visible, if false, not visible
+     * @param chipGroup group of chips the chip will be added to
+     * @param context the given context
+     * @param backgroundColour background colour of the chip
+     * @param strokeColour stroke colour of the chip
+     * @param textColour text colour of the chip
+     * @return a new chip
+     */
+    public static Chip makeChip(String label, Boolean closeIconVisibility, ChipGroup chipGroup, Context context, int backgroundColour, int strokeColour, int textColour) {
+        Chip chip = new Chip(context);
+        chip.setText(label);
+        chip.setCloseIconVisible(closeIconVisibility);
+        chip.setChipBackgroundColorResource(backgroundColour);
+        chip.setChipStrokeColorResource(strokeColour);
+        chip.setTextColor(ContextCompat.getColor(context, textColour));
+        chipGroup.addView(chip);
+        return chip;
+    }
+}
 

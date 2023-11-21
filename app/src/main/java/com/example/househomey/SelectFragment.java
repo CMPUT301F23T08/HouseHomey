@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.core.os.BundleCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.househomey.tags.TagFragment;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.WriteBatch;
@@ -39,6 +40,7 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
     private boolean sortOrder;
     private ArrayList<Item> itemList;
     private ItemAdapter itemAdapter;
+
     /**
      *
      * @param inflater The LayoutInflater object that can be used to inflate
@@ -99,7 +101,20 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
             }
         });
 
+        final Button actionTagsButton = rootView.findViewById(R.id.action_tags);
+        actionTagsButton.setOnClickListener(v -> {
+            openTagDialog();
+        });
+
         return rootView;
+    }
+
+    /**
+     * Opens the TagFragment dialog.
+     */
+    private void openTagDialog() {
+        TagFragment tagsDialogFragment = new TagFragment();
+        tagsDialogFragment.show(getChildFragmentManager(), "tagDialog");
     }
 
     /**
