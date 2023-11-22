@@ -11,4 +11,6 @@
     <string name="total_value">Total Value</string>
     <string name="ascending_alias">Asc</string>
     <string name="descending_alias">Desc</string>
+    <string name="user_real_name">John Smith</string>
+    <string name="sign_up_string"><u>Sign Up</u></string>
 </resources>
