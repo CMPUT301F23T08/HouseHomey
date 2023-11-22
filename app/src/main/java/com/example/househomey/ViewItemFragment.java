@@ -1,5 +1,6 @@
 package com.example.househomey;
 
+import static com.example.househomey.utils.FragmentUtils.goBack;
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
 import static java.util.Optional.ofNullable;
 
@@ -42,6 +43,7 @@ public class ViewItemFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_view_item, container, false);
 
         // Initialize TextViews
+        TextView title = rootView.findViewById(R.id.view_item_title);
         TextView make = rootView.findViewById(R.id.view_item_make);
         TextView model = rootView.findViewById(R.id.view_item_model);
         TextView serialNumber = rootView.findViewById(R.id.view_item_serial_number);
@@ -53,6 +55,7 @@ public class ViewItemFragment extends Fragment {
                 .map(args -> args.getSerializable("item", Item.class))
                 .ifPresent(item -> {
                     this.item = item;
+                    title.setText(item.getDescription());
                     make.setText(item.getMake());
                     model.setText(item.getModel());
                     serialNumber.setText(item.getSerialNumber());
@@ -71,6 +74,7 @@ public class ViewItemFragment extends Fragment {
                     navigateToFragmentPage(getContext(), new HomeFragment());
                 }
         );
+        rootView.findViewById(R.id.view_item_back_button).setOnClickListener(v -> goBack(getContext()));
 
         return rootView;
     }
