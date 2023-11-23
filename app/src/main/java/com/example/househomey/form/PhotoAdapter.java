@@ -15,6 +15,7 @@ import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.househomey.MainActivity;
 import com.example.househomey.R;
+import com.example.househomey.scanner.SNScanner;
 
 import java.util.List;
 
@@ -89,6 +90,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         if (imagePath.contains("content://") || imagePath.contains("file://")) {
             // Local file URI, load directly
             requestBuilder.load(imagePath);
+            SNScanner.serialNumFromImgPath(context, imagePath);
         } else {
             // Cloud Storage URI, fetch from Firebase
             requestBuilder.load(((MainActivity) context).getImageRef(imagePath));
