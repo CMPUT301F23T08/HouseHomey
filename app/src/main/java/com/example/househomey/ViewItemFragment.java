@@ -13,8 +13,11 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.househomey.form.EditItemFragment;
+import com.example.househomey.form.ViewPhotoAdapter;
+import java.util.ArrayList;
 
 import java.util.Collection;
 
@@ -25,6 +28,8 @@ import java.util.Collection;
  */
 public class ViewItemFragment extends Fragment {
     private Item item;
+    protected ViewPhotoAdapter viewPhotoAdapter;
+    protected ArrayList<String> photoUris = new ArrayList<>();
 
     /**
      *
@@ -75,6 +80,10 @@ public class ViewItemFragment extends Fragment {
                 }
         );
         rootView.findViewById(R.id.view_item_back_button).setOnClickListener(v -> goBack(getContext()));
+
+        photoUris.addAll(item.getPhotoIds());
+        viewPhotoAdapter = new ViewPhotoAdapter(getContext(), photoUris);
+        ((RecyclerView) rootView.findViewById(R.id.view_photo_grid)).setAdapter(viewPhotoAdapter);
 
         return rootView;
     }
