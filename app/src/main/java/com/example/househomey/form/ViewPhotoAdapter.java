@@ -25,16 +25,31 @@ import java.util.List;
 public class ViewPhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final Context context;
     private final List<String> imageUris;
+    private final OnItemClickListener listener;
 
     /**
      * Constructs a ViewPhotoAdapter with the given context and a list of image URIs to display.
      *
      * @param context   The context.
      * @param imageUris The list of image URIs.
+     * @param listener  The click listener for handling photo clicks.
      */
-    public ViewPhotoAdapter(Context context, List<String> imageUris) {
+    public ViewPhotoAdapter(Context context, List<String> imageUris, OnItemClickListener listener) {
         this.context = context;
         this.imageUris = imageUris;
+        this.listener = listener;
+    }
+
+    /**
+     * Interface definition for a callback to be invoked when an item in the RecyclerView is clicked.
+     */
+    public interface OnItemClickListener {
+        /**
+         * Called when an item in the photo RecyclerView is clicked.
+         *
+         * @param imagePath The path of the clicked image.
+         */
+        void onItemClick(String imagePath);
     }
 
     /**
@@ -62,6 +77,7 @@ public class ViewPhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ViewPhotoAdapter.ViewImageViewHolder) {
             loadIntoImageView(((ViewImageViewHolder) holder).imageView, imageUris.get(position));
+            holder.itemView.setOnClickListener(v -> listener.onItemClick(imageUris.get(position)));
         }
     }
 
@@ -71,7 +87,7 @@ public class ViewPhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
      * @param imageView The ImageView to load the image into.
      * @param imagePath The string URI of the image.
      */
-    private void loadIntoImageView(ImageView imageView, String imagePath) {
+    public void loadIntoImageView(ImageView imageView, String imagePath) {
         RequestBuilder<Drawable> requestBuilder = Glide.with(context).asDrawable();
         if (imagePath.contains("content://") || imagePath.contains("file://")) {
             // Local file URI, load directly

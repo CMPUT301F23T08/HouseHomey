@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -54,6 +55,8 @@ public class ViewItemFragment extends Fragment {
         TextView serialNumber = rootView.findViewById(R.id.view_item_serial_number);
         TextView cost = rootView.findViewById(R.id.view_item_cost);
         TextView comment = rootView.findViewById(R.id.view_item_comment);
+        TextView noPhotosView = rootView.findViewById(R.id.view_item_no_photos);
+        ImageView mainPhoto = rootView.findViewById(R.id.view_item_main_photo);
 
         // Set TextViews to Item details sent over from ItemAdapter
         ofNullable(getArguments())
@@ -82,7 +85,17 @@ public class ViewItemFragment extends Fragment {
         rootView.findViewById(R.id.view_item_back_button).setOnClickListener(v -> goBack(getContext()));
 
         photoUris.addAll(item.getPhotoIds());
-        viewPhotoAdapter = new ViewPhotoAdapter(getContext(), photoUris);
+        viewPhotoAdapter = new ViewPhotoAdapter(getContext(), photoUris, imagePath -> {
+            viewPhotoAdapter.loadIntoImageView(mainPhoto, imagePath);
+        });
+        if (photoUris.isEmpty()) {
+            noPhotosView.setVisibility(View.VISIBLE);
+            mainPhoto.setVisibility(View.GONE);
+        } else {
+            noPhotosView.setVisibility(View.GONE);
+            mainPhoto.setVisibility(View.VISIBLE);
+            viewPhotoAdapter.loadIntoImageView(mainPhoto, photoUris.get(0));
+        }
         ((RecyclerView) rootView.findViewById(R.id.view_photo_grid)).setAdapter(viewPhotoAdapter);
 
         return rootView;

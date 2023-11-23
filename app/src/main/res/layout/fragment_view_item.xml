@@ -45,219 +45,264 @@
 
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/view_photo_grid"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="12dp"
-        android:layout_gravity="center"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="4" />
-
-    <FrameLayout
-        android:id="@+id/fragmentContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="24dp"
-        android:paddingHorizontal="12dp"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="40dp"
-            android:text="Details"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:paddingHorizontal="12dp"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="40dp"
-            android:text="Make"
-            android:textSize="18sp"
-            android:textColor="@color/subTitle" />
-
-        <TextView
-            android:id="@+id/view_item_make"
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="40dp"
-            android:text="Make"
-            android:textSize="18sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:paddingHorizontal="12dp"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="40dp"
-            android:text="Model"
-            android:textSize="18sp"
-            android:textColor="@color/subTitle" />
-
-        <TextView
-            android:id="@+id/view_item_model"
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="40dp"
-            android:text="Model"
-            android:textSize="18sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:paddingHorizontal="12dp"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="40dp"
-            android:text="Serial Number"
-            android:textSize="18sp"
-            android:textColor="@color/subTitle" />
-
-        <TextView
-            android:id="@+id/view_item_serial_number"
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="40dp"
-            android:text="Serial"
-            android:textSize="18sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:paddingHorizontal="12dp"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="40dp"
-            android:text="Est. Cost (CAD)"
-            android:textSize="18sp"
-            android:textColor="@color/subTitle" />
-
-        <TextView
-            android:id="@+id/view_item_cost"
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="40dp"
-            android:text="Cost"
-            android:textSize="18sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:paddingHorizontal="12dp"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="40dp"
-            android:text="Comment"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="4dp"
-        android:paddingHorizontal="12dp"
-        android:layout_marginTop="4dp"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:id="@+id/view_item_comment"
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="40dp"
-            android:text="Comment"
-            android:textSize="15sp" />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:orientation="horizontal"
-        android:layout_marginTop="16dp">
-
-        <Space
-            android:layout_width="32dp"
+        android:layout_height="match_parent"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:orientation="vertical">
+            <include layout="@layout/gallery_photo"
+                android:id="@+id/view_item_main_photo"
+                android:layout_width="380dp"
+                android:layout_height="380dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitXY"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="16dp"
+                android:paddingHorizontal="12dp"
+                android:gravity="center_vertical">
 
-        <Button
-            android:id="@+id/edit_button"
-            android:layout_width="160dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:text="Edit Item"
-            android:layout_weight="1"/>
-        <Space
-            android:layout_width="32dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Gallery"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/delete_button"
-            android:layout_width="160dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_gravity="center"
+                <TextView
+                    android:id="@+id/view_item_no_photos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="No attached photos"
+                    android:textSize="18sp"
+                    android:textColor="@color/subTitle" />
 
-            android:text="Delete"
-            android:backgroundTint="@color/red"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/edit_button"
-            android:layout_weight="1"/>
-        <Space
-            android:layout_width="32dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
-    </LinearLayout>
+            </LinearLayout>
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/view_photo_grid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="12dp"
+                android:layout_gravity="center"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="4" />
+
+            <FrameLayout
+                android:id="@+id/fragmentContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="24dp"
+                android:paddingHorizontal="12dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="0.5"
+                    android:layout_height="40dp"
+                    android:text="Details"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:paddingHorizontal="12dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="0.5"
+                    android:layout_height="40dp"
+                    android:text="Make"
+                    android:textSize="18sp"
+                    android:textColor="@color/subTitle" />
+
+                <TextView
+                    android:id="@+id/view_item_make"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.5"
+                    android:layout_height="40dp"
+                    android:text="Make"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:paddingHorizontal="12dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="0.5"
+                    android:layout_height="40dp"
+                    android:text="Model"
+                    android:textSize="18sp"
+                    android:textColor="@color/subTitle" />
+
+                <TextView
+                    android:id="@+id/view_item_model"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.5"
+                    android:layout_height="40dp"
+                    android:text="Model"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:paddingHorizontal="12dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="0.5"
+                    android:layout_height="40dp"
+                    android:text="Serial Number"
+                    android:textSize="18sp"
+                    android:textColor="@color/subTitle" />
+
+                <TextView
+                    android:id="@+id/view_item_serial_number"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.5"
+                    android:layout_height="40dp"
+                    android:text="Serial"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:paddingHorizontal="12dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="0.5"
+                    android:layout_height="40dp"
+                    android:text="Est. Cost (CAD)"
+                    android:textSize="18sp"
+                    android:textColor="@color/subTitle" />
+
+                <TextView
+                    android:id="@+id/view_item_cost"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.5"
+                    android:layout_height="40dp"
+                    android:text="Cost"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:paddingHorizontal="12dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="0.5"
+                    android:layout_height="40dp"
+                    android:text="Comment"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginStart="4dp"
+                android:paddingHorizontal="12dp"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/view_item_comment"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.5"
+                    android:layout_height="40dp"
+                    android:text="Comment"
+                    android:textSize="15sp" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp">
+
+                <Space
+                    android:layout_width="32dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
+
+                <Button
+                    android:id="@+id/edit_button"
+                    android:layout_width="160dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:text="Edit Item"
+                    android:layout_weight="1"/>
+                <Space
+                    android:layout_width="32dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
+
+                <Button
+                    android:id="@+id/delete_button"
+                    android:layout_width="160dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_gravity="center"
+
+                    android:text="Delete"
+                    android:backgroundTint="@color/red"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/edit_button"
+                    android:layout_weight="1"/>
+                <Space
+                    android:layout_width="32dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
