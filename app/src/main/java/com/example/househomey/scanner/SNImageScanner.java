@@ -19,11 +19,20 @@ public class SNImageScanner extends ImageScanner {
         void onSNScanningComplete(String serialNumber);
     }
 
+    /**
+     * Constructs a new SNImageScanner
+     * @param context The context of this scanner
+     * @param listener The listener to notify when scanning complete
+     */
     public SNImageScanner(Context context, OnImageScannedListener listener) {
         this.context = context;
         this.listener = listener;
     }
 
+    /**
+     * Scans the given image using google MLKit
+     * @param imageUri Image to scan
+     */
     @Override
     public void scanImage(String imageUri) {
         TextRecognizer recognizer =
@@ -42,6 +51,11 @@ public class SNImageScanner extends ImageScanner {
         }
     }
 
+    /**
+     * Selects the best line from MLKit text by choosing the lowest, longest line of numbers
+     * @param text The MLKit text to select the number from
+     * @return the chosen serial number
+     */
     private static String selectBestLine(Text text) {
         String bestLine = "";
 

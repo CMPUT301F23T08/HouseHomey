@@ -75,6 +75,9 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         return rootView;
     }
 
+    /**
+     * Launches the scanner picker dialog
+     */
     private void launchScannerPicker() {
         ScannerPickerDialog dialog = new ScannerPickerDialog();
         dialog.show(getChildFragmentManager(), dialog.getTag());
@@ -243,6 +246,10 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         photoAdapter.notifyItemInserted(photoAdapter.getItemCount() - 1);
     }
 
+    /**
+     * Sets the result of the Serial Number scanning in the serial numbner text view
+     * @param serialNumber the scanned serial number to set
+     */
     @Override
     public void onSNScanningComplete(String serialNumber) {
         sNTextView.setText(serialNumber);
