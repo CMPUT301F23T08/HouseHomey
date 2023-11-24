@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.househomey.Item;
 import com.example.househomey.MainActivity;
 import com.example.househomey.R;
+import com.example.househomey.scanner.SNImageScanner;
+import com.example.househomey.scanner.ScannerPickerDialog;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -39,12 +42,13 @@ import java.util.UUID;
  *
  * @author Owen Cooke
  */
-public abstract class ItemFormFragment extends Fragment implements ImagePickerDialog.OnImagePickedListener, PhotoAdapter.OnAddButtonClickListener {
+public abstract class ItemFormFragment extends Fragment implements ImagePickerDialog.OnImagePickedListener, PhotoAdapter.OnAddButtonClickListener, SNImageScanner.OnImageScannedListener {
     protected Date dateAcquired;
     protected CollectionReference itemRef;
     protected ArrayList<String> photoUris = new ArrayList<>();
     protected PhotoAdapter photoAdapter;
     private TextInputEditText dateTextView;
+    private TextInputEditText sNTextView;
     private ImagePickerDialog imagePickerDialog;
 
     /**
@@ -65,7 +69,15 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         initAddImageHandler(rootView);
         // Get item collection reference from main activity
         itemRef = ((MainActivity) requireActivity()).getItemRef();
+        sNTextView = rootView.findViewById(R.id.add_item_serial_number);
+        View scanButton = rootView.findViewById(R.id.add_item_scan_button);
+        scanButton.setOnClickListener(v -> launchScannerPicker());
         return rootView;
+    }
+
+    private void launchScannerPicker() {
+        ScannerPickerDialog dialog = new ScannerPickerDialog();
+        dialog.show(getChildFragmentManager(), dialog.getTag());
     }
 
     /**
@@ -229,6 +241,11 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         imagePickerDialog.dismiss();
         photoUris.add(imageUri);
         photoAdapter.notifyItemInserted(photoAdapter.getItemCount() - 1);
+    }
+
+    @Override
+    public void onSNScanningComplete(String serialNumber) {
+        sNTextView.setText(serialNumber);
     }
 
     /**
