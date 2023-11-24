@@ -1,5 +1,7 @@
 package com.example.househomey.form;
 
+import static com.example.househomey.utils.FragmentUtils.isValidUUID;
+
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -27,7 +29,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private static final int VIEW_TYPE_IMAGE = 1;
     private final Context context;
     private final List<String> imageUris;
-    private final OnAddButtonClickListener onAddButtonClickListener;
+    private final OnButtonClickListener onButtonClickListener;
 
     /**
      * Constructs a PhotoAdapter with the given context and a list of image URIs to display.
@@ -35,10 +37,10 @@ public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      * @param context   The context.
      * @param imageUris The list of image URIs.
      */
-    public PhotoAdapter(Context context, List<String> imageUris, OnAddButtonClickListener listener) {
+    public PhotoAdapter(Context context, List<String> imageUris, OnButtonClickListener listener) {
         this.context = context;
         this.imageUris = imageUris;
-        this.onAddButtonClickListener = listener;
+        this.onButtonClickListener = listener;
     }
 
     /**
@@ -53,7 +55,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == VIEW_TYPE_IMAGE) {
-            View view = inflater.inflate(R.layout.gallery_photo, parent, false);
+            View view = inflater.inflate(R.layout.gallery_photo_with_delete, parent, false);
             return new ImageViewHolder(view);
         }
         View view = inflater.inflate(R.layout.add_photo_button, parent, false);
@@ -73,8 +75,9 @@ public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ImageViewHolder) {
             loadIntoImageView(((ImageViewHolder) holder).imageView, imageUris.get(position));
+            holder.itemView.findViewById(R.id.delete_photo_button).setOnClickListener(v -> onButtonClickListener.onDeleteButtonClicked(holder.getAdapterPosition()));
         } else {
-            holder.itemView.setOnClickListener(v -> onAddButtonClickListener.onAddButtonClicked());
+            holder.itemView.setOnClickListener(v -> onButtonClickListener.onAddButtonClicked());
         }
     }
 
@@ -86,12 +89,12 @@ public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      */
     private void loadIntoImageView(ImageView imageView, String imagePath) {
         RequestBuilder<Drawable> requestBuilder = Glide.with(context).asDrawable();
-        if (imagePath.contains("content://") || imagePath.contains("file://")) {
+        if (isValidUUID(imagePath)) {
+            // Cloud Storage UUID, fetch from Firebase
+            requestBuilder.load(((MainActivity) context).getImageRef(imagePath));
+        } else {
             // Local file URI, load directly
             requestBuilder.load(imagePath);
-        } else {
-            // Cloud Storage URI, fetch from Firebase
-            requestBuilder.load(((MainActivity) context).getImageRef(imagePath));
         }
         requestBuilder.diskCacheStrategy(DiskCacheStrategy.DATA).into(imageView);
     }
@@ -120,10 +123,11 @@ public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     /**
-     * Interface for a callback when the add button is clicked.
+     * Interface for callbacks when buttons within the photo adapter are clicked.
      */
-    public interface OnAddButtonClickListener {
+    public interface OnButtonClickListener {
         void onAddButtonClicked();
+        void onDeleteButtonClicked(int position);
     }
 
     /**
