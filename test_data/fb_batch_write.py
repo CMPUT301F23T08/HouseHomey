@@ -50,7 +50,7 @@ if __name__ == "__main__":
         print(
             """Usage: python3 fb_batch_write.py <username> <path/to/data.json> <path/to/service/account/key.json>
 Arguments:
-    <username>: The username of an existing Firestore user to batch write items to.
+    <username>: The username of the Firestore user to batch write items to.
     <path/to/data.json>: Path to the JSON data file containing the items to be imported.
     <path/to/service/account/key.json>: Path to the Firebase service account key, providing write access to Firestore."""
         )
