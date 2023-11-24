@@ -1,6 +1,7 @@
 package com.example.househomey.form;
 
 import static com.example.househomey.utils.FragmentUtils.createDatePicker;
+import static com.example.househomey.utils.FragmentUtils.isValidUUID;
 import static java.util.Objects.requireNonNull;
 
 import android.net.Uri;
@@ -39,12 +40,13 @@ import java.util.UUID;
  *
  * @author Owen Cooke
  */
-public abstract class ItemFormFragment extends Fragment implements ImagePickerDialog.OnImagePickedListener, PhotoAdapter.OnAddButtonClickListener {
+public abstract class ItemFormFragment extends Fragment implements ImagePickerDialog.OnImagePickedListener, PhotoAdapter.OnButtonClickListener {
     protected Date dateAcquired;
+    private TextInputEditText dateTextView;
     protected CollectionReference itemRef;
     protected ArrayList<String> photoUris = new ArrayList<>();
     protected PhotoAdapter photoAdapter;
-    private TextInputEditText dateTextView;
+    private final ArrayList<String> photosToDelete = new ArrayList<>();
     private ImagePickerDialog imagePickerDialog;
 
     /**
@@ -70,7 +72,7 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
 
     /**
      * Validates the user input and constructs an Item object if the input is valid.
-     * If validation succeeds, uploads new attached photos to Firebase Cloud Storage.
+     * If validation succeeds, updates respective photos in Firebase Cloud Storage.
      *
      * @param itemId The unique identifier of the item, if it exists, or an empty string for new items.
      * @return An Item object representing the validated item data, or null if validation fails.
@@ -101,9 +103,17 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
             return null;
         }
 
-        // Item is valid, upload new photos (if any) to Cloud Storage
+        // Upload new photos (if any) to Cloud Storage
         photoUris.replaceAll(this::uploadImageToFirebase);
         item.setPhotoIds(photoUris);
+
+        // Remove deleted photos (if any) from Cloud Storage
+        for (String imageId : photosToDelete) {
+            StorageReference imageRef = ((MainActivity) requireActivity()).getImageRef(imageId);
+            imageRef.delete()
+                    .addOnSuccessListener(taskSnapshot -> Log.d("IMAGE_DELETE", "Successfully removed image from: " + imageRef))
+                    .addOnFailureListener(e -> Log.e("IMAGE_DELETE", "Failed to delete image from Cloud Storage: " + e));
+        }
         return item;
     }
 
@@ -238,7 +248,7 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
      * @return The UUID of the uploaded image.
      */
     private String uploadImageToFirebase(String imageUri) {
-        if (imageUri.contains("content://") || imageUri.contains("file://")) {
+        if (!isValidUUID(imageUri)) {
             // New image to upload, create a unique storage reference
             String imageId = UUID.randomUUID().toString();
             StorageReference imageRef = ((MainActivity) requireActivity()).getImageRef(imageId);
@@ -246,10 +256,26 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
             // Upload the image to Cloud Storage
             imageRef.putFile(Uri.parse(imageUri))
                     .addOnSuccessListener(taskSnapshot -> Log.d("IMAGE_UPLOAD", "Successfully uploaded image to: " + taskSnapshot.getStorage()))
-                    .addOnFailureListener(e -> Log.e("IMAGE_UPLOAD", "Failed to upload image: " + e));
+                    .addOnFailureListener(e -> Log.e("IMAGE_UPLOAD", "Failed to upload image to Cloud Storage: " + e));
             return imageId;
         }
         // Already uploaded to Firebase
         return imageUri;
+    }
+
+    /**
+     * Callback method for when the Delete button on a photo is clicked.
+     * @param position The integer index of the clicked position in the adapter.
+     */
+    @Override
+    public void onDeleteButtonClicked(int position) {
+        // Keep track of Cloud Storage IDs to delete when confirm button clicked
+        String imageId = photoUris.get(position);
+        if (isValidUUID(imageId)) {
+            photosToDelete.add(imageId);
+        }
+        // Remove photo from adapter
+        photoUris.remove(position);
+        photoAdapter.notifyItemRemoved(position);
     }
 }

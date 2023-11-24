@@ -5,5 +5,5 @@
     android:id="@+id/gallery_image_view"
     android:layout_width="78dp"
     android:layout_height="78dp"
-    android:layout_marginBottom="10dp"
-    android:scaleType="centerCrop" />
+    android:scaleType="centerCrop"
+    android:layout_marginBottom="10dp" />
