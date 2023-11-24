@@ -1,4 +1,5 @@
 package com.example.househomey.utils;
+
 import android.content.Context;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,9 +19,11 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.UUID;
 
 /**
  * This is a utility class for fragment page navigation within an Android application.
+ *
  * @author Owen Cooke, Matthew Neufeld
  */
 public class FragmentUtils {
@@ -95,13 +98,14 @@ public class FragmentUtils {
 
     /**
      * Makes a chip and adds it to a chip group
-     * @param label label that will go on the chip
+     *
+     * @param label               label that will go on the chip
      * @param closeIconVisibility boolean: if true, closeIcon is visible, if false, not visible
-     * @param chipGroup group of chips the chip will be added to
-     * @param context the given context
-     * @param backgroundColour background colour of the chip
-     * @param strokeColour stroke colour of the chip
-     * @param textColour text colour of the chip
+     * @param chipGroup           group of chips the chip will be added to
+     * @param context             the given context
+     * @param backgroundColour    background colour of the chip
+     * @param strokeColour        stroke colour of the chip
+     * @param textColour          text colour of the chip
      * @return a new chip
      */
     public static Chip makeChip(String label, Boolean closeIconVisibility, ChipGroup chipGroup, Context context, int backgroundColour, int strokeColour, int textColour) {
@@ -113,6 +117,21 @@ public class FragmentUtils {
         chip.setTextColor(ContextCompat.getColor(context, textColour));
         chipGroup.addView(chip);
         return chip;
+    }
+
+    /**
+     * Determines whether a string is a valid UUID or not.
+     * Used for Cloud Storage image UUIDs.
+     *
+     * @param str a string
+     */
+    public static boolean isValidUUID(String str) {
+        try {
+            UUID.fromString(str);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 }
 
