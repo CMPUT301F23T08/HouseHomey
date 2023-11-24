@@ -15,6 +15,30 @@ Two options for obtaining, either:
 
 Add the key to the `test_data` directory
 
+### Mock Items in `data.json`
+
+Expected format is an array of objects, each containing the Firestore fields for a HouseHomey item. Mandatory fields are shown in the first object below:
+
+```javascript
+[
+  {
+    "description": "Laptop",
+    "acquisitionDate": "2023-08-09",
+    "cost": "1500.99",
+  },
+  {
+    "description": "Phone",
+    "acquisitionDate": "2023-08-09",
+    "cost": "1300.00",
+    "make": "Apple",
+    "model": "5s",
+    "comment": "Green colorway",
+    "serialNumber: "7110923456789012",
+    "tags": ["electronics", "work"]
+  },
+]
+```
+
 ## Usage
 
 Install the required Python packages:

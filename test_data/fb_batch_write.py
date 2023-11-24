@@ -20,10 +20,19 @@ def import_data_to_firestore(db, test_user, data):
     print("Batch write completed.")
 
 
+def create_user_if_not_exists(db, test_user):
+    user_ref = db.collection("user").document(test_user)
+    if not user_ref.get().exists:
+        user_ref.set({})
+
+
 def main(test_user, service_account_key_path, json_file_path):
     cred = credentials.Certificate(service_account_key_path)
     initialize_app(cred)
     db = firestore.Client.from_service_account_json(service_account_key_path)
+
+    # Check if user document exists, create if not
+    create_user_if_not_exists(db, test_user)
 
     # Read JSON file containg mock items
     with open(json_file_path, "r") as file:
