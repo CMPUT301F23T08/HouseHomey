@@ -57,14 +57,6 @@
     </ImageView>
 
     <TextView
-        android:id="@+id/user_profile_real_name"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/user_real_name">
-
-    </TextView>
-    <TextView
         android:id="@+id/user_profile_username"
         android:layout_gravity="center"
         android:layout_width="wrap_content"

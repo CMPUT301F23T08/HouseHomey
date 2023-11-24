@@ -58,7 +58,10 @@ public class MainActivity extends AppCompatActivity {
                 fragment = new AddItemFragment();
             } else {
                 // TODO: Go to Profile Page
-                fragment = new HomeFragment();
+                Bundle name = new Bundle();
+                name.putString("username", "john_doe");
+                fragment = new UserProfileFragment();
+                fragment.setArguments(name);
             }
             navigateToFragmentPage(this, fragment);
             return true;

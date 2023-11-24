@@ -34,6 +34,7 @@
             android:layout_weight="1">
         </Space>
         <EditText
+            android:id="@+id/user_login_username"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:padding="12dp"
@@ -61,6 +62,7 @@
             android:layout_weight="1">
         </Space>
         <EditText
+            android:id="@+id/user_login_password"
             android:padding="12dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -80,6 +82,7 @@
         android:layout_height="24dp">
     </Space>
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/user_profile_auth_button"
@@ -107,13 +110,18 @@
             android:paddingEnd="4dp">
         </TextView>
         <TextView
+            android:id="@+id/sign_up_text"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="@string/sign_up_string"
-            android:layout_weight="1"
             android:textColor="@color/creme"
             android:clickable="true">
         </TextView>
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+        </Space>
     </LinearLayout>
 
 </LinearLayout>
