@@ -53,7 +53,6 @@ public class ScannerPickerDialog extends BottomSheetDialogFragment implements Im
             throw new ClassCastException(parent + " must implement OnImagePickedListener");
         }
         scanner = new SNImageScanner(getContext(), listener);
-        dismiss();
         imagePickerDialog.show(getChildFragmentManager(), imagePickerDialog.getTag());
     }
 
@@ -65,5 +64,6 @@ public class ScannerPickerDialog extends BottomSheetDialogFragment implements Im
     public void onImagePicked(String imageUri) {
         imagePickerDialog.dismiss();
         scanner.scanImage(imageUri);
+        dismiss();
     }
 }
