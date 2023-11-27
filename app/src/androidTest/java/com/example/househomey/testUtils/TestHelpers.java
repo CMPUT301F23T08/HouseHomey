@@ -10,6 +10,11 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
+import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+
 import androidx.annotation.IdRes;
 
 import com.example.househomey.R;
@@ -72,5 +77,13 @@ public class TestHelpers {
      */
     public static void enterText(@IdRes int viewId, String text) {
         onView(withId(viewId)).perform(scrollTo(), clearText(), typeText(text), pressImeActionButton(), closeSoftKeyboard());
+    }
+
+    public static Bitmap mockImageBitmap(Activity activity, int resourceId) {
+        return BitmapFactory.decodeResource(activity.getResources(), resourceId);
+    }
+
+    public static Uri mockImageUri(int resourceId) {
+        return Uri.parse("android.resource://com.example.househomey/" + resourceId);
     }
 }

@@ -5,6 +5,7 @@
     android:layout_marginBottom="10dp">
 
     <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/add_photo_button"
         android:layout_width="78dp"
         android:layout_height="78dp"
         android:layout_alignParentStart="true"
