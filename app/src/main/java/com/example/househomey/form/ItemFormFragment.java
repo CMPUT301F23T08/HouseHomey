@@ -1,17 +1,21 @@
 package com.example.househomey.form;
 
 import static com.example.househomey.utils.FragmentUtils.createDatePicker;
+import static com.example.househomey.utils.FragmentUtils.isValidUUID;
 import static java.util.Objects.requireNonNull;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.househomey.Item;
 import com.example.househomey.MainActivity;
@@ -21,11 +25,14 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.storage.StorageReference;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * This abstract class serves as a base for creating and managing both Add and Edit Item forms.
@@ -33,10 +40,14 @@ import java.util.HashMap;
  *
  * @author Owen Cooke
  */
-public abstract class ItemFormFragment extends Fragment {
+public abstract class ItemFormFragment extends Fragment implements ImagePickerDialog.OnImagePickedListener, PhotoAdapter.OnButtonClickListener {
     protected Date dateAcquired;
     private TextInputEditText dateTextView;
     protected CollectionReference itemRef;
+    protected ArrayList<String> photoUris = new ArrayList<>();
+    protected PhotoAdapter photoAdapter;
+    private final ArrayList<String> photosToDelete = new ArrayList<>();
+    private ImagePickerDialog imagePickerDialog;
 
     /**
      * Creates the basic view for a validated Item form.
@@ -52,18 +63,21 @@ public abstract class ItemFormFragment extends Fragment {
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_add_item, container, false);
+        initAddImageHandler(rootView);
         // Get item collection reference from main activity
         itemRef = ((MainActivity) requireActivity()).getItemRef();
-        return inflater.inflate(R.layout.fragment_add_item, container, false);
+        return rootView;
     }
 
     /**
      * Validates the user input and constructs an Item object if the input is valid.
+     * If validation succeeds, updates respective photos in Firebase Cloud Storage.
      *
      * @param itemId The unique identifier of the item, if it exists, or an empty string for new items.
      * @return An Item object representing the validated item data, or null if validation fails.
      */
-    protected Item validateItem(String itemId) {
+    protected Item prepareItem(String itemId) {
         // Check that required fields are filled before validating
         boolean invalidDesc = isRequiredFieldEmpty(R.id.add_item_description_layout);
         boolean invalidDate = isRequiredFieldEmpty(R.id.add_item_date_layout);
@@ -79,13 +93,28 @@ public abstract class ItemFormFragment extends Fragment {
         data.put("model", getInputText(R.id.add_item_model));
         data.put("serialNumber", getInputText(R.id.add_item_serial_number));
         data.put("comment", getInputText(R.id.add_item_comment));
+        data.put("photos", photoUris);
 
         // Ensure that form data can be used to create a valid Item
+        Item item;
         try {
-            return new Item(itemId, data);
+            item = new Item(itemId, data);
         } catch (NullPointerException e) {
             return null;
         }
+
+        // Upload new photos (if any) to Cloud Storage
+        photoUris.replaceAll(this::uploadImageToFirebase);
+        item.setPhotoIds(photoUris);
+
+        // Remove deleted photos (if any) from Cloud Storage
+        for (String imageId : photosToDelete) {
+            StorageReference imageRef = ((MainActivity) requireActivity()).getImageRef(imageId);
+            imageRef.delete()
+                    .addOnSuccessListener(taskSnapshot -> Log.d("IMAGE_DELETE", "Successfully removed image from: " + imageRef))
+                    .addOnFailureListener(e -> Log.e("IMAGE_DELETE", "Failed to delete image from Cloud Storage: " + e));
+        }
+        return item;
     }
 
     /**
@@ -127,7 +156,7 @@ public abstract class ItemFormFragment extends Fragment {
         dateTextView = rootView.findViewById(R.id.add_item_date);
 
         MaterialDatePicker<Long> datePicker = createDatePicker();
-        
+
         datePicker.addOnPositiveButtonClickListener(selection -> {
             dateAcquired = new Date(selection);
             dateTextView.setText(datePicker.getHeaderText());
@@ -178,5 +207,75 @@ public abstract class ItemFormFragment extends Fragment {
             } catch (NumberFormatException ignored) {
             }
         });
+    }
+
+    /**
+     * Initializes photo components for the fragment (photo adapter,
+     * and image picker dialog) as well as sets this fragment to the components' listeners.
+     *
+     * @param rootView The root view of the fragment.
+     */
+    private void initAddImageHandler(View rootView) {
+        imagePickerDialog = new ImagePickerDialog();
+        photoAdapter = new PhotoAdapter(getContext(), photoUris, this);
+        ((RecyclerView) rootView.findViewById(R.id.add_photo_grid)).setAdapter(photoAdapter);
+    }
+
+    /**
+     * Callback method for when the Add button in the photo gallery is clicked.
+     */
+    @Override
+    public void onAddButtonClicked() {
+        imagePickerDialog.show(getChildFragmentManager(), imagePickerDialog.getTag());
+    }
+
+    /**
+     * Callback method for handling the image URI returned from image picker dialog.
+     *
+     * @param imageUri The URI of the selected/taken image.
+     */
+    @Override
+    public void onImagePicked(String imageUri) {
+        imagePickerDialog.dismiss();
+        photoUris.add(imageUri);
+        photoAdapter.notifyItemInserted(photoAdapter.getItemCount() - 1);
+    }
+
+    /**
+     * Uploads a local image to Firebase Cloud Storage and returns its UUID.
+     *
+     * @param imageUri The local URI of the image to be uploaded.
+     * @return The UUID of the uploaded image.
+     */
+    private String uploadImageToFirebase(String imageUri) {
+        if (!isValidUUID(imageUri)) {
+            // New image to upload, create a unique storage reference
+            String imageId = UUID.randomUUID().toString();
+            StorageReference imageRef = ((MainActivity) requireActivity()).getImageRef(imageId);
+
+            // Upload the image to Cloud Storage
+            imageRef.putFile(Uri.parse(imageUri))
+                    .addOnSuccessListener(taskSnapshot -> Log.d("IMAGE_UPLOAD", "Successfully uploaded image to: " + taskSnapshot.getStorage()))
+                    .addOnFailureListener(e -> Log.e("IMAGE_UPLOAD", "Failed to upload image to Cloud Storage: " + e));
+            return imageId;
+        }
+        // Already uploaded to Firebase
+        return imageUri;
+    }
+
+    /**
+     * Callback method for when the Delete button on a photo is clicked.
+     * @param position The integer index of the clicked position in the adapter.
+     */
+    @Override
+    public void onDeleteButtonClicked(int position) {
+        // Keep track of Cloud Storage IDs to delete when confirm button clicked
+        String imageId = photoUris.get(position);
+        if (isValidUUID(imageId)) {
+            photosToDelete.add(imageId);
+        }
+        // Remove photo from adapter
+        photoUris.remove(position);
+        photoAdapter.notifyItemRemoved(position);
     }
 }

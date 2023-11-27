@@ -44,7 +44,7 @@ public class AddItemFragment extends ItemFormFragment {
      * Adds the user input data to a new item in a user's Firestore item collection
      */
     private void addItem() {
-        Item newItem = validateItem("");
+        Item newItem = prepareItem("");
         if (newItem == null) return;
 
         // Create new item document in Firestore
