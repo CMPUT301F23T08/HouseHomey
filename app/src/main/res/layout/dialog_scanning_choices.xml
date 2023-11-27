@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="24dp"
-        android:text="Select from gallery"
+        android:text="Scan Barcode"
         android:textAlignment="textStart"
         android:textColor="@color/white"
         app:icon="@drawable/baseline_barcode_scanner_24"
