@@ -57,19 +57,17 @@ public class SNImageScanner extends ImageScanner {
      * @return the chosen serial number
      */
     private static String selectBestLine(Text text) {
-        String bestLine = "";
+        String bestElement = "";
 
         for (Text.TextBlock block : text.getTextBlocks()) {
             for (Text.Line line : block.getLines()) {
-                // Convert each line into a string of numbers
-                String lineText = line.getText().replaceAll("[^0-9]", "");
-
-                // Serial numbers are usually at the bottom?
-                if (lineText.length() >= bestLine.length())
-                    bestLine = lineText;
+                for (Text.Element element : line.getElements())
+                    // Serial numbers are usually at the bottom
+                    if (element.getText().length() >= bestElement.length())
+                        bestElement = element.getText();
             }
         }
-        return bestLine;
+        return bestElement;
     }
 
 }
