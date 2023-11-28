@@ -7,15 +7,15 @@
     android:paddingVertical="4dp">
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/camera_button"
+        android:id="@+id/serialNum_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="24dp"
-        android:text="Take photo"
-        android:textSize="24sp"
+        android:text="Scan Serial Number"
         android:textAlignment="textStart"
         android:textColor="@color/white"
-        app:icon="@drawable/baseline_camera_alt_24"
+        app:icon="@drawable/number_sign_icon"
+        android:textSize="24sp"
         app:iconGravity="textStart"
         app:iconSize="32dp"
         app:iconTint="@color/white" />
@@ -27,16 +27,16 @@
         app:dividerColor="@color/white" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/gallery_button"
+        android:id="@+id/barcode_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="24dp"
-        android:textSize="24sp"
-        android:text="Select from gallery"
+        android:text="Scan Barcode"
         android:textAlignment="textStart"
         android:textColor="@color/white"
-        app:icon="@drawable/baseline_insert_photo_24"
+        app:icon="@drawable/baseline_barcode_scanner_24"
         app:iconGravity="textStart"
+        android:textSize="24sp"
         app:iconSize="32dp"
         app:iconTint="@color/white" />
 

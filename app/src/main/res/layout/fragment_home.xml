@@ -135,6 +135,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:divider="@android:color/transparent"
-        android:dividerHeight="5.0sp"
-        android:padding="8dp"/>
+        android:dividerHeight="1.0sp"
+        android:padding="4dp"/>
 </LinearLayout>
