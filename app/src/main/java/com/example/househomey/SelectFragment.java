@@ -189,6 +189,7 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
             if (itemView!=null) {
                 CheckBox itemCheckBox = itemView.findViewById(R.id.item_checkBox);
                 itemCheckBox.setChecked(false);
+                itemList.get(i).setChecked(false);
             }
         }
         itemAdapter.notifyDataSetChanged();
