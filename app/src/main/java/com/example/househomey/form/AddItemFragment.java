@@ -17,6 +17,7 @@ import com.example.househomey.R;
  * @author Owen Cooke
  */
 public class AddItemFragment extends ItemFormFragment {
+    private Item newItem;
     /**
      * This creates the view to add an item to a user's inventory and set's the button listeners
      *
@@ -44,10 +45,12 @@ public class AddItemFragment extends ItemFormFragment {
      * Adds the user input data to a new item in a user's Firestore item collection
      */
     private void addItem() {
-        Item newItem = prepareItem("");
-        if (newItem == null) return;
+        newItem = validateItem("");
+        if (newItem != null) prepareItem(newItem);
+    }
 
-        // Create new item document in Firestore
+    @Override
+    public void writeToFirestore() {
         itemRef.add(newItem.getData()).addOnSuccessListener(documentReference -> {
                     Log.d("Firestore", "Successfully created new item with id:" + documentReference.getId());
                     navigateHomeWithIndicator(getContext());

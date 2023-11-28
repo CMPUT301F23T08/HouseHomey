@@ -96,7 +96,7 @@ public class ViewPhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             // Cloud Storage URI, fetch from Firebase
             requestBuilder.load(((MainActivity) context).getImageRef(imagePath));
         }
-        requestBuilder.diskCacheStrategy(DiskCacheStrategy.DATA).into(imageView);
+        requestBuilder.into(imageView);
     }
 
     /**

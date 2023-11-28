@@ -25,6 +25,7 @@ import com.google.android.material.textview.MaterialTextView;
  */
 public class EditItemFragment extends ItemFormFragment {
     private final Item item;
+    private Item updatedItem;
 
     /**
      * Constructs a new EditItemFragment with the item to edit.
@@ -90,10 +91,12 @@ public class EditItemFragment extends ItemFormFragment {
      * Edits an existing Item in the user's Firestore item collection.
      */
     private void editItem() {
-        Item updatedItem = prepareItem(item.getId());
-        if (updatedItem == null) return;
+        updatedItem = validateItem(item.getId());
+        if (updatedItem != null) prepareItem(updatedItem);
+    }
 
-        // Update the existing item document in Firestore
+    @Override
+    public void writeToFirestore() {
         itemRef.document(updatedItem.getId())
                 .set(updatedItem.getData())
                 .addOnSuccessListener(aVoid -> {

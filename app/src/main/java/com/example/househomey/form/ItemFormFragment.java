@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.househomey.Item;
 import com.example.househomey.MainActivity;
 import com.example.househomey.R;
+import com.example.househomey.utils.FragmentUtils;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -48,6 +50,9 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
     protected PhotoAdapter photoAdapter;
     private final ArrayList<String> photosToDelete = new ArrayList<>();
     private ImagePickerDialog imagePickerDialog;
+    private int count = 0;
+    private boolean failedToUpload = false;
+    private long expectedCount;
 
     /**
      * Creates the basic view for a validated Item form.
@@ -70,14 +75,34 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         return rootView;
     }
 
+    public abstract void writeToFirestore();
+
     /**
      * Validates the user input and constructs an Item object if the input is valid.
      * If validation succeeds, updates respective photos in Firebase Cloud Storage.
      *
-     * @param itemId The unique identifier of the item, if it exists, or an empty string for new items.
+     * @param item The unique identifier of the item, if it exists, or an empty string for new items.
      * @return An Item object representing the validated item data, or null if validation fails.
      */
-    protected Item prepareItem(String itemId) {
+    protected void prepareItem(Item item) {
+        expectedCount = photoUris.stream().filter(uri -> !FragmentUtils.isValidUUID(uri)).count();
+        // Upload new photos (if any) to Cloud Storage
+        photoUris.replaceAll(this::uploadImageToFirebase);
+        item.setPhotoIds(photoUris);
+
+        // Remove deleted photos (if any) from Cloud Storage
+        for (String imageId : photosToDelete) {
+            StorageReference imageRef = ((MainActivity) requireActivity()).getImageRef(imageId);
+            imageRef.delete()
+                    .addOnSuccessListener(taskSnapshot -> Log.d("IMAGE_DELETE", "Successfully removed image from: " + imageRef))
+                    .addOnFailureListener(e -> Log.e("IMAGE_DELETE", "Failed to delete image from Cloud Storage: " + e));
+        }
+        if (expectedCount == 0) {
+            writeToFirestore();
+        }
+    }
+
+    protected Item validateItem(String itemId) {
         // Check that required fields are filled before validating
         boolean invalidDesc = isRequiredFieldEmpty(R.id.add_item_description_layout);
         boolean invalidDate = isRequiredFieldEmpty(R.id.add_item_date_layout);
@@ -96,25 +121,12 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         data.put("photos", photoUris);
 
         // Ensure that form data can be used to create a valid Item
-        Item item;
         try {
-            item = new Item(itemId, data);
+            return new Item(itemId, data);
         } catch (NullPointerException e) {
+            Log.d("Item", "Tried to create an invalid item.");
             return null;
         }
-
-        // Upload new photos (if any) to Cloud Storage
-        photoUris.replaceAll(this::uploadImageToFirebase);
-        item.setPhotoIds(photoUris);
-
-        // Remove deleted photos (if any) from Cloud Storage
-        for (String imageId : photosToDelete) {
-            StorageReference imageRef = ((MainActivity) requireActivity()).getImageRef(imageId);
-            imageRef.delete()
-                    .addOnSuccessListener(taskSnapshot -> Log.d("IMAGE_DELETE", "Successfully removed image from: " + imageRef))
-                    .addOnFailureListener(e -> Log.e("IMAGE_DELETE", "Failed to delete image from Cloud Storage: " + e));
-        }
-        return item;
     }
 
     /**
@@ -255,8 +267,28 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
 
             // Upload the image to Cloud Storage
             imageRef.putFile(Uri.parse(imageUri))
-                    .addOnSuccessListener(taskSnapshot -> Log.d("IMAGE_UPLOAD", "Successfully uploaded image to: " + taskSnapshot.getStorage()))
-                    .addOnFailureListener(e -> Log.e("IMAGE_UPLOAD", "Failed to upload image to Cloud Storage: " + e));
+                    .addOnSuccessListener(taskSnapshot -> {
+                        count++;
+                        if (count == expectedCount) {
+                            if (failedToUpload) {
+                                Toast.makeText(requireActivity().getApplicationContext(),
+                                        "Failed to upload images.",
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                writeToFirestore();
+                            }
+                        }
+                        Log.d("IMAGE_UPLOAD", "Successfully uploaded image to: " + taskSnapshot.getStorage());
+                    })
+                    .addOnFailureListener(e -> {
+                        failedToUpload = true;
+                        count++;
+                        if (count == expectedCount) {
+                            Toast.makeText(requireActivity().getApplicationContext(),
+                                    "Failed to upload images.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
             return imageId;
         }
         // Already uploaded to Firebase

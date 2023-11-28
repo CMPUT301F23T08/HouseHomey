@@ -82,19 +82,19 @@ public class ViewItemFragment extends Fragment {
                     navigateToFragmentPage(getContext(), new HomeFragment());
                 }
         );
-        rootView.findViewById(R.id.view_item_back_button).setOnClickListener(v -> goBack(getContext()));
+        rootView.findViewById(R.id.view_item_back_button).setOnClickListener(v -> navigateToFragmentPage(getContext(), new HomeFragment()));
 
         photoUris.addAll(item.getPhotoIds());
         viewPhotoAdapter = new ViewPhotoAdapter(getContext(), photoUris, imagePath -> {
             viewPhotoAdapter.loadIntoImageView(mainPhoto, imagePath);
         });
-        if (photoUris.isEmpty()) {
+        if (item.getPhotoIds().isEmpty()) {
             noPhotosView.setVisibility(View.VISIBLE);
             mainPhoto.setVisibility(View.GONE);
         } else {
             noPhotosView.setVisibility(View.GONE);
             mainPhoto.setVisibility(View.VISIBLE);
-            viewPhotoAdapter.loadIntoImageView(mainPhoto, photoUris.get(0));
+            viewPhotoAdapter.loadIntoImageView(mainPhoto, item.getPhotoIds().get(0));
         }
         ((RecyclerView) rootView.findViewById(R.id.view_photo_grid)).setAdapter(viewPhotoAdapter);
 
