@@ -1,5 +1,6 @@
 package com.example.househomey.scanner;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
@@ -46,7 +47,16 @@ public class SNImageScanner extends ImageScanner {
                     .addOnSuccessListener(visionText -> {
                         String resultText = selectBestLine(visionText);
                         Log.i("Scanner", resultText);
-                        listener.onSNScanningComplete(resultText);
+                        new AlertDialog.Builder(context)
+                                .setTitle("Serial number scanned: ")
+                                .setMessage(resultText +
+                                        "\n \nSet as serial number?")
+                                .setPositiveButton("YES",(dialog,which)->{
+                                    listener.onSNScanningComplete(resultText);
+                                })
+                                .setNegativeButton("NO", null)
+                                .show();
+
                     })
                     .addOnFailureListener(
                             e -> Log.e("Scanner", "Failed to load Image from local file"));
