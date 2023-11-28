@@ -270,10 +270,21 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         sNTextView.setText(serialNumber);
     }
 
+    /**
+     * Sets the item description field to the decoded barcode value after scanning image
+     * @param description the decoded barcode value to set as description
+     */
     @Override
     public void onBarcodeOKPressed(String description) {
         descriptionTextView.setText(description);
     }
+
+    /**
+     * Sets the item serial number field to the decoded barcode value after scanning image
+     * @param serialNumber the decoded barcode value to set as serial number
+     */
+    @Override
+    public void onSerialNumberOKPressed(String serialNumber) {sNTextView.setText(serialNumber);}
 
     /**
      * Uploads a local image to Firebase Cloud Storage and returns its UUID.

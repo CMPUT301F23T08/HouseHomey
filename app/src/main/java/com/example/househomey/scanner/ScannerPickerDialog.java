@@ -43,6 +43,7 @@ public class ScannerPickerDialog extends BottomSheetDialogFragment implements Im
 
     /**
      * Launches a new serial num scanner and brings up image picker dialog
+     * to choose the image to scan
      */
     private void launchSerialNumScanner() {
         SNImageScanner.OnImageScannedListener listener;
@@ -56,6 +57,10 @@ public class ScannerPickerDialog extends BottomSheetDialogFragment implements Im
         imagePickerDialog.show(getChildFragmentManager(), imagePickerDialog.getTag());
     }
 
+    /**
+     * Launches a new Barcode scanner and brings up the image picker dialog
+     * to choose the image to scan
+     */
     private void launchBarcodeScanner() {
         BarcodeImageScanner.OnBarcodeScannedListener listener;
         Fragment parent = requireParentFragment();

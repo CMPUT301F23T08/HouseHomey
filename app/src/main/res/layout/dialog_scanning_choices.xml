@@ -15,8 +15,9 @@
         android:textAlignment="textStart"
         android:textColor="@color/white"
         app:icon="@drawable/number_sign_icon"
+        android:textSize="24sp"
         app:iconGravity="textStart"
-        app:iconSize="24dp"
+        app:iconSize="32dp"
         app:iconTint="@color/white" />
 
     <com.google.android.material.divider.MaterialDivider
@@ -35,7 +36,8 @@
         android:textColor="@color/white"
         app:icon="@drawable/baseline_barcode_scanner_24"
         app:iconGravity="textStart"
-        app:iconSize="24dp"
+        android:textSize="24sp"
+        app:iconSize="32dp"
         app:iconTint="@color/white" />
 
 </LinearLayout>
