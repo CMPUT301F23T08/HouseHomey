@@ -63,7 +63,8 @@
     "model": "Recon",
     "serialNumber": "7654982345678901",
     "comment": "Spacious backpack for travel",
-    "tags": ["travel", "outdoor"]
+    "tags": ["travel", "outdoor"],
+    "photoIds": ["964f3642-b5a7-4024-9829-abd0a736f6d3"]
   },
   {
     "description": "Smartwatch",
