@@ -1,6 +1,5 @@
 package com.example.househomey;
 
-import static com.example.househomey.utils.FragmentUtils.goBack;
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
 import static java.util.Optional.ofNullable;
 
@@ -9,7 +8,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,9 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.househomey.form.EditItemFragment;
 import com.example.househomey.form.ViewPhotoAdapter;
-import java.util.ArrayList;
-
-import java.util.Collection;
 
 /**
  * This fragment is for the "View Item Page" - which currently displays the details and comment linked
@@ -30,7 +25,6 @@ import java.util.Collection;
 public class ViewItemFragment extends Fragment {
     private Item item;
     protected ViewPhotoAdapter viewPhotoAdapter;
-    protected ArrayList<String> photoUris = new ArrayList<>();
 
     /**
      *
@@ -84,10 +78,7 @@ public class ViewItemFragment extends Fragment {
         );
         rootView.findViewById(R.id.view_item_back_button).setOnClickListener(v -> navigateToFragmentPage(getContext(), new HomeFragment()));
 
-        photoUris.addAll(item.getPhotoIds());
-        viewPhotoAdapter = new ViewPhotoAdapter(getContext(), photoUris, imagePath -> {
-            viewPhotoAdapter.loadIntoImageView(mainPhoto, imagePath);
-        });
+        viewPhotoAdapter = new ViewPhotoAdapter(getContext(), item.getPhotoIds(), imagePath -> viewPhotoAdapter.loadIntoImageView(mainPhoto, imagePath));
         if (item.getPhotoIds().isEmpty()) {
             noPhotosView.setVisibility(View.VISIBLE);
             mainPhoto.setVisibility(View.GONE);
