@@ -103,18 +103,19 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
 
         final Button actionTagsButton = rootView.findViewById(R.id.action_tags);
         actionTagsButton.setOnClickListener(v -> {
-            openTagDialog();
+            ArrayList<Item> selectedItems = getSelectedItems();
+            if (selectedItems.size() > 0) {
+                TagFragment fragment = new TagFragment(selectedItems);
+                fragment.show(requireActivity().getSupportFragmentManager(),"tagDialog");
+            }
+            else {
+                Toast.makeText(requireActivity().getApplicationContext(),
+                        "Please select one or more items to apply tags to.",
+                        Toast.LENGTH_SHORT).show();
+            }
         });
 
         return rootView;
-    }
-
-    /**
-     * Opens the TagFragment dialog.
-     */
-    private void openTagDialog() {
-        TagFragment tagsDialogFragment = new TagFragment();
-        tagsDialogFragment.show(getChildFragmentManager(), "tagDialog");
     }
 
     /**
@@ -166,10 +167,10 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
         for (int i = 0; i< itemList.size(); i++) {
             View itemView = itemListView.getChildAt(i);
             if (itemView!=null) {
-               CheckBox checkBox = itemView.findViewById(R.id.item_checkBox);
-               if (checkBox.isChecked()) {
-                   selectedItems.add(itemList.get(i));
-               }
+                CheckBox checkBox = itemView.findViewById(R.id.item_checkBox);
+                if (checkBox.isChecked()) {
+                    selectedItems.add(itemList.get(i));
+                }
             }
         }
         return selectedItems;
