@@ -59,7 +59,7 @@ public class TestHelpers {
     }
 
     /*
-     * Check if the list of Items has the expected number of Items.
+     * Checks if the total count text displayed on home page matches expected count.
      *
      * @param expectedCount The expected number of child elements in the list view.
      */
@@ -79,10 +79,21 @@ public class TestHelpers {
         onView(withId(viewId)).perform(scrollTo(), clearText(), typeText(text), pressImeActionButton(), closeSoftKeyboard());
     }
 
+    /*
+     * Returns a Bitmap image, loaded from a resource file
+     *
+     * @param activity The context of the current activity.
+     * @param resourceId   The R.id of the image to be turned into a Bitmap object.
+     */
     public static Bitmap mockImageBitmap(Activity activity, int resourceId) {
         return BitmapFactory.decodeResource(activity.getResources(), resourceId);
     }
 
+    /*
+     * Returns a Uri for an image, loaded from a resource file.
+     *
+     * @param resourceId   The R.id of the image to get a Uri reference to.
+     */
     public static Uri mockImageUri(int resourceId) {
         return Uri.parse("android.resource://com.example.househomey/" + resourceId);
     }
