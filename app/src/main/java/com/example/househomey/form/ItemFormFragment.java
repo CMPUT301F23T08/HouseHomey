@@ -1,6 +1,7 @@
 package com.example.househomey.form;
 
 import static com.example.househomey.utils.FragmentUtils.createDatePicker;
+import static com.example.househomey.utils.FragmentUtils.deletePhotosFromCloud;
 import static com.example.househomey.utils.FragmentUtils.isValidUUID;
 import static java.util.Objects.requireNonNull;
 
@@ -103,17 +104,10 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
             return null;
         }
 
-        // Upload new photos (if any) to Cloud Storage
+        // Update photos in Cloud Storage
         photoUris.replaceAll(this::uploadImageToFirebase);
         item.setPhotoIds(photoUris);
-
-        // Remove deleted photos (if any) from Cloud Storage
-        for (String imageId : photosToDelete) {
-            StorageReference imageRef = ((MainActivity) requireActivity()).getImageRef(imageId);
-            imageRef.delete()
-                    .addOnSuccessListener(taskSnapshot -> Log.d("IMAGE_DELETE", "Successfully removed image from: " + imageRef))
-                    .addOnFailureListener(e -> Log.e("IMAGE_DELETE", "Failed to delete image from Cloud Storage: " + e));
-        }
+        deletePhotosFromCloud(requireActivity(), photosToDelete);
         return item;
     }
 
