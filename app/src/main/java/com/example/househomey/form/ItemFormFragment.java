@@ -75,14 +75,19 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         return rootView;
     }
 
+    /**
+     * Writes data to Firestore.
+     * Subclasses must implement this method to define the specific logic for writing data to Firestore.
+     */
     public abstract void writeToFirestore();
 
     /**
-     * Validates the user input and constructs an Item object if the input is valid.
-     * If validation succeeds, updates respective photos in Firebase Cloud Storage.
+     * Prepares the item for storage by handling photo-related tasks.
+     * This method calculates the expected count of valid photo URIs, uploads new photos (if any)
+     * to Cloud Storage, sets the photo IDs on the provided item, removes deleted photos (if any)
+     * from Cloud Storage, and writes the item to Firestore if no valid photos are present.
      *
-     * @param item The unique identifier of the item, if it exists, or an empty string for new items.
-     * @return An Item object representing the validated item data, or null if validation fails.
+     * @param item The item to be prepared, which may include associated photos.
      */
     protected void prepareItem(Item item) {
         expectedCount = photoUris.stream().filter(uri -> !FragmentUtils.isValidUUID(uri)).count();
@@ -102,6 +107,15 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         }
     }
 
+    /**
+     * Validates and creates an Item using form data.
+     * Checks that required fields are filled, creates a map with form data, and attempts
+     * to create a valid Item. Returns null if validation fails or if the creation
+     * of the Item results in a NullPointerException.
+     *
+     * @param itemId The ID of the item to be validated, can be null for new items.
+     * @return A validated Item or null if validation fails.
+     */
     protected Item validateItem(String itemId) {
         // Check that required fields are filled before validating
         boolean invalidDesc = isRequiredFieldEmpty(R.id.add_item_description_layout);
@@ -254,10 +268,13 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
     }
 
     /**
-     * Uploads a local image to Firebase Cloud Storage and returns its UUID.
-     *
-     * @param imageUri The local URI of the image to be uploaded.
-     * @return The UUID of the uploaded image.
+     * Uploads an image to Firebase Cloud Storage.
+     * If the image URI is not a valid UUID, it creates a unique storage reference,
+     * uploads the image to Cloud Storage, and returns the generated image ID.
+     * If the image URI is a valid UUID, it is assumed that the image is already uploaded,
+     * and the original image URI is returned.
+     * @param imageUri The URI of the image to be uploaded.
+     * @return The image ID if the image is uploaded, or the original image URI if already uploaded.
      */
     private String uploadImageToFirebase(String imageUri) {
         if (!isValidUUID(imageUri)) {

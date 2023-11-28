@@ -42,13 +42,18 @@ public class AddItemFragment extends ItemFormFragment {
     }
 
     /**
-     * Adds the user input data to a new item in a user's Firestore item collection
+     * Adds a new item by validating and preparing it for storage.
      */
     private void addItem() {
         newItem = validateItem("");
         if (newItem != null) prepareItem(newItem);
     }
 
+    /**
+     * Writes new item data to Firestore and handles success or failure.
+     * Adds new item data to Firestore, logs success with the created item's ID,
+     * and navigates home. Logs failure and displays an error message in case of an error.
+     */
     @Override
     public void writeToFirestore() {
         itemRef.add(newItem.getData()).addOnSuccessListener(documentReference -> {
