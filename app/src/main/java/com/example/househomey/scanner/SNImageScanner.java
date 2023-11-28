@@ -12,6 +12,10 @@ import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
 
 import java.io.IOException;
 
+/**
+ * A class for handling the scanning of serial numbers and updating item information accordingly
+ * @author Lukas
+ */
 public class SNImageScanner extends ImageScanner {
     private Context context;
     private OnImageScannedListener listener;

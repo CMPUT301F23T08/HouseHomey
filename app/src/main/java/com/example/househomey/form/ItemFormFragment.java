@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.househomey.Item;
 import com.example.househomey.MainActivity;
 import com.example.househomey.R;
+import com.example.househomey.scanner.BarcodeImageScanner;
 import com.example.househomey.scanner.SNImageScanner;
 import com.example.househomey.scanner.ScannerPickerDialog;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -43,13 +44,16 @@ import java.util.UUID;
  *
  * @author Owen Cooke
  */
-public abstract class ItemFormFragment extends Fragment implements ImagePickerDialog.OnImagePickedListener, PhotoAdapter.OnButtonClickListener, SNImageScanner.OnImageScannedListener {
+public abstract class ItemFormFragment extends Fragment implements ImagePickerDialog.OnImagePickedListener,
+        PhotoAdapter.OnButtonClickListener, SNImageScanner.OnImageScannedListener,
+        BarcodeImageScanner.OnBarcodeScannedListener {
     protected Date dateAcquired;
     private TextInputEditText dateTextView;
     protected CollectionReference itemRef;
     protected ArrayList<String> photoUris = new ArrayList<>();
     protected PhotoAdapter photoAdapter;
     private TextInputEditText sNTextView;
+    private TextInputEditText descriptionTextView;
     private final ArrayList<String> photosToDelete = new ArrayList<>();
     private ImagePickerDialog imagePickerDialog;
 
@@ -72,6 +76,7 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         // Get item collection reference from main activity
         itemRef = ((MainActivity) requireActivity()).getItemRef();
         sNTextView = rootView.findViewById(R.id.add_item_serial_number);
+        descriptionTextView = rootView.findViewById(R.id.add_item_description);
         View scanButton = rootView.findViewById(R.id.add_item_scan_button);
         scanButton.setOnClickListener(v -> launchScannerPicker());
         return rootView;
@@ -264,6 +269,22 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
     public void onSNScanningComplete(String serialNumber) {
         sNTextView.setText(serialNumber);
     }
+
+    /**
+     * Sets the item description field to the decoded barcode value after scanning image
+     * @param description the decoded barcode value to set as description
+     */
+    @Override
+    public void onBarcodeOKPressed(String description) {
+        descriptionTextView.setText(description);
+    }
+
+    /**
+     * Sets the item serial number field to the decoded barcode value after scanning image
+     * @param serialNumber the decoded barcode value to set as serial number
+     */
+    @Override
+    public void onSerialNumberOKPressed(String serialNumber) {sNTextView.setText(serialNumber);}
 
     /**
      * Uploads a local image to Firebase Cloud Storage and returns its UUID.

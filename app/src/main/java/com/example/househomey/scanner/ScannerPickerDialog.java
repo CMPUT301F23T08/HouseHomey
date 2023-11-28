@@ -35,7 +35,7 @@ public class ScannerPickerDialog extends BottomSheetDialogFragment implements Im
         // Set up listeners to open the camera/gallery
         Button barcodeButton = rootView.findViewById(R.id.barcode_button);
         Button serialNumButton = rootView.findViewById(R.id.serialNum_button);
-        //barcodeButton.setOnClickListener(v -> launchImageIntent(true));
+        barcodeButton.setOnClickListener(v -> launchBarcodeScanner());
         serialNumButton.setOnClickListener(v -> launchSerialNumScanner());
         imagePickerDialog = new ImagePickerDialog();
         return rootView;
@@ -43,6 +43,7 @@ public class ScannerPickerDialog extends BottomSheetDialogFragment implements Im
 
     /**
      * Launches a new serial num scanner and brings up image picker dialog
+     * to choose the image to scan
      */
     private void launchSerialNumScanner() {
         SNImageScanner.OnImageScannedListener listener;
@@ -53,6 +54,22 @@ public class ScannerPickerDialog extends BottomSheetDialogFragment implements Im
             throw new ClassCastException(parent + " must implement OnImagePickedListener");
         }
         scanner = new SNImageScanner(getContext(), listener);
+        imagePickerDialog.show(getChildFragmentManager(), imagePickerDialog.getTag());
+    }
+
+    /**
+     * Launches a new Barcode scanner and brings up the image picker dialog
+     * to choose the image to scan
+     */
+    private void launchBarcodeScanner() {
+        BarcodeImageScanner.OnBarcodeScannedListener listener;
+        Fragment parent = requireParentFragment();
+        if (parent instanceof BarcodeImageScanner.OnBarcodeScannedListener) {
+            listener = (BarcodeImageScanner.OnBarcodeScannedListener) parent;
+        } else {
+            throw new ClassCastException(parent + " must implement OnImagePickedListener");
+        }
+        scanner = new BarcodeImageScanner(getContext(), listener);
         imagePickerDialog.show(getChildFragmentManager(), imagePickerDialog.getTag());
     }
 
