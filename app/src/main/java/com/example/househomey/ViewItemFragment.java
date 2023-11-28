@@ -46,7 +46,7 @@ public class ViewItemFragment extends Fragment {
         TextView model = rootView.findViewById(R.id.view_item_model);
         TextView serialNumber = rootView.findViewById(R.id.view_item_serial_number);
         TextView cost = rootView.findViewById(R.id.view_item_cost);
-        TextView tags = rootView.findViewById(R.id.view_item_tags);
+        //TextView tags = rootView.findViewById(R.id.view_item_tags);
         TextView comment = rootView.findViewById(R.id.view_item_comment);
 
         // Set TextViews to Item details sent over from ItemAdapter
@@ -58,7 +58,7 @@ public class ViewItemFragment extends Fragment {
                     model.setText(item.getModel());
                     serialNumber.setText(item.getSerialNumber());
                     cost.setText(item.getCost().toString());
-                    tags.setText(item.getTags().toString());
+                    //tags.setText(item.getTags().toString());
                     comment.setText(item.getComment());
                 });
 

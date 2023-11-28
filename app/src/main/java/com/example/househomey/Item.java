@@ -33,8 +33,6 @@ public class Item implements Serializable, Parcelable {
     private BigDecimal cost;
     private List<String> photoIds = new ArrayList<>();
 
-    private List<String> tags = new ArrayList<>();
-
     /**
      * This constructs a new item from a Map of data with a reference to its Firestore document
      *
@@ -64,9 +62,6 @@ public class Item implements Serializable, Parcelable {
         }
         if (data.containsKey("photoIds")) {
             this.photoIds = new ArrayList<>((List<String>) data.get("photoIds"));
-        }
-        if (data.containsKey("tags")) {
-            this.tags = new ArrayList<>((List<String>) data.get("tags"));
         }
     }
 
@@ -98,9 +93,6 @@ public class Item implements Serializable, Parcelable {
         }
         if (!photoIds.isEmpty()) {
             itemData.put("photoIds", photoIds);
-        }
-        if (!tags.isEmpty()) {
-            itemData.put("tags", tags);
         }
         return itemData;
     }
@@ -170,14 +162,6 @@ public class Item implements Serializable, Parcelable {
         return serialNumber;
     }
 
-    /**
-     * Getter for tags
-     *
-     * @return tags linked to the item
-     */
-    public List<String> getTags() {
-        return tags;
-    }
 
     /**
      * Getter for comment
@@ -234,7 +218,6 @@ public class Item implements Serializable, Parcelable {
         out.writeString(comment);
         out.writeSerializable(cost.toString());
         out.writeSerializable(photoIds.toArray());
-        out.writeSerializable(tags.toArray());
     }
 
     /**
@@ -251,7 +234,6 @@ public class Item implements Serializable, Parcelable {
         this.comment = in.readString();
         this.cost = new BigDecimal(in.readString()).setScale(2, RoundingMode.HALF_UP);
         this.photoIds = in.createStringArrayList();
-        this.tags = in.createStringArrayList();
     }
 
     /**

@@ -33,9 +33,9 @@ public class TagFragment extends DialogFragment {
     private EditText tagEditText;
     private Button addTagButton;
     private Chip chip;
-    private List<String> tagList = new ArrayList<>();
+    private List<Tag> tagList = new ArrayList<>();
     private final ArrayList<Item> selectedItems;
-    private CollectionReference itemRef;
+    private CollectionReference tagRef;
 
     /**
      * Constructor for TagFragment
@@ -53,7 +53,7 @@ public class TagFragment extends DialogFragment {
      */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        this.itemRef = ((MainActivity) requireActivity()).getItemRef();
+        this.tagRef = ((MainActivity) requireActivity()).getTagRef();
         // Initialize AlertDialog builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -77,7 +77,7 @@ public class TagFragment extends DialogFragment {
                 .setView(rootView)
                 .setTitle("Tags")
                 .setNeutralButton("Cancel", null)
-                .setPositiveButton("Apply Tags", (dialog, which) -> saveTagsToFirestore(selectedItems))
+                .setPositiveButton("Apply Tags", (dialog, which) -> ApplyItemsToTag(selectedItems))
                 .create();
     }
 
@@ -87,26 +87,26 @@ public class TagFragment extends DialogFragment {
      */
     private void addTag(String tagLabel) {
         chip = FragmentUtils.makeChip(tagLabel, false, chipGroup, requireContext(), R.color.white, R.color.black, R.color.black);
-        // Add the tag to the list
-        tagList.add(tagLabel);
+        Tag tag = new Tag(tagLabel);
+        tagList.add(tag);
         tagEditText.getText().clear();
     }
 
     /**
-     * Save tags to Firestore for the selected items.
+     * Save items to Firestore for the given tags.
      * @param selectedItems Items to which the tags will be applied
      */
-    private void saveTagsToFirestore(ArrayList<Item> selectedItems) {
+    private void ApplyItemsToTag(ArrayList<Item> selectedItems) {
         WriteBatch batch = FirebaseFirestore.getInstance().batch();
-        for (Item item : selectedItems) {
-            batch.update(itemRef.document(item.getId()), "tags", tagList);
+        for (Tag tag : tagList) {
+            batch.update(tagRef.document(tag.getId()), "items", selectedItems);
         }
         batch.commit()
                 .addOnSuccessListener((result) -> {
-                    Log.i("Firestore", "Tags successfully applied to items");
+                    Log.i("Firestore", "Items successfully applied to tag");
                 })
                 .addOnFailureListener((error) -> {
-                    Log.e("Firestore", "Failed to apply tags to items.", error);
+                    Log.e("Firestore", "Failed to apply items to tag.", error);
                 });
     }
 }
