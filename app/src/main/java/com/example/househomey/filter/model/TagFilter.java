@@ -2,6 +2,7 @@ package com.example.househomey.filter.model;
 
 import com.example.househomey.Item;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -10,7 +11,7 @@ import java.util.stream.Collectors;
  * A filter class that filters a list of items based on selected tags.
  * @author Jared Drueco
  */
-public class TagFilter extends Filter {
+public class TagFilter extends Filter implements Serializable {
     public Map<String, Boolean> tagSelectionMap;
 
     /**

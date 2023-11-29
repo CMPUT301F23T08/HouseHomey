@@ -4,8 +4,14 @@
  */
 package com.example.househomey.filter.ui;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
-import android.view.View;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import com.example.househomey.Item;
 import com.example.househomey.R;
@@ -26,40 +32,27 @@ import java.util.Set;
  */
 public class TagFilterFragment extends FilterFragment {
     protected TagFilter tagFilter;
-    private final ChipGroup tagChipGroup;
+    private ChipGroup tagChipGroup;
     private Map<String, Boolean> tagSelectionMap = new HashMap<>();
 
-    /**
-     * Constructs a new {@code TagFilterFragment} with the given parameters.
-     *
-     * @param title           The title of the fragment.
-     * @param contentView     The content view of the fragment.
-     * @param filterCallback  The callback for filter actions.
-     * @param itemList        The list of items to be filtered.
-     */
-    public TagFilterFragment(String title, View contentView, FilterCallback filterCallback, ArrayList<Item> itemList) {
-        super(title, contentView, filterCallback);
-        tagChipGroup = contentView.findViewById(R.id.chip_group_labels);
-        populateTagChipGroup(itemList);
-    }
+    @NonNull
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        contentView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_tags, null);
+        AlertDialog.Builder builder = createBuilder();
+        Dialog dialog = builder.setTitle("Modify Tag Filter").setView(contentView).create();
 
-    /**
-     * Constructs a new {@code TagFilterFragment} with the given parameters, including a
-     * pre-existing {@link TagFilter}.
-     *
-     * @param title           The title of the fragment.
-     * @param contentView     The content view of the fragment.
-     * @param filterCallback  The callback for filter actions.
-     * @param itemList        The list of items to be filtered.
-     * @param tagFilter       The pre-existing tag filter.
-     */
-    public TagFilterFragment(String title, View contentView, FilterCallback filterCallback, ArrayList<Item> itemList, TagFilter tagFilter) {
-        super(title, contentView, filterCallback);
-        this.tagFilter = tagFilter;
-        tagSelectionMap = tagFilter.tagSelectionMap;
+        if (getArguments() != null) {
+            this.filterCallback = getArguments().getSerializable("callback", FilterCallback.class);
+
+            this.tagFilter = getArguments().getSerializable("filter", TagFilter.class);
+            if (this.tagFilter != null)
+                tagSelectionMap = tagFilter.tagSelectionMap;
+        }
+
         tagChipGroup = contentView.findViewById(R.id.chip_group_labels);
-        tagChipGroup.removeAllViews();
-        populateTagChipGroup(itemList);
+        populateTagChipGroup(new ArrayList<>());
+
+        return dialog;
     }
 
     /**

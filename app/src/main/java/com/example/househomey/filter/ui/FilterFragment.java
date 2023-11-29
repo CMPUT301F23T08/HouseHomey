@@ -37,26 +37,21 @@ public abstract class FilterFragment extends DialogFragment {
         this.filterCallback = filterCallback;
     }
 
+    public FilterFragment() {}
     /**
      * Called to create and return the filter dialog.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
-     * @return The filter dialog to be displayed.
+     * @return The alert builder for filters
      */
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+    public AlertDialog.Builder createBuilder() {
         DialogInterface.OnClickListener onApplyListener = (dialog, which) -> getFilterInput();
 
         DialogInterface.OnClickListener onResetListener = (dialog, which) -> resetFilter();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
-                .setView(contentView)
-                .setTitle(title)
-                .setNegativeButton("Reset", onResetListener) // TODO: Logic for how resetting filters work
+                .setNegativeButton("Reset", onResetListener)
                 .setNeutralButton("Cancel", null)
-                .setPositiveButton("Apply", onApplyListener)
-                .create();
+                .setPositiveButton("Apply", onApplyListener);
     }
 
     /**

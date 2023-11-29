@@ -221,14 +221,16 @@ public class HomeFragment extends Fragment implements FilterCallback {
                 }
                 keywordFilterFragment.show(requireActivity().getSupportFragmentManager(), "keywords_filter_dialog");
             } else if (itemId == R.id.filter_by_tags) {
-                View tagFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_tags, null);
-                TagFilterFragment tagFilterFragment = new TagFilterFragment("Modify Tag Filter", tagFilterView, this, itemList);
+                TagFilterFragment tagFilterFragment = new TagFilterFragment();
+                Bundle filterArgs = new Bundle();
+                filterArgs.putSerializable("callback", this);
                 for (Filter filter : appliedFilters) {
-                    if (filter instanceof TagFilter) {
+                    if (filter instanceof KeywordFilter) {
                         TagFilter tagFilter = (TagFilter) filter;
-                        tagFilterFragment = new TagFilterFragment("Modify Tag Filter", tagFilterView, this, itemList, tagFilter);
+                        filterArgs.putSerializable("filter", tagFilter);
                     }
                 }
+                tagFilterFragment.setArguments(filterArgs);
                 tagFilterFragment.show(requireActivity().getSupportFragmentManager(), "tags_filter_dialog");
             } else {
                 return false;
