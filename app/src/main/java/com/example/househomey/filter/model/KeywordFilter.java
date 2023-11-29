@@ -3,6 +3,7 @@ package com.example.househomey.filter.model;
 import com.example.househomey.Item;
 import com.google.android.material.chip.Chip;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
  * A filter class that filters a list of items based on specific keywords.
  * @author Antonio Lech Martin-Ozimek
  */
-public class KeywordFilter extends Filter{
+public class KeywordFilter extends Filter {
     private ArrayList<String> keyWords;
     private ArrayList<String> ogKeyWords;
 
