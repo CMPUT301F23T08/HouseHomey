@@ -156,7 +156,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:spanCount="4" />
+                app:spanCount="3" />
 
             <Space
                 android:layout_width="match_parent"

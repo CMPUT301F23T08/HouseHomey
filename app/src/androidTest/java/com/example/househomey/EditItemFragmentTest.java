@@ -102,7 +102,7 @@ public class EditItemFragmentTest extends TestSetup {
         onView(withId(R.id.delete_photo_button)).perform(click());
 
         // Check that photo was deleted from the gallery
-        waitFor(() -> onView(withId(R.id.add_photo_grid)).check(matches(hasChildCount(1))));
+        onView(withId(R.id.add_photo_grid)).check(matches(hasChildCount(1)));
         onView(withId(R.id.add_photo_grid)).check(matches(not((hasDescendant(allOf(withId(R.id.gallery_image_view), isDisplayed()))))));
     }
 }
