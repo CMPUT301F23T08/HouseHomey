@@ -1,5 +1,6 @@
 package com.example.househomey;
 
+import static com.example.househomey.utils.FragmentUtils.deletePhotosFromCloud;
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
 import static java.util.Optional.ofNullable;
 
@@ -15,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.househomey.form.EditItemFragment;
+
 import com.example.househomey.form.ViewPhotoAdapter;
 
 /**
@@ -70,8 +72,8 @@ public class ViewItemFragment extends Fragment {
                 navigateToFragmentPage(getContext(), new EditItemFragment(item))
         );
 
-        rootView.findViewById(R.id.delete_button).setOnClickListener(v ->
-                {
+        rootView.findViewById(R.id.delete_button).setOnClickListener(v -> {
+                    deletePhotosFromCloud(requireActivity(), item.getPhotoIds());
                     ((MainActivity) requireActivity()).getItemRef().document(item.getId()).delete();
                     navigateToFragmentPage(getContext(), new HomeFragment());
                 }

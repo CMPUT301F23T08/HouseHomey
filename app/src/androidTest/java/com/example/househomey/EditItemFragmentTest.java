@@ -6,13 +6,16 @@ import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.hasChildCount;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static com.example.househomey.testUtils.TestHelpers.enterText;
 import static com.example.househomey.testUtils.TestHelpers.waitFor;
+import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.anything;
+import static org.hamcrest.CoreMatchers.not;
 
 import com.example.househomey.testUtils.TestSetup;
 import com.google.common.collect.ImmutableMap;
@@ -40,11 +43,11 @@ public class EditItemFragmentTest extends TestSetup {
         // Create mock initial item in DB
         database.addTestItem(mockData);
         // Click to view the item page
-        onData(anything())
+        waitFor(() -> onData(anything())
                 .inAdapterView(withId(R.id.item_list))
                 .atPosition(0)
                 .onChildView(withId(R.id.action_view))
-                .perform(click());
+                .perform(click()));
         // Click on edit button
         onView(withId(R.id.edit_button)).perform(scrollTo());
         onView(withId(R.id.edit_button)).perform(click());
@@ -91,5 +94,18 @@ public class EditItemFragmentTest extends TestSetup {
         onView(withId(R.id.add_item_description_layout)).check(matches(hasDescendant(withText(defaultErrorMsg))));
         onView(withId(R.id.add_item_cost_layout)).check(matches(hasDescendant(withText(defaultErrorMsg))));
         onView(withId(R.id.add_item_date_layout)).check(matches(hasDescendant(withText(defaultErrorMsg))));
+    }
+
+    @Test
+    public void testDeleteExistingPhoto() {
+        // Check that there is a photo present
+        waitFor(() -> onView(withId(R.id.add_photo_grid)).check(matches(hasChildCount(2))));
+
+        // Click the delete button on the photo
+        onView(withId(R.id.delete_photo_button)).perform(click());
+
+        // Check that photo was deleted from the gallery
+        onView(withId(R.id.add_photo_grid)).check(matches(hasChildCount(1)));
+        onView(withId(R.id.add_photo_grid)).check(matches(not((hasDescendant(allOf(withId(R.id.gallery_image_view), isDisplayed()))))));
     }
 }
