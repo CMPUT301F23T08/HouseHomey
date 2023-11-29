@@ -104,15 +104,8 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
         final Button actionTagsButton = rootView.findViewById(R.id.action_tags);
         actionTagsButton.setOnClickListener(v -> {
             ArrayList<Item> selectedItems = getSelectedItems();
-            if (selectedItems.size() > 0) {
-                TagFragment fragment = new TagFragment(selectedItems);
-                fragment.show(requireActivity().getSupportFragmentManager(),"tagDialog");
-            }
-            else {
-                Toast.makeText(requireActivity().getApplicationContext(),
-                        "Please select one or more items to apply tags to.",
-                        Toast.LENGTH_SHORT).show();
-            }
+            TagFragment fragment = new TagFragment(selectedItems);
+            fragment.show(requireActivity().getSupportFragmentManager(),"tagDialog");
         });
 
         return rootView;
