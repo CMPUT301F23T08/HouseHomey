@@ -8,7 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
+import androidx.core.os.BundleCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.househomey.Item;
@@ -39,16 +41,8 @@ public class TagFragment extends DialogFragment {
     private Button addTagButton;
     private Chip chip;
     private List<Tag> tagList = new ArrayList<>();
-    private final ArrayList<Item> selectedItems;
+    private ArrayList<Item> selectedItems;
     private CollectionReference tagRef;
-
-    /**
-     * Constructor for TagFragment
-     * @param selectedItems items selected to be deleted
-     */
-    public TagFragment(ArrayList<Item> selectedItems) {
-        this.selectedItems = selectedItems;
-    }
 
     /**
      * Called to create the dialog, initializing UI components and setting up button listeners.
@@ -59,6 +53,10 @@ public class TagFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         this.tagRef = ((MainActivity) requireActivity()).getTagRef();
+
+        Bundle args = getArguments();
+        selectedItems = BundleCompat.getParcelableArrayList(args, "itemList", Item.class);
+
         // Initialize AlertDialog builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -106,6 +104,10 @@ public class TagFragment extends DialogFragment {
         tagEditText.getText().clear();
     }
 
+    /**
+     * Creates a new chip for the new tag with a delete option
+     * @param label Name of the tag for the new chip
+     */
     private void makeTagChip(String label) {
         chip = FragmentUtils.makeChip(label, true, chipGroup, requireContext(), R.drawable.tag_chip, R.color.brown, R.color.brown, true);
         final Chip thisChip = chip;
