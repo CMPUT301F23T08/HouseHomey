@@ -256,7 +256,7 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
     }
 
     /**
-     * Sets the result of the Serial Number scanning in the serial numbner text view
+     * Sets the result of the Serial Number scanning in the serial number text view
      * @param serialNumber the scanned serial number to set
      */
     @Override
