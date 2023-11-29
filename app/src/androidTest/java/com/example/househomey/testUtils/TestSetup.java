@@ -23,6 +23,8 @@ import java.io.IOException;
  * @author Owen Cooke
  */
 public abstract class TestSetup {
+    public MainActivity mainActivity;
+
     @Rule
     public DatabaseSetupRule<MainActivity> database = new DatabaseSetupRule<>(MainActivity.class);
 
@@ -48,6 +50,6 @@ public abstract class TestSetup {
 
     @Before
     public void setup() {
-        database.setupActivity();
+        mainActivity = database.setupActivity();
     }
 }

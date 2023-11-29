@@ -37,6 +37,7 @@ public class DatabaseSetupRule<T extends Activity> implements TestRule {
     private DocumentReference userDoc;
     private boolean isDatabaseTest;
     private final int dbTimeoutInSeconds = 30;
+    private T activity;
 
     public DatabaseSetupRule(Class<T> activityClass) {
         this.activityClass = activityClass;
@@ -48,14 +49,16 @@ public class DatabaseSetupRule<T extends Activity> implements TestRule {
      * ESPRESSO_GENERAL_USER exists in Firebase for testing general, non-DB changing tests
      * ex) proper page navigation, field validation, etc.
      */
-    public void setupActivity() {
+    public T setupActivity() {
         Bundle userData = new Bundle();
         userData.putString("username", isDatabaseTest ? userDoc.getId() : "ESPRESSO_GENERAL_USER");
         ActivityScenario.launch(activityClass).onActivity(activity -> {
+            this.activity = activity;
             Intent intent = new Intent(activity, MainActivity.class);
             intent.putExtra("userData", userData);
             activity.startActivity(intent);
         });
+        return activity;
     }
 
     /*

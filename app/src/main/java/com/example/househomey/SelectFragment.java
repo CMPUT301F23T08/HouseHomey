@@ -1,5 +1,6 @@
 package com.example.househomey;
 
+import static com.example.househomey.utils.FragmentUtils.deletePhotosFromCloud;
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
 
 import android.os.Bundle;
@@ -90,7 +91,7 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
         final Button deleteButton = rootView.findViewById(R.id.action_delete);
         deleteButton.setOnClickListener(v -> {
             ArrayList<Item> selectedItems = getSelectedItems();
-            if (selectedItems.size()>0) {
+            if (selectedItems.size() > 0) {
                 DeleteItemsFragment fragment = new DeleteItemsFragment(this, selectedItems);
                 fragment.show(requireActivity().getSupportFragmentManager(),"Delete Items");
             }
@@ -103,18 +104,16 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
 
         final Button actionTagsButton = rootView.findViewById(R.id.action_tags);
         actionTagsButton.setOnClickListener(v -> {
-            openTagDialog();
+            TagFragment tagFragment = new TagFragment();
+
+            ArrayList<Item> selectedItems = getSelectedItems();
+            Bundle tagArgs = new Bundle();
+            tagArgs.putParcelableArrayList("itemList", selectedItems);
+            tagFragment.setArguments(tagArgs);
+            tagFragment.show(requireActivity().getSupportFragmentManager(),"tagDialog");
         });
 
         return rootView;
-    }
-
-    /**
-     * Opens the TagFragment dialog.
-     */
-    private void openTagDialog() {
-        TagFragment tagsDialogFragment = new TagFragment();
-        tagsDialogFragment.show(getChildFragmentManager(), "tagDialog");
     }
 
     /**
@@ -127,6 +126,7 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
     public void onOKPressed(ArrayList<Item> selectedItems){
         WriteBatch batch = FirebaseFirestore.getInstance().batch();
         for (Item item : selectedItems) {
+            deletePhotosFromCloud(requireActivity(), item.getPhotoIds());
             batch.delete(itemRef.document(item.getId()));
         }
         batch.commit()
@@ -166,10 +166,8 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
         for (int i = 0; i< itemList.size(); i++) {
             View itemView = itemListView.getChildAt(i);
             if (itemView!=null) {
-               CheckBox checkBox = itemView.findViewById(R.id.item_checkBox);
-               if (checkBox.isChecked()) {
-                   selectedItems.add(itemList.get(i));
-               }
+                CheckBox checkBox = itemView.findViewById(R.id.item_checkBox);
+                if (checkBox.isChecked()) selectedItems.add(itemList.get(i));
             }
         }
         return selectedItems;
@@ -189,6 +187,7 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
             if (itemView!=null) {
                 CheckBox itemCheckBox = itemView.findViewById(R.id.item_checkBox);
                 itemCheckBox.setChecked(false);
+                itemList.get(i).setChecked(false);
             }
         }
         itemAdapter.notifyDataSetChanged();

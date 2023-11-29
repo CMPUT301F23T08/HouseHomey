@@ -1,6 +1,7 @@
 package com.example.househomey.form;
 
 import static com.example.househomey.utils.FragmentUtils.createDatePicker;
+import static com.example.househomey.utils.FragmentUtils.deletePhotosFromCloud;
 import static com.example.househomey.utils.FragmentUtils.isValidUUID;
 import static java.util.Objects.requireNonNull;
 
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +22,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.househomey.Item;
 import com.example.househomey.MainActivity;
 import com.example.househomey.R;
+import com.example.househomey.scanner.BarcodeImageScanner;
+import com.example.househomey.scanner.SNImageScanner;
+import com.example.househomey.scanner.ScannerPickerDialog;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -40,12 +45,16 @@ import java.util.UUID;
  *
  * @author Owen Cooke
  */
-public abstract class ItemFormFragment extends Fragment implements ImagePickerDialog.OnImagePickedListener, PhotoAdapter.OnButtonClickListener {
+public abstract class ItemFormFragment extends Fragment implements ImagePickerDialog.OnImagePickedListener,
+        PhotoAdapter.OnButtonClickListener, SNImageScanner.OnImageScannedListener,
+        BarcodeImageScanner.OnBarcodeScannedListener {
     protected Date dateAcquired;
     private TextInputEditText dateTextView;
     protected CollectionReference itemRef;
     protected ArrayList<String> photoUris = new ArrayList<>();
     protected PhotoAdapter photoAdapter;
+    private TextInputEditText sNTextView;
+    private TextInputEditText descriptionTextView;
     private final ArrayList<String> photosToDelete = new ArrayList<>();
     private ImagePickerDialog imagePickerDialog;
 
@@ -67,7 +76,19 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         initAddImageHandler(rootView);
         // Get item collection reference from main activity
         itemRef = ((MainActivity) requireActivity()).getItemRef();
+        sNTextView = rootView.findViewById(R.id.add_item_serial_number);
+        descriptionTextView = rootView.findViewById(R.id.add_item_description);
+        View scanButton = rootView.findViewById(R.id.add_item_scan_button);
+        scanButton.setOnClickListener(v -> launchScannerPicker());
         return rootView;
+    }
+
+    /**
+     * Launches the scanner picker dialog
+     */
+    private void launchScannerPicker() {
+        ScannerPickerDialog dialog = new ScannerPickerDialog();
+        dialog.show(getChildFragmentManager(), dialog.getTag());
     }
 
     /**
@@ -103,17 +124,10 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
             return null;
         }
 
-        // Upload new photos (if any) to Cloud Storage
+        // Update photos in Cloud Storage
         photoUris.replaceAll(this::uploadImageToFirebase);
         item.setPhotoIds(photoUris);
-
-        // Remove deleted photos (if any) from Cloud Storage
-        for (String imageId : photosToDelete) {
-            StorageReference imageRef = ((MainActivity) requireActivity()).getImageRef(imageId);
-            imageRef.delete()
-                    .addOnSuccessListener(taskSnapshot -> Log.d("IMAGE_DELETE", "Successfully removed image from: " + imageRef))
-                    .addOnFailureListener(e -> Log.e("IMAGE_DELETE", "Failed to delete image from Cloud Storage: " + e));
-        }
+        deletePhotosFromCloud(requireActivity(), photosToDelete);
         return item;
     }
 
@@ -240,6 +254,31 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         photoUris.add(imageUri);
         photoAdapter.notifyItemInserted(photoAdapter.getItemCount() - 1);
     }
+
+    /**
+     * Sets the result of the Serial Number scanning in the serial numbner text view
+     * @param serialNumber the scanned serial number to set
+     */
+    @Override
+    public void onSNScanningComplete(String serialNumber) {
+        sNTextView.setText(serialNumber);
+    }
+
+    /**
+     * Sets the item description field to the decoded barcode value after scanning image
+     * @param description the decoded barcode value to set as description
+     */
+    @Override
+    public void onBarcodeOKPressed(String description) {
+        descriptionTextView.setText(description);
+    }
+
+    /**
+     * Sets the item serial number field to the decoded barcode value after scanning image
+     * @param serialNumber the decoded barcode value to set as serial number
+     */
+    @Override
+    public void onSerialNumberOKPressed(String serialNumber) {sNTextView.setText(serialNumber);}
 
     /**
      * Uploads a local image to Firebase Cloud Storage and returns its UUID.

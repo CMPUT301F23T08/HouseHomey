@@ -73,6 +73,13 @@ public class MainActivity extends AppCompatActivity {
     public CollectionReference getItemRef() { return user.getItemRef(); }
 
     /**
+     * Retrieves the Firestore CollectionReference for items associated with a tag.
+     *
+     * @return A CollectionReference for the current user's items.
+     */
+    public CollectionReference getTagRef() { return user.getTagRef(); }
+
+    /**
      * Retrieves a StorageReference to an image in Cloud Storage based on
      * the current user and the provided image ID.
      *
