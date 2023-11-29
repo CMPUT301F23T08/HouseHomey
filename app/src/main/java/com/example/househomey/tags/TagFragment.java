@@ -148,7 +148,10 @@ public class TagFragment extends DialogFragment {
         }
     }
 
-    // Method to get the entire tag collection from Firestore
+
+    /**
+     * Gets a snapshot of the tags collection in Firestore
+     */
     private void getTagCollection() {
         tagRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
             for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
