@@ -108,15 +108,20 @@ public class FragmentUtils {
      * @param textColour          text colour of the chip
      * @return a new chip
      */
-    public static Chip makeChip(String label, Boolean closeIconVisibility, ChipGroup chipGroup, Context context, int backgroundColour, int strokeColour, int textColour) {
+
+    public static Chip makeChip(String label, Boolean closeIconVisibility, ChipGroup chipGroup, Context context, int backgroundColour, int strokeColour, int textColour, boolean checkable) {
         Chip chip = new Chip(context);
         chip.setText(label);
         chip.setCloseIconVisible(closeIconVisibility);
         chip.setChipBackgroundColorResource(backgroundColour);
         chip.setChipStrokeColorResource(strokeColour);
         chip.setTextColor(ContextCompat.getColor(context, textColour));
+        chip.setCheckable(checkable);
         chipGroup.addView(chip);
         return chip;
+    }
+    public static Chip makeChip(String label, Boolean closeIconVisibility, ChipGroup chipGroup, Context context, int backgroundColour, int strokeColour, int textColour) {
+        return makeChip(label, closeIconVisibility, chipGroup, context, backgroundColour, strokeColour, textColour, false);
     }
 
     /**
