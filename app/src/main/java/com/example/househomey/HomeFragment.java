@@ -37,6 +37,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import java.math.BigDecimal;
@@ -190,12 +191,12 @@ public class HomeFragment extends Fragment implements FilterCallback {
         popupMenu.setOnMenuItemClickListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.filter_by_dates) {
-                View dateFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_dates, null);
-                DateFilterFragment dateFilterFragment = new DateFilterFragment("Modify Date Filter", dateFilterView, this);
+                View view2 = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_dates, null);
+                DateFilterFragment dateFilterFragment = new DateFilterFragment("Modify Date Filter", view2, this);
                 for (Filter filter : appliedFilters) {
                     if (filter instanceof DateFilter) {
                         DateFilter dateFilter = (DateFilter) filter;
-                        dateFilterFragment = new DateFilterFragment("Modify Make Filter", dateFilterView, this, dateFilter);
+                        dateFilterFragment = new DateFilterFragment("Modify Make Filter", view2, this, dateFilter);
                     }
                 }
                 dateFilterFragment.show(requireActivity().getSupportFragmentManager(), "dates_filter_dialog");
@@ -210,14 +211,16 @@ public class HomeFragment extends Fragment implements FilterCallback {
                 }
                 makeFilterFragment.show(requireActivity().getSupportFragmentManager(), "make_filter_dialog");
             } else if (itemId == R.id.filter_by_keywords) {
-                View keywordFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_keywords, null);
-                KeywordFilterFragment keywordFilterFragment = new KeywordFilterFragment("Modify Keyword Filter", keywordFilterView, this);
+                KeywordFilterFragment keywordFilterFragment = new KeywordFilterFragment();
+                Bundle filterArgs = new Bundle();
+                filterArgs.putSerializable("callback", this);
                 for (Filter filter : appliedFilters) {
                     if (filter instanceof KeywordFilter) {
                         KeywordFilter myFilter = (KeywordFilter) filter;
-                        keywordFilterFragment = new KeywordFilterFragment("Modify Keyword Filter", keywordFilterView, this, myFilter);
+                        filterArgs.putSerializable("filter", myFilter);
                     }
                 }
+                keywordFilterFragment.setArguments(filterArgs);
                 keywordFilterFragment.show(requireActivity().getSupportFragmentManager(), "keywords_filter_dialog");
             } else if (itemId == R.id.filter_by_tags) {
                 View tagFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_tags, null);

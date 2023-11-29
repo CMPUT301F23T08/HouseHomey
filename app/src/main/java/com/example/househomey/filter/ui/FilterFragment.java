@@ -2,6 +2,7 @@ package com.example.househomey.filter.ui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
@@ -34,8 +35,13 @@ public abstract class FilterFragment extends DialogFragment {
     public FilterFragment(String title, View contentView, FilterCallback filterCallback) {
         this.title = title;
         this.contentView = contentView;
-        this.filterCallback = filterCallback;
+//        this.filterCallback = filterCallback;
     }
+
+    public FilterFragment() {
+
+    }
+
 
     /**
      * Called to create and return the filter dialog.
@@ -57,6 +63,18 @@ public abstract class FilterFragment extends DialogFragment {
                 .setNeutralButton("Cancel", null)
                 .setPositiveButton("Apply", onApplyListener)
                 .create();
+    }
+
+    public AlertDialog.Builder createBuilder() {
+        DialogInterface.OnClickListener onApplyListener = (dialog, which) -> getFilterInput();
+
+        DialogInterface.OnClickListener onResetListener = (dialog, which) -> resetFilter();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        return builder
+                .setNegativeButton("Reset", onResetListener) // TODO: Logic for how resetting filters work
+                .setNeutralButton("Cancel", null)
+                .setPositiveButton("Apply", onApplyListener);
     }
 
     /**
