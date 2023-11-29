@@ -2,10 +2,15 @@ package com.example.househomey;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.househomey.sort.TagComparator;
+import com.example.househomey.tags.Tag;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -16,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * This class represents an inventory item with a variety of properties
@@ -32,6 +39,7 @@ public class Item implements Serializable, Parcelable {
     private String comment = "";
     private BigDecimal cost;
     private List<String> photoIds = new ArrayList<>();
+    private Set<Tag> tags;
 
     /**
      * This constructs a new item from a Map of data with a reference to its Firestore document
@@ -40,7 +48,7 @@ public class Item implements Serializable, Parcelable {
      * @param data The data from that document to initialize the instance
      * @throws NullPointerException if a null required field is given
      */
-    public Item(String id, @NonNull Map<String, Object> data) {
+    public Item(String id, @NonNull Map<String, Object> data, CollectionReference tagRef) {
         // Required fields, will throw exceptions
         this.id = Objects.requireNonNull(id);
         this.description = (String) Objects.requireNonNull(data.get("description"));
@@ -63,6 +71,37 @@ public class Item implements Serializable, Parcelable {
         if (data.containsKey("photoIds")) {
             this.photoIds = new ArrayList<>((List<String>) data.get("photoIds"));
         }
+
+        initTags(tagRef);
+    }
+
+    private void initTags(CollectionReference tagRef) {
+        tags = new TreeSet<>(new TagComparator());
+
+        tagRef.whereArrayContains("item", id)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Tag tag = new Tag(document.getId(), document.getData());
+                            tags.add(tag);
+                        }
+                    } else {
+                        Log.e("Tag", "Couldn't set item tag");
+                    }
+                });
+    }
+
+    public void addTag(Tag tag) {
+        tags.add(tag);
+    }
+
+    public void clearTags() {
+        tags.clear();
+    }
+
+    public Set<Tag> getTags() {
+        return tags;
     }
 
     /**

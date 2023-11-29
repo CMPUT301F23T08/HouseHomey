@@ -32,6 +32,7 @@ import com.example.househomey.sort.CostComparator;
 import com.example.househomey.sort.DateComparator;
 import com.example.househomey.sort.DescriptionComparator;
 import com.example.househomey.sort.MakeComparator;
+import com.example.househomey.tags.Tag;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -71,6 +72,9 @@ public class HomeFragment extends Fragment implements FilterCallback {
     private final boolean ASC = false;
     private ToggleButton toggleOrder;
     private boolean sortOrder;
+    private CollectionReference tagRef;
+    private ArrayList<Tag> tagList = new ArrayList<>();
+    private Map<String, Item> itemIdMap = new HashMap<>();
 
     /**
      * @param inflater           The LayoutInflater object that can be used to inflate
@@ -120,6 +124,8 @@ public class HomeFragment extends Fragment implements FilterCallback {
         itemListView.setAdapter(itemAdapter);
         itemAdapter.setSelectState(false);
 
+        tagRef = ((MainActivity) requireActivity()).getTagRef();
+        tagRef.addSnapshotListener(this::setupTagListener);
 
         final Button selectButton = rootView.findViewById(R.id.select_items_button);
         selectButton.setOnClickListener(v -> {
@@ -155,6 +161,28 @@ public class HomeFragment extends Fragment implements FilterCallback {
 
     }
 
+    private void setupTagListener(QuerySnapshot querySnapshots, FirebaseFirestoreException error) {
+        if (error != null) {
+            Log.e("Firestore", error.toString());
+            return;
+        }
+        if (querySnapshots != null) {
+            tagList.clear();
+
+            for (QueryDocumentSnapshot doc: querySnapshots) {
+                Tag tag = new Tag(doc.getId(), doc.getData());
+                tagList.add(tag);
+                itemList.forEach(Item::clearTags);
+                for (String id : tag.getItemIds()) {
+                    itemIdMap.get(id).addTag(tag);
+                }
+            }
+
+            applyFilters();
+            sortItems();
+        }
+    }
+
     /**
      * This method updates the itemAdapter with changes in the firestore database and creates new
      * item objects
@@ -168,9 +196,12 @@ public class HomeFragment extends Fragment implements FilterCallback {
         }
         if (querySnapshots != null) {
             itemList.clear();
+            itemIdMap.clear();
             for (QueryDocumentSnapshot doc: querySnapshots) {
                 Map<String, Object> data = new HashMap<>(doc.getData());
-                itemList.add(new Item(doc.getId(), data));
+                Item item = new Item(doc.getId(), data, tagRef);
+                itemList.add(item);
+                itemIdMap.put(doc.getId(), item);
             }
 
             applyFilters();

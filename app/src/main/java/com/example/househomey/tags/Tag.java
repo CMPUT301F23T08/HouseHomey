@@ -23,7 +23,7 @@ public class Tag {
     public Tag(String tagLabel, @NonNull Map<String, Object> data) {
         this.tagLabel = Objects.requireNonNull(tagLabel);
         if (data.containsKey("items")) {
-            this.itemIds = new ArrayList<>((List<String>) data.get("items"));
+            this.itemIds = new ArrayList<>((List<String>) Objects.requireNonNull(data.get("items")));
         }
 
     }
@@ -34,6 +34,10 @@ public class Tag {
      */
     public String getTagLabel() {
         return tagLabel;
+    }
+
+    public ArrayList<String> getItemIds() {
+        return itemIds;
     }
 
 }
