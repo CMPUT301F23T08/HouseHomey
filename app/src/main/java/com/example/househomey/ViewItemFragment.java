@@ -50,6 +50,7 @@ public class ViewItemFragment extends Fragment {
         TextView model = rootView.findViewById(R.id.view_item_model);
         TextView serialNumber = rootView.findViewById(R.id.view_item_serial_number);
         TextView cost = rootView.findViewById(R.id.view_item_cost);
+        //TextView tags = rootView.findViewById(R.id.view_item_tags);
         TextView comment = rootView.findViewById(R.id.view_item_comment);
         TextView noPhotosView = rootView.findViewById(R.id.view_item_no_photos);
         ImageView mainPhoto = rootView.findViewById(R.id.view_item_main_photo);
@@ -64,6 +65,7 @@ public class ViewItemFragment extends Fragment {
                     model.setText(item.getModel());
                     serialNumber.setText(item.getSerialNumber());
                     cost.setText(item.getCost().toString());
+                    //tags.setText(item.getTags().toString());
                     comment.setText(item.getComment());
                 });
 

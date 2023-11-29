@@ -10,6 +10,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class User {
     private final String username;
     private final CollectionReference itemRef;
+    private final CollectionReference tagRef;
 
     /**
      * This constructs a new user getting references to their firestore information
@@ -19,6 +20,7 @@ public class User {
     public User(String username) {
         this.username = username;
         itemRef = FirebaseFirestore.getInstance().collection("user/" + username + "/item");
+        tagRef = FirebaseFirestore.getInstance().collection("user/" + username + "/tag");
     }
 
     /**
@@ -28,6 +30,12 @@ public class User {
     public CollectionReference getItemRef() {
         return itemRef;
     }
+
+    /**
+     * Getter for tagRef
+     * @return A reference to the user's firestore item collection
+     */
+    public CollectionReference getTagRef() { return tagRef; }
 
     /**
      * Getter for username
