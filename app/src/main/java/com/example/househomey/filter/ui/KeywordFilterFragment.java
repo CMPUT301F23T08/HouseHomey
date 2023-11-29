@@ -37,40 +37,18 @@ public class KeywordFilterFragment extends FilterFragment {
     Button addButton;
     EditText keyWords;
 
-    public KeywordFilterFragment() {
-        Log.d("filter", "filter");
-    }
-
-//    /**
-//     * Constructs a new KeywordFilterFragment.
-//     * @param title         The title of the "Keyword" filter dialog.
-//     * @param contentView   The content view of the "Keyword" filter dialog.
-//     * @param filterCallback The callback interface for handling filter changes.
-//     */
-//    public KeywordFilterFragment(String title, View contentView, FilterCallback filterCallback) {
-//        super(title, contentView, filterCallback);
-//
-//    }
-//
-//    /**
-//     * Constructs a new KeywordFilterFragment.
-//     * @param title         The title of the "Keyword" filter dialog.
-//     * @param contentView   The content view of the "Keyword" filter dialog.
-//     * @param filterCallback The callback interface for handling filter changes.
-//     * @param keywordFilter The previous filter instance
-//     */
-//    public KeywordFilterFragment(String title, View contentView, FilterCallback filterCallback, KeywordFilter keywordFilter) {
-//        this(title, contentView, filterCallback);
-//
-//    }
-
+    /**
+     * Creates dialog for keyword filter fragment
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
+     * @return dialog object for keyword filter fragment
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         contentView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_keywords, null);
         AlertDialog.Builder builder = createBuilder();
 
-        Dialog dialog = builder.setTitle("Modify Date Filter").setView(contentView).create();
+        Dialog dialog = builder.setTitle("Modify Keyword Filter").setView(contentView).create();
 
         chipGroup = contentView.findViewById(R.id.chip_group_labels);
         addButton = contentView.findViewById(R.id.add_keyword_button);
@@ -85,11 +63,11 @@ public class KeywordFilterFragment extends FilterFragment {
         });
 
         if (getArguments() != null) {
-            this.filterCallback = getArguments().getSerializable("callback", FilterCallback.class);
+            filterCallback = getArguments().getSerializable("callback", FilterCallback.class);
 
-            this.keywordFilter = getArguments().getSerializable("filter", KeywordFilter.class);
-            if (this.keywordFilter != null)
-                autoFillFilter(this.keywordFilter.getOgKeyWords());
+            keywordFilter = getArguments().getSerializable("filter", KeywordFilter.class);
+            if (keywordFilter != null)
+                autoFillFilter(keywordFilter.getOgKeyWords());
         }
 
         return dialog;

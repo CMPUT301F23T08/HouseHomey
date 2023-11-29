@@ -2,13 +2,14 @@ package com.example.househomey.filter.model;
 
 import com.example.househomey.Item;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 
 /**
  * An abstract class representing a filter for a list of items.
  */
-public abstract class Filter {
+public abstract class Filter implements Serializable {
 
     /**
      * Applies the filter to a list of items and returns a new list containing only
