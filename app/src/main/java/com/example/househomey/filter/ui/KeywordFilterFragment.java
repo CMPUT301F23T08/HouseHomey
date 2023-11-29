@@ -5,11 +5,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import androidx.core.content.ContextCompat;
-
 import com.example.househomey.R;
 import com.example.househomey.filter.model.FilterCallback;
 import com.example.househomey.filter.model.KeywordFilter;
+import com.example.househomey.utils.FragmentUtils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -77,13 +76,7 @@ public class KeywordFilterFragment extends FilterFragment {
     public void autoFillFilter(List<String> keyWordArray) {
         for (String label : keyWordArray) {
             Context context = contentView.getContext();
-            Chip chip = new Chip(context);
-            chip.setText(label);
-            chip.setCloseIconVisible(true);
-            chip.setChipBackgroundColorResource(R.color.white);
-            chip.setChipStrokeColorResource(R.color.brown);
-            chip.setTextColor(ContextCompat.getColor(context , R.color.brown));
-            chipGroup.addView(chip);
+            Chip chip = FragmentUtils.makeChip(label, true, chipGroup, context, R.color.white, R.color.brown, R.color.brown);
             chipTextVals.add(chip.getText().toString());
             chip.setOnCloseIconClickListener(v -> {
                 chipGroup.removeView(chip);

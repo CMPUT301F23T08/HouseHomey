@@ -79,6 +79,10 @@ public class EditItemFragment extends ItemFormFragment {
             // Set the acquisition Date object and prefill with its formatted text
             dateAcquired = item.getAcquisitionDate();
             ((TextInputEditText) rootView.findViewById(R.id.add_item_date)).setText(formatDate(dateAcquired));
+
+            // Add image URLs (if any) to the photo gallery adapter
+            photoUris.addAll(item.getPhotoIds());
+            photoAdapter.notifyItemRangeInserted(0, photoUris.size());
         }
     }
 
@@ -86,7 +90,7 @@ public class EditItemFragment extends ItemFormFragment {
      * Edits an existing Item in the user's Firestore item collection.
      */
     private void editItem() {
-        Item updatedItem = validateItem(item.getId());
+        Item updatedItem = prepareItem(item.getId());
         if (updatedItem == null) return;
 
         // Update the existing item document in Firestore

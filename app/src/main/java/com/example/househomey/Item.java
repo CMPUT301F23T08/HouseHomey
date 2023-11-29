@@ -13,6 +13,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -30,7 +31,8 @@ public class Item implements Serializable, Parcelable {
     private String serialNumber = "";
     private String comment = "";
     private BigDecimal cost;
-    private ArrayList<String> tags = new ArrayList<>();
+    private List<String> photoIds = new ArrayList<>();
+    private boolean checked = false;
 
     /**
      * This constructs a new item from a Map of data with a reference to its Firestore document
@@ -59,8 +61,8 @@ public class Item implements Serializable, Parcelable {
         if (data.containsKey("comment")) {
             this.comment = (String) data.get("comment");
         }
-        if (data.containsKey("tags")) {
-            this.tags = (ArrayList<String>) data.get("tags");
+        if (data.containsKey("photoIds")) {
+            this.photoIds = new ArrayList<>((List<String>) data.get("photoIds"));
         }
     }
 
@@ -90,9 +92,28 @@ public class Item implements Serializable, Parcelable {
         if (!comment.isEmpty()) {
             itemData.put("comment", comment);
         }
+        if (!photoIds.isEmpty()) {
+            itemData.put("photoIds", photoIds);
+        }
         return itemData;
     }
 
+    /**
+     * Getter for checked
+     *
+     * @return The checked state of this item
+     */
+    public boolean getChecked() {
+        return checked;
+    }
+
+    /**
+     * Setter for checked
+     * @param newChecked The new value for checked
+     */
+    public void setChecked(boolean newChecked) {
+        checked = newChecked;
+    }
 
     /**
      * Getter for id
@@ -168,12 +189,21 @@ public class Item implements Serializable, Parcelable {
     }
 
     /**
-     * Getter for the item's tags
+     * Getter for photoIds
      *
-     * @return tags of the item
+     * @return List of Cloud Storage photo IDs associated with this Item
      */
-    public ArrayList<String> getTags() {
-        return tags;
+    public List<String> getPhotoIds() {
+        return photoIds;
+    }
+
+    /**
+     * Setter for photoIds
+     *
+     * @param photoIds List of Cloud Storage photo IDs to set for this Item
+     */
+    public void setPhotoIds(List<String> photoIds) {
+        this.photoIds = photoIds;
     }
 
     //Creating the Parcelable CREATOR and
@@ -203,6 +233,7 @@ public class Item implements Serializable, Parcelable {
         out.writeString(serialNumber);
         out.writeString(comment);
         out.writeSerializable(cost.toString());
+        out.writeSerializable(photoIds.toArray());
     }
 
     /**
@@ -218,6 +249,7 @@ public class Item implements Serializable, Parcelable {
         this.serialNumber = in.readString();
         this.comment = in.readString();
         this.cost = new BigDecimal(in.readString()).setScale(2, RoundingMode.HALF_UP);
+        this.photoIds = in.createStringArrayList();
     }
 
     /**
