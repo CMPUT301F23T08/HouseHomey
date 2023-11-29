@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.fragment.app.DialogFragment;
 
@@ -33,54 +34,43 @@ import java.util.stream.Collectors;
  * DialogFragment that allows users to add new tags
  * @author Matthew Neufeld
  */
+
 public class TagFragment extends DialogFragment {
     private ChipGroup chipGroup;
     private EditText tagEditText;
     private Button addTagButton;
     private Chip chip;
     private List<Tag> tagList = new ArrayList<>();
-
-    private List<Tag> newTagList = new ArrayList<>();
     private final ArrayList<Item> selectedItems;
     private CollectionReference tagRef;
 
-    /**
-     * Constructor for TagFragment
-     * @param selectedItems items selected to be deleted
-     */
     public TagFragment(ArrayList<Item> selectedItems) {
         this.selectedItems = selectedItems;
     }
 
-    /**
-     * Called to create the dialog, initializing UI components and setting up button listeners.
-     *
-     * @param savedInstanceState Bundle containing the saved state of the fragment.
-     * @return The created AlertDialog.
-     */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         this.tagRef = ((MainActivity) requireActivity()).getTagRef();
-        // Initialize AlertDialog builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        // Inflate the layout for this fragment
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View rootView = inflater.inflate(R.layout.fragment_tags, null);
 
-        // Initialize UI components
         chipGroup = rootView.findViewById(R.id.chip_group_labels);
         tagEditText = rootView.findViewById(R.id.tag_edit_text);
         addTagButton = rootView.findViewById(R.id.add_tag_button);
 
-        // Set up button click listener to add tags
         addTagButton.setOnClickListener(v -> {
             String tagLabel = tagEditText.getText().toString().trim();
-            if (!tagLabel.isEmpty())
+            if (!tagLabel.isEmpty()) {
                 addTag(tagLabel);
+            } else {
+                Toast.makeText(requireActivity().getApplicationContext(),
+                        "Tag field cannot be empty.", Toast.LENGTH_SHORT).show();
+            }
         });
 
-        getTagCollection();
+        getTagDocument();
 
         return builder
                 .setView(rootView)
@@ -90,36 +80,31 @@ public class TagFragment extends DialogFragment {
                 .create();
     }
 
-    /**
-     * Adds a new tag to the ChipGroup and the tag list when addTagButton is clicked.
-     * @param tagLabel the label that will go on the tag
-     */
     private void addTag(String tagLabel) {
         if (!tagList.stream()
                 .map(Tag::getTagLabel)
                 .collect(Collectors.toList()).contains(tagLabel)) {
-            chip = FragmentUtils.makeChip(tagLabel, false, chipGroup, requireContext(), R.color.white, R.color.black, R.color.black);
+            chip = FragmentUtils.makeChip(tagLabel, true, chipGroup, requireContext(), R.color.white, R.color.black, R.color.black);
             Tag tag = new Tag(tagLabel, new HashMap<>());
             tagList.add(tag);
             Map<String, Object> data = new HashMap<>();
             data.put("items", new ArrayList<>());
             tagRef.document(tagLabel).set(data);
+        } else {
+            Toast.makeText(requireActivity().getApplicationContext(),
+                    "Cannot add existing tags.", Toast.LENGTH_SHORT).show();
         }
         tagEditText.getText().clear();
     }
 
-    /**
-     * Save items to Firestore for the given tags.
-     * @param selectedItems Items to which the tags will be applied
-     */
     private void ApplyItemsToTag(ArrayList<Item> selectedItems) {
         List<String> idList = selectedItems.stream()
                 .map(Item::getId)
                 .collect(Collectors.toList());
         WriteBatch batch = FirebaseFirestore.getInstance().batch();
         for (Tag tag : tagList) {
-                batch.update(tagRef.document(tag.getTagLabel()),
-                        "items", FieldValue.arrayUnion(idList.toArray()));
+            batch.update(tagRef.document(tag.getTagLabel()),
+                    "items", FieldValue.arrayUnion(idList.toArray()));
         }
         batch.commit()
                 .addOnSuccessListener((result) -> {
@@ -130,13 +115,28 @@ public class TagFragment extends DialogFragment {
                 });
     }
 
-    // Method to get the entire tag collection from Firestore
-    private void getTagCollection() {
+    private void deleteTag(String tagLabel) {
+        tagRef.document(tagLabel)
+                .delete()
+                .addOnSuccessListener(aVoid -> {
+                    Log.i("Firestore", "Tag deleted successfully");
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Error deleting tag", e);
+                });
+    }
+
+    private void getTagDocument() {
         tagRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
             for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                 Tag tag = new Tag(document.getId(), document.getData());
                 tagList.add(tag);
-                chip = FragmentUtils.makeChip(tag.getTagLabel(), false, chipGroup, requireContext(), R.color.white, R.color.black, R.color.black);
+                chip = FragmentUtils.makeChip(tag.getTagLabel(), true, chipGroup, requireContext(), R.color.white, R.color.black, R.color.black);
+                chip.setOnCloseIconClickListener(v -> {
+                    deleteTag(tag.getTagLabel());
+                    chipGroup.removeView(chip);
+                    tagList.remove(tag);
+                });
             }
         });
     }

@@ -90,7 +90,7 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
         final Button deleteButton = rootView.findViewById(R.id.action_delete);
         deleteButton.setOnClickListener(v -> {
             ArrayList<Item> selectedItems = getSelectedItems();
-            if (selectedItems.size()>0) {
+            if (selectedItems.size() > 0) {
                 DeleteItemsFragment fragment = new DeleteItemsFragment(this, selectedItems);
                 fragment.show(requireActivity().getSupportFragmentManager(),"Delete Items");
             }
