@@ -34,7 +34,7 @@ public class MakeFilter extends Filter {
             return itemList;
         }
         return itemList.stream()
-                .filter(item -> item.getMake().equals(makeToFilterBy))
+                .filter(item -> item.getMake().equalsIgnoreCase(makeToFilterBy))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 }
