@@ -106,6 +106,10 @@ public class TagFragment extends DialogFragment {
         tagEditText.getText().clear();
     }
 
+    /**
+     * Makes a chip for a tag
+     * @param label the name of the tag
+     */
     private void makeTagChip(String label) {
         chip = FragmentUtils.makeChip(label, true, chipGroup, requireContext(), R.drawable.tag_chip, R.color.brown, R.color.brown, true);
         final Chip thisChip = chip;
@@ -146,7 +150,9 @@ public class TagFragment extends DialogFragment {
         }
     }
 
-    // Method to get the entire tag collection from Firestore
+    /**
+     * Gets the tag collections fromFfirestore.
+     */
     private void getTagCollection() {
         tagRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
             for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
