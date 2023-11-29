@@ -39,11 +39,8 @@ public class TagFragment extends DialogFragment {
     private Button addTagButton;
     private Chip chip;
     private List<Tag> tagList = new ArrayList<>();
-
-    private List<Tag> newTagList = new ArrayList<>();
     private final ArrayList<Item> selectedItems;
     private CollectionReference tagRef;
-    List<String> selectedTags = new ArrayList<>();
 
     /**
      * Constructor for TagFragment
@@ -118,14 +115,6 @@ public class TagFragment extends DialogFragment {
                 tagList.removeIf(tag -> tag.getTagLabel().equals(thisChip.getText().toString()));
             })
         );
-    }
-
-    private void deleteSelectedTags(View rootView) {
-        for (int id: chipGroup.getCheckedChipIds()) {
-            Chip chip = rootView.findViewById(id);
-            tagRef.document(chip.getText().toString()).delete();
-        }
-        dismiss();
     }
 
     /**
