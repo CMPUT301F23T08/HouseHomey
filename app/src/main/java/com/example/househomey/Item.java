@@ -162,7 +162,6 @@ public class Item implements Serializable, Parcelable {
         return serialNumber;
     }
 
-
     /**
      * Getter for comment
      *

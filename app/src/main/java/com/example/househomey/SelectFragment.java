@@ -103,9 +103,13 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
 
         final Button actionTagsButton = rootView.findViewById(R.id.action_tags);
         actionTagsButton.setOnClickListener(v -> {
+            TagFragment tagFragment = new TagFragment();
+
             ArrayList<Item> selectedItems = getSelectedItems();
-            TagFragment fragment = new TagFragment(selectedItems);
-            fragment.show(requireActivity().getSupportFragmentManager(),"tagDialog");
+            Bundle tagArgs = new Bundle();
+            tagArgs.putParcelableArrayList("itemList", selectedItems);
+            tagFragment.setArguments(tagArgs);
+            tagFragment.show(requireActivity().getSupportFragmentManager(),"tagDialog");
         });
 
         return rootView;
@@ -161,9 +165,7 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
             View itemView = itemListView.getChildAt(i);
             if (itemView!=null) {
                 CheckBox checkBox = itemView.findViewById(R.id.item_checkBox);
-                if (checkBox.isChecked()) {
-                    selectedItems.add(itemList.get(i));
-                }
+                if (checkBox.isChecked()) selectedItems.add(itemList.get(i));
             }
         }
         return selectedItems;
