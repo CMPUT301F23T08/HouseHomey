@@ -8,19 +8,22 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Tag {
-    private String id;
     private String tagLabel;
+    private ArrayList<String> itemIds = new ArrayList<>();
 
-    public Tag(String tagLabel) {
-        this.tagLabel = tagLabel;
+    public Tag(String tagLabel, @NonNull Map<String, Object> data) {
+        // Required fields, will throw exceptions
+        this.tagLabel = Objects.requireNonNull(tagLabel);
+
+        if (data.containsKey("items")) {
+            this.itemIds = new ArrayList<>((List<String>) data.get("items"));
+        }
+
     }
-    /**
-     * Getter for id
-     *
-     * @return The id of this tag in firestore
-     */
-    public String getId() {
-        return id;
+
+    public String getTagLabel() {
+        return tagLabel;
     }
+
 
 }
