@@ -4,6 +4,7 @@
  */
 package com.example.househomey.filter.ui;
 
+import static com.example.househomey.utils.FragmentUtils.makeChip;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -76,32 +77,15 @@ public class TagFilterFragment extends FilterFragment {
      * @param tagList The list of tags.
      */
     private void populateTagChipGroup(ArrayList<Tag> tagList) {
+        Context context = contentView.getContext();
         Set<String> existingTags = new HashSet<>();
         for (Tag tag: tagList) {
             if (existingTags.add(tag.getTagLabel())) {
-                Chip chip = createTagChip(tag.getTagLabel());
-                tagChipGroup.addView(chip);
+                Chip chip = makeChip(tag.getTagLabel(), false, tagChipGroup, context, R.color.white, R.color.brown, R.color.brown, true);
+                autoFillLastSelectedChip(chip, tag.getTagLabel());
+                setChipListener(chip, tag.getTagLabel());
             }
         }
-    }
-
-    /**
-     * Creates a new {@link Chip} for the given tag.
-     *
-     * @param tag The tag for which the chip is created.
-     * @return The created chip.
-     */
-    private Chip createTagChip(String tag) {
-        Context context = contentView.getContext();
-        Chip chip = new Chip(context);
-        chip.setText(tag);
-        chip.setCheckable(true);
-        chip.setChipStrokeColorResource(R.color.brown);
-        chip.setTextColor(ContextCompat.getColor(context, R.color.brown));
-
-        autoFillLastSelectedChip(chip, tag);
-        setChipListener(chip, tag);
-        return chip;
     }
 
     /**
