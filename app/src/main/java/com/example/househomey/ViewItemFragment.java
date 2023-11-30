@@ -21,7 +21,7 @@ import com.example.househomey.form.EditItemFragment;
 
 import com.example.househomey.form.ViewPhotoAdapter;
 import com.example.househomey.tags.Tag;
-import com.example.househomey.tags.TagFragment;
+import com.example.househomey.tags.ApplyTagFragment;
 import com.example.househomey.utils.FragmentUtils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -31,10 +31,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * This fragment is for the "View Item Page" - which currently displays the details and comment linked
@@ -115,14 +113,14 @@ public class ViewItemFragment extends Fragment {
 
         final Button addTagsButton = rootView.findViewById(R.id.add_tags_button);
         addTagsButton.setOnClickListener(v -> {
-            TagFragment tagFragment = new TagFragment();
+            ApplyTagFragment applyTagFragment = new ApplyTagFragment();
 
             ArrayList<Item> selectedItem = new ArrayList<>();
             selectedItem.add(item);
             Bundle tagArgs = new Bundle();
             tagArgs.putParcelableArrayList("itemList", selectedItem);
-            tagFragment.setArguments(tagArgs);
-            tagFragment.show(requireActivity().getSupportFragmentManager(),"tagDialog");
+            applyTagFragment.setArguments(tagArgs);
+            applyTagFragment.show(requireActivity().getSupportFragmentManager(),"tagDialog");
         });
 
         return rootView;
