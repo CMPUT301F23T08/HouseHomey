@@ -38,6 +38,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import java.math.BigDecimal;
@@ -137,6 +138,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
             args.putString("listSum", listSum.toString());
             args.putBoolean("sortOrder",sortOrder);
             args.putString("currentSortName",currentSortName);
+            args.putSerializable("idMap", (Serializable) itemIdMap);
             selectStateFragment.setArguments(args);
             navigateToFragmentPage(getContext(), selectStateFragment);
         });
@@ -202,13 +204,10 @@ public class HomeFragment extends Fragment implements FilterCallback {
             AtomicInteger initializedItems = new AtomicInteger(0);
             for (QueryDocumentSnapshot doc: querySnapshots) {
                 Map<String, Object> data = new HashMap<>(doc.getData());
-                Item item = new Item(doc.getId(), data, tagRef, new Item.OnItemInitializedListener() {
-                    @Override
-                    public void onItemInitialized(Item item) {
-                        if (initializedItems.incrementAndGet() == totalItems) {
-                            applyFilters();
-                            sortItems();
-                        }
+                Item item = new Item(doc.getId(), data, tagRef, item1 -> {
+                    if (initializedItems.incrementAndGet() == totalItems) {
+                        applyFilters();
+                        sortItems();
                     }
                 });
                 itemList.add(item);
