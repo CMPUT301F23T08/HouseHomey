@@ -30,17 +30,17 @@ public class TagFilterFragmentTest extends TestSetup {
 
     @Test
     public void testMultipleTagFilter() {
-        onView(withText("electronics")).perform(click());
         onView(withText("gaming")).perform(click());
+        onView(withText("kitchen")).perform(click());
         onView(withText("APPLY")).perform(click());
-        waitFor(() -> hasListLength(9));
+        waitFor(() -> hasListLength(2));
     }
 
     @Test
     public void testOneTagFilter() {
-        onView(withText("kitchen")).perform(click());
+        onView(withText("electronics")).perform(click());
         onView(withText("APPLY")).perform(click());
-        waitFor(() -> hasListLength(1));
+        waitFor(() -> hasListLength(11));
     }
 
     @Test
