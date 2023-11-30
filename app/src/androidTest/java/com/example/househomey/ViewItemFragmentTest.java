@@ -40,7 +40,6 @@ public class ViewItemFragmentTest extends TestSetup {
         onData(anything())
                 .inAdapterView(withId(R.id.item_list))
                 .atPosition(0)
-                .onChildView(withId(R.id.action_view))
                 .perform(click());
         onView(withId(R.id.view_item_make)).check(matches(withText("North Face")));
         onView(withId(R.id.view_item_model)).check(matches(withText("Recon")));
@@ -55,7 +54,6 @@ public class ViewItemFragmentTest extends TestSetup {
         waitFor(() -> onData(anything())
                 .inAdapterView(withId(R.id.item_list))
                 .atPosition(0)
-                .onChildView(withId(R.id.action_view))
                 .perform(click()));
         onView(withId(R.id.delete_button)).perform(scrollTo(), click());
 

@@ -100,15 +100,14 @@ public class ItemAdapter extends ArrayAdapter<Item> {
 
         String makeString = item.getMake();
         Set<Tag> itemTags = item.getTags();
+        ((TextView) view.findViewById(R.id.item_extra_tags_text)).setText("");
         if (itemTags.size() > 0) {
-            makeString+= " | ";
+            makeString += " | ";
             Chip chip = FragmentUtils.makeChip(itemTags.iterator().next().getTagLabel(), false, chipGroup, view.getContext(), R.color.white, R.color.black, R.color.black);
             chip.setFocusable(false);
             chip.setClickable(false);
             if (itemTags.size() > 1)
                 ((TextView) view.findViewById(R.id.item_extra_tags_text)).setText(" +" + (itemTags.size()-1));
-            else
-                ((TextView) view.findViewById(R.id.item_extra_tags_text)).setText("");
         }
         ((TextView) view.findViewById(R.id.item_make_text)).setText(makeString);
 
