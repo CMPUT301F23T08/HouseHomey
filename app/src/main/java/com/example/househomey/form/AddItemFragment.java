@@ -43,11 +43,6 @@ public class AddItemFragment extends ItemFormFragment {
         return rootView;
     }
 
-    @Override
-    protected Item createItem(String itemId, Map<String, Object> data) {
-        return new Item(itemId, data);
-    }
-
     /**
      * Adds a new item by validating and preparing it for storage.
      */

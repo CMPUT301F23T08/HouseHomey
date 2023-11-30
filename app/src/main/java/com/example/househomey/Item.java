@@ -143,6 +143,14 @@ public class Item implements Serializable, Parcelable {
     }
 
     /**
+     * Setter for tags
+     * @param tags new set of tags
+     */
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
+    }
+
+    /**
      * Convenient getter for map of properties to be used for Firestore queries
      *
      * @return A Map containing all the properties of this object as key-value pairs

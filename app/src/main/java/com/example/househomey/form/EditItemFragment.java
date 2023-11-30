@@ -30,7 +30,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class EditItemFragment extends ItemFormFragment {
     private final Item item;
     private Item updatedItem;
-    private AtomicBoolean finishedItemLoad = new AtomicBoolean(false);
 
     /**
      * Constructs a new EditItemFragment with the item to edit.
@@ -65,20 +64,6 @@ public class EditItemFragment extends ItemFormFragment {
         rootView.findViewById(R.id.add_item_confirm_button).setOnClickListener(v -> editItem());
         rootView.findViewById(R.id.add_item_back_button).setOnClickListener(v -> goBack(getContext()));
         return rootView;
-    }
-
-    /**
-     * Creates the new Item and waits for tags to finish loading
-     * @param itemId Id of the new item
-     * @param data   Data for the new item
-     * @return New Item with tag listener set
-     */
-    @Override
-    protected Item createItem(String itemId, Map<String, Object> data) {
-        return new Item(itemId, data, ((MainActivity) requireActivity()).getTagRef(), item -> {
-            if (finishedItemLoad.getAndSet(true))
-                sendItem();
-        });
     }
 
     /**
@@ -126,8 +111,8 @@ public class EditItemFragment extends ItemFormFragment {
                 .set(updatedItem.getData())
                 .addOnSuccessListener(aVoid -> {
                     Log.d("Firestore", "Successfully updated item with id: " + updatedItem.getId());
-                    if (finishedItemLoad.getAndSet(true))
-                        sendItem();
+                    updatedItem.setTags(item.getTags());
+                    sendItem();
                 })
                 .addOnFailureListener(e -> {
                     Log.d("Firestore", "Failed to update item with id: " + updatedItem.getId());

@@ -156,20 +156,12 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
 
         // Ensure that form data can be used to create a valid Item
         try {
-            return createItem(itemId, data);
+            return new Item(itemId, data);
         } catch (NullPointerException e) {
             Log.d("Item", "Tried to create an invalid item.");
             return null;
         }
     }
-
-    /**
-     * Creates a new item
-     * @param itemId Id of the new item
-     * @param data Data for the new item
-     * @return The newly created item
-     */
-    protected abstract Item createItem(String itemId, Map<String, Object> data);
 
     /**
      * Checks whether the text input for a required form field is empty.
@@ -188,7 +180,6 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         textInputLayout.setError(null);
         return false;
     }
-
 
     /**
      * Gets the user input as a string from a given TextInputEditText
