@@ -18,6 +18,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.househomey.form.EditItemFragment;
 
 import com.example.househomey.form.ViewPhotoAdapter;
+import com.example.househomey.tags.Tag;
+import com.example.househomey.utils.FragmentUtils;
+import com.google.android.material.chip.ChipGroup;
+
+import java.util.Set;
 
 /**
  * This fragment is for the "View Item Page" - which currently displays the details and comment linked
@@ -50,7 +55,6 @@ public class ViewItemFragment extends Fragment {
         TextView model = rootView.findViewById(R.id.view_item_model);
         TextView serialNumber = rootView.findViewById(R.id.view_item_serial_number);
         TextView cost = rootView.findViewById(R.id.view_item_cost);
-        //TextView tags = rootView.findViewById(R.id.view_item_tags);
         TextView comment = rootView.findViewById(R.id.view_item_comment);
         TextView noPhotosView = rootView.findViewById(R.id.view_item_no_photos);
         ImageView mainPhoto = rootView.findViewById(R.id.view_item_main_photo);
@@ -65,7 +69,7 @@ public class ViewItemFragment extends Fragment {
                     model.setText(item.getModel());
                     serialNumber.setText(item.getSerialNumber());
                     cost.setText(item.getCost().toString());
-                    //tags.setText(item.getTags().toString());
+                    addTags(item.getTags(), rootView);
                     comment.setText(item.getComment());
                 });
 
@@ -95,4 +99,12 @@ public class ViewItemFragment extends Fragment {
 
         return rootView;
     }
+
+    private void addTags(Set<Tag> tagList, View rootView) {
+        ChipGroup chipGroup = rootView.findViewById(R.id.tag_chip_group_labels);
+        for (Tag tag: tagList) {
+            FragmentUtils.makeChip(tag.getTagLabel(), true, chipGroup, rootView.getContext(), R.color.creme, R.color.black, R.color.black);
+        }
+    }
+
 }
