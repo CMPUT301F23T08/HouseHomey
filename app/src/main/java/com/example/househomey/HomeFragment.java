@@ -37,6 +37,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import java.math.BigDecimal;
@@ -189,39 +190,43 @@ public class HomeFragment extends Fragment implements FilterCallback {
 
         popupMenu.setOnMenuItemClickListener(item -> {
             int itemId = item.getItemId();
+            Bundle filterArgs = new Bundle();
+            filterArgs.putSerializable("callback", this);
+
             if (itemId == R.id.filter_by_dates) {
-                View dateFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_dates, null);
-                DateFilterFragment dateFilterFragment = new DateFilterFragment("Modify Date Filter", dateFilterView, this);
+                DateFilterFragment dateFilterFragment = new DateFilterFragment();
                 for (Filter filter : appliedFilters) {
                     if (filter instanceof DateFilter) {
                         DateFilter dateFilter = (DateFilter) filter;
-                        dateFilterFragment = new DateFilterFragment("Modify Make Filter", dateFilterView, this, dateFilter);
+                        filterArgs.putSerializable("filter", dateFilter);
                     }
                 }
+                dateFilterFragment.setArguments(filterArgs);
                 dateFilterFragment.show(requireActivity().getSupportFragmentManager(), "dates_filter_dialog");
             } else if (itemId == R.id.filter_by_make) {
-                View makeFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_make, null);
-                MakeFilterFragment makeFilterFragment = new MakeFilterFragment("Modify Make Filter", makeFilterView, this);
+                MakeFilterFragment makeFilterFragment = new MakeFilterFragment();
                 for (Filter filter : appliedFilters) {
                     if (filter instanceof MakeFilter) {
                         MakeFilter makeFilter = (MakeFilter) filter;
-                        makeFilterFragment = new MakeFilterFragment("Modify Make Filter", makeFilterView, this, makeFilter);
+                        filterArgs.putSerializable("filter", makeFilter);
                     }
                 }
+                makeFilterFragment.setArguments(filterArgs);
                 makeFilterFragment.show(requireActivity().getSupportFragmentManager(), "make_filter_dialog");
             } else if (itemId == R.id.filter_by_keywords) {
-                View keywordFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_keywords, null);
-                KeywordFilterFragment keywordFilterFragment = new KeywordFilterFragment("Modify Keyword Filter", keywordFilterView, this);
+                KeywordFilterFragment keywordFilterFragment = new KeywordFilterFragment();
                 for (Filter filter : appliedFilters) {
                     if (filter instanceof KeywordFilter) {
                         KeywordFilter myFilter = (KeywordFilter) filter;
-                        keywordFilterFragment = new KeywordFilterFragment("Modify Keyword Filter", keywordFilterView, this, myFilter);
+                        filterArgs.putSerializable("filter", myFilter);
                     }
                 }
+                keywordFilterFragment.setArguments(filterArgs);
                 keywordFilterFragment.show(requireActivity().getSupportFragmentManager(), "keywords_filter_dialog");
             } else if (itemId == R.id.filter_by_tags) {
-                View tagFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_tags, null);
-                TagFilterFragment tagFilterFragment = new TagFilterFragment("Modify Tag Filter", tagFilterView, this);
+                TagFilterFragment tagFilterFragment = new TagFilterFragment();
+
+                tagFilterFragment.setArguments(filterArgs);
                 tagFilterFragment.show(requireActivity().getSupportFragmentManager(), "tags_filter_dialog");
             } else {
                 return false;

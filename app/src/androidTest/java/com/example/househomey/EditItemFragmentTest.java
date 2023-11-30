@@ -4,6 +4,7 @@ import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.hasChildCount;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
@@ -48,6 +49,7 @@ public class EditItemFragmentTest extends TestSetup {
                 .onChildView(withId(R.id.action_view))
                 .perform(click()));
         // Click on edit button
+        onView(withId(R.id.edit_button)).perform(scrollTo());
         onView(withId(R.id.edit_button)).perform(click());
     }
 
@@ -76,6 +78,7 @@ public class EditItemFragmentTest extends TestSetup {
     @Test
     public void testBackButtonGoesToViewItemPage() {
         onView(withId(R.id.add_item_back_button)).perform(click());
+        onView(withId(R.id.view_item_make)).perform(scrollTo());
         onView(withId(R.id.view_item_make)).check(matches(isDisplayed()));
     }
 
