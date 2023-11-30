@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * This fragment is a child of the home fragment containing the list of the user's inventory
@@ -198,15 +199,9 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
      * @return List of selected items
      */
     public ArrayList<Item> getSelectedItems() {
-        ArrayList<Item> selectedItems = new ArrayList<>();
-        for (int i = 0; i< itemList.size(); i++) {
-            View itemView = itemListView.getChildAt(i);
-            if (itemView!=null) {
-                CheckBox checkBox = itemView.findViewById(R.id.item_checkBox);
-                if (checkBox.isChecked()) selectedItems.add(itemList.get(i));
-            }
-        }
-        return selectedItems;
+        return itemList.stream()
+                .filter(Item::getChecked)
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
     /**
