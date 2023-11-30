@@ -8,6 +8,7 @@ import com.example.househomey.tags.Tag;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -15,15 +16,15 @@ import java.util.stream.Collectors;
  * @author Jared Drueco
  */
 public class TagFilter extends Filter implements Serializable {
-    public Map<String, Boolean> tagSelectionMap;
+    public Set<Tag> selectedTags;
 
     /**
      * Constructs a new TagFilter with the specified keywords.
      *
-     * @param tagSelectionMap tags to filter by.
+     * @param selectedTags tags to filter by.
      */
-    public TagFilter(Map tagSelectionMap) {
-        this.tagSelectionMap = tagSelectionMap;
+    public TagFilter(Set selectedTags) {
+        this.selectedTags = selectedTags;
     }
 
     /**
@@ -35,13 +36,15 @@ public class TagFilter extends Filter implements Serializable {
      */
     @Override
     public ArrayList<Item> filterList(ArrayList<Item> itemList) {
-        if (!tagSelectionMap.values().stream().anyMatch(Boolean::booleanValue)) return itemList;
+        if (selectedTags.isEmpty()) return itemList;
+
+        // Collect all item IDs corresponding to selected tags
+        Set<String> selectedTagItemIds = selectedTags.stream()
+                .flatMap(tag -> tag.getItemIds().stream())
+                .collect(Collectors.toSet());
+        // Filter items based on selected item IDs
         return itemList.stream()
-                .filter(item ->
-                        item.getTags().stream()
-                                .map(Tag::getTagLabel)
-                                .anyMatch(tagSelectionMap::get)
-                )
+                .filter(item -> selectedTagItemIds.contains(item.getId()))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 }

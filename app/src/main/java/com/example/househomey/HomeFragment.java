@@ -183,7 +183,6 @@ public class HomeFragment extends Fragment implements FilterCallback {
             }
 
             applyFilters();
-            sortItems();
         }
     }
 
@@ -208,7 +207,6 @@ public class HomeFragment extends Fragment implements FilterCallback {
                 Item item = new Item(doc.getId(), data, tagRef, item1 -> {
                     if (initializedItems.incrementAndGet() == totalItems) {
                         applyFilters();
-                        sortItems();
                     }
                 });
                 itemList.add(item);
@@ -322,6 +320,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
         filteredItemList.addAll(tempList);
         itemAdapter.notifyDataSetChanged();
         updateListData();
+        sortItems();
     }
 
     /**

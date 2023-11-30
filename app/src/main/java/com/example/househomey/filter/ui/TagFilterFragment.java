@@ -45,7 +45,7 @@ public class TagFilterFragment extends FilterFragment {
     protected TagFilter tagFilter;
     private ChipGroup tagChipGroup;
     private ArrayList<Tag> tagList = new ArrayList<>();
-    private Map<String, Boolean> tagSelectionMap = new HashMap<>();
+    private Set<Tag> selectedTags = new HashSet<>();
     /**
      * Creates dialog for tag filter fragment
      * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
@@ -62,7 +62,7 @@ public class TagFilterFragment extends FilterFragment {
             this.tagFilter = getArguments().getSerializable("filter", TagFilter.class);
             this.tagList = getArguments().getSerializable("tags", ArrayList.class);
             if (this.tagFilter != null)
-                tagSelectionMap = tagFilter.tagSelectionMap;
+                selectedTags = tagFilter.selectedTags;
         }
 
         tagChipGroup = contentView.findViewById(R.id.chip_group_labels);
@@ -82,8 +82,8 @@ public class TagFilterFragment extends FilterFragment {
         for (Tag tag: tagList) {
             if (existingTags.add(tag.getTagLabel())) {
                 Chip chip = makeChip(tag.getTagLabel(), false, tagChipGroup, context, R.color.white, R.color.brown, R.color.brown, true);
-                autoFillLastSelectedChip(chip, tag.getTagLabel());
-                setChipListener(chip, tag.getTagLabel());
+                autoFillLastSelectedChip(chip, tag);
+                setChipListener(chip, tag);
             }
         }
     }
@@ -94,11 +94,13 @@ public class TagFilterFragment extends FilterFragment {
      * @param chip The chip to be auto filled.
      * @param tag  The tag associated with the chip.
      */
-    private void autoFillLastSelectedChip(Chip chip, String tag) {
-        boolean isSelected = tagSelectionMap.containsKey(tag) && Boolean.TRUE.equals(tagSelectionMap.get(tag));
-        chip.setChecked(isSelected);
-        chip.setChipBackgroundColorResource(isSelected ? R.color.grey : R.color.white);
-        tagSelectionMap.put(tag, isSelected);
+    private void autoFillLastSelectedChip(Chip chip, Tag tag) {
+        if (selectedTags.contains(tag)) {
+            chip.setChecked(true);
+            chip.setChipBackgroundColorResource(R.color.grey);
+        } else {
+            chip.setChipBackgroundColorResource(R.color.white);
+        }
     }
 
     /**
@@ -107,9 +109,11 @@ public class TagFilterFragment extends FilterFragment {
      * @param chip The chip to set the listener for.
      * @param tag  The tag associated with the chip.
      */
-    private void setChipListener(Chip chip, String tag) {
+    private void setChipListener(Chip chip, Tag tag) {
         chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            tagSelectionMap.put(tag, isChecked);
+            if (!selectedTags.add(tag)) {
+                selectedTags.remove(tag);
+            }
             chip.setChipBackgroundColorResource(isChecked ? R.color.grey : R.color.white);
         });
     }
@@ -119,7 +123,7 @@ public class TagFilterFragment extends FilterFragment {
      */
     @Override
     public void getFilterInput() {
-        this.tagFilter = new TagFilter(this.tagSelectionMap);
+        this.tagFilter = new TagFilter(this.selectedTags);
         filterCallback.onFilterApplied(this.tagFilter);
         dismiss();
     }
