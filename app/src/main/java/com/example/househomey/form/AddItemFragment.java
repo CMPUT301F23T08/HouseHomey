@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import com.example.househomey.Item;
 import com.example.househomey.R;
 
+import java.util.Map;
+
 /**
  * This fragment is responsible for creating and loading to the database a new item
  *
@@ -38,6 +40,11 @@ public class AddItemFragment extends ItemFormFragment {
         rootView.findViewById(R.id.add_item_confirm_button).setOnClickListener(v -> addItem());
         rootView.findViewById(R.id.add_item_back_button).setOnClickListener(v -> navigateHomeWithIndicator(getContext()));
         return rootView;
+    }
+
+    @Override
+    protected Item createItem(String itemId, Map<String, Object> data) {
+        return new Item(itemId, data);
     }
 
     /**

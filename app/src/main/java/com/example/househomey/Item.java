@@ -39,16 +39,10 @@ public class Item implements Serializable, Parcelable {
     private String comment = "";
     private BigDecimal cost;
     private List<String> photoIds = new ArrayList<>();
-    private Set<Tag> tags;
+    private Set<Tag> tags = new TreeSet<>(new TagComparator());
 
-    /**
-     * This constructs a new item from a Map of data with a reference to its Firestore document
-     *
-     * @param id   The id of this object's document in the firestore database
-     * @param data The data from that document to initialize the instance
-     * @throws NullPointerException if a null required field is given
-     */
-    public Item(String id, @NonNull Map<String, Object> data, CollectionReference tagRef) {
+
+    public Item(String id, @NonNull Map<String, Object> data) {
         // Required fields, will throw exceptions
         this.id = Objects.requireNonNull(id);
         this.description = (String) Objects.requireNonNull(data.get("description"));
@@ -72,12 +66,25 @@ public class Item implements Serializable, Parcelable {
             this.photoIds = new ArrayList<>((List<String>) data.get("photoIds"));
         }
 
-        initTags(tagRef);
+    }
+    /**
+     * This constructs a new item from a Map of data with a reference to its Firestore document
+     *
+     * @param id   The id of this object's document in the firestore database
+     * @param data The data from that document to initialize the instance
+     * @throws NullPointerException if a null required field is given
+     */
+    public Item(String id, @NonNull Map<String, Object> data, CollectionReference tagRef, OnItemInitializedListener listener) {
+        this(id, data);
+        initTags(tagRef, listener);
     }
 
-    private void initTags(CollectionReference tagRef) {
-        tags = new TreeSet<>(new TagComparator());
+    public interface OnItemInitializedListener {
+        void onItemInitialized(Item item);
+    }
 
+
+    private void initTags(CollectionReference tagRef, OnItemInitializedListener listener) {
         tagRef.whereArrayContains("items", id)
                 .get()
                 .addOnCompleteListener(task -> {
@@ -88,8 +95,9 @@ public class Item implements Serializable, Parcelable {
                         }
                         Log.i("Item Tag", tags.toString());
                     } else {
-                        Log.e("Tag", "Couldn't set item tag");
+                        Log.e("Item Tag", "Couldn't set item tag");
                     }
+                    listener.onItemInitialized(this);
                 });
     }
 

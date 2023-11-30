@@ -32,6 +32,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -70,6 +71,7 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         return rootView;
     }
 
+
     /**
      * Validates the user input and constructs an Item object if the input is valid.
      * If validation succeeds, updates respective photos in Firebase Cloud Storage.
@@ -98,7 +100,7 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         // Ensure that form data can be used to create a valid Item
         Item item;
         try {
-            item = new Item(itemId, data, ((MainActivity) requireActivity()).getTagRef());
+            item = createItem(itemId, data);
         } catch (NullPointerException e) {
             return null;
         }
@@ -116,6 +118,8 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         }
         return item;
     }
+
+    protected abstract Item createItem(String itemId, Map<String, Object> data);
 
     /**
      * Checks whether the text input for a required form field is empty.

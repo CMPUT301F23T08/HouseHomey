@@ -47,6 +47,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * This fragment is a child of the home fragment containing the list of the user's inventory
@@ -197,15 +198,22 @@ public class HomeFragment extends Fragment implements FilterCallback {
         if (querySnapshots != null) {
             itemList.clear();
             itemIdMap.clear();
+            int totalItems = querySnapshots.size();
+            AtomicInteger initializedItems = new AtomicInteger(0);
             for (QueryDocumentSnapshot doc: querySnapshots) {
                 Map<String, Object> data = new HashMap<>(doc.getData());
-                Item item = new Item(doc.getId(), data, tagRef);
+                Item item = new Item(doc.getId(), data, tagRef, new Item.OnItemInitializedListener() {
+                    @Override
+                    public void onItemInitialized(Item item) {
+                        if (initializedItems.incrementAndGet() == totalItems) {
+                            applyFilters();
+                            sortItems();
+                        }
+                    }
+                });
                 itemList.add(item);
                 itemIdMap.put(doc.getId(), item);
             }
-
-            applyFilters();
-            sortItems();
         }
     }
 
@@ -357,7 +365,6 @@ public class HomeFragment extends Fragment implements FilterCallback {
      * or ascending order and displays the list
      */
     private void sortItems() {
-
         if (!sortOrder){
             filteredItemList.sort(currentSort);
         }
@@ -366,7 +373,4 @@ public class HomeFragment extends Fragment implements FilterCallback {
         }
         itemAdapter.notifyDataSetChanged();
     }
-
-
-
 }
