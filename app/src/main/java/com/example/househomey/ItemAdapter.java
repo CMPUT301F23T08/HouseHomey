@@ -102,24 +102,15 @@ public class ItemAdapter extends ArrayAdapter<Item> {
         Set<Tag> itemTags = item.getTags();
         if (itemTags.size() > 0) {
             makeString+= " | ";
-            FragmentUtils.makeChip(itemTags.iterator().next().getTagLabel(), false, chipGroup, view.getContext(), R.color.white, R.color.black, R.color.black);
+            Chip chip = FragmentUtils.makeChip(itemTags.iterator().next().getTagLabel(), false, chipGroup, view.getContext(), R.color.white, R.color.black, R.color.black);
+            chip.setFocusable(false);
+            chip.setClickable(false);
             if (itemTags.size() > 1)
                 ((TextView) view.findViewById(R.id.item_extra_tags_text)).setText(" +" + (itemTags.size()-1));
             else
                 ((TextView) view.findViewById(R.id.item_extra_tags_text)).setText("");
         }
         ((TextView) view.findViewById(R.id.item_make_text)).setText(makeString);
-        // Initialize button for viewing details of the item
-        Button viewItemButton = view.findViewById(R.id.action_view);
-
-        // When view item button clicked, pass Item to ViewItemFragment via bundle
-        viewItemButton.setOnClickListener(v -> {
-            ViewItemFragment viewItemFragment = new ViewItemFragment();
-            Bundle args = new Bundle();
-            args.putSerializable("item", item);
-            viewItemFragment.setArguments(args);
-            navigateToFragmentPage(context, viewItemFragment);
-        });
 
         // Make checkboxes visible based on whether or not we are in select state
         CheckBox itemCheckBox = view.findViewById(R.id.item_checkBox);
@@ -127,6 +118,17 @@ public class ItemAdapter extends ArrayAdapter<Item> {
             itemCheckBox.setChecked(false);
         }
         itemCheckBox.setVisibility(this.isSelectState() ? View.VISIBLE : View.GONE);
+
+        // When view item button clicked, pass Item to ViewItemFragment via bundle
+        view.setOnClickListener(v -> {
+            if (v != itemCheckBox) {
+                ViewItemFragment viewItemFragment = new ViewItemFragment();
+                Bundle args = new Bundle();
+                args.putSerializable("item", item);
+                viewItemFragment.setArguments(args);
+                navigateToFragmentPage(context, viewItemFragment);
+            }
+        });
 
         return view;
     }

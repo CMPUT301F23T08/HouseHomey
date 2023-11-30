@@ -75,7 +75,8 @@
             android:id="@+id/right_text_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toStartOf="@id/action_view"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="8dp"
             android:orientation="vertical"
             android:background="@color/offWhite">
 
@@ -100,21 +101,5 @@
                 android:textColor="#4CAF50"
                 android:textSize="16sp" />
         </LinearLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/action_view"
-            style="@style/Widget.MaterialComponents.Button.Icon"
-            android:layout_width="48dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="8dp"
-            android:backgroundTint="@color/offWhite"
-            app:icon="@drawable/chevron_right"
-            app:iconSize="32dp"
-            app:iconTint="@color/black"
-            android:elevation="0dp"
-            android:stateListAnimator="@null"
-            />
-
-    </RelativeLayout>
+            </RelativeLayout>
 </LinearLayout>
