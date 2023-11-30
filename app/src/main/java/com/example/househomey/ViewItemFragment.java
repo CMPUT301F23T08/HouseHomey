@@ -20,8 +20,13 @@ import com.example.househomey.form.EditItemFragment;
 import com.example.househomey.form.ViewPhotoAdapter;
 import com.example.househomey.tags.Tag;
 import com.example.househomey.utils.FragmentUtils;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.firebase.firestore.CollectionReference;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -102,9 +107,20 @@ public class ViewItemFragment extends Fragment {
 
     private void addTags(Set<Tag> tagList, View rootView) {
         ChipGroup chipGroup = rootView.findViewById(R.id.tag_chip_group_labels);
+        CollectionReference tagRef = ((MainActivity) requireActivity()).getTagRef();
         for (Tag tag: tagList) {
-            FragmentUtils.makeChip(tag.getTagLabel(), true, chipGroup, rootView.getContext(), R.color.creme, R.color.black, R.color.black);
+            final Chip chip = FragmentUtils.makeChip(tag.getTagLabel(), true, chipGroup, rootView.getContext(), R.color.creme, R.color.black, R.color.black);
+            final Tag finalTag = tag;
+            chip.setOnCloseIconClickListener(v -> {
+                tagRef.document(finalTag.getTagLabel()).get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        ArrayList<String> itemIds = new ArrayList<>((List<String>) task.getResult().get("items"));
+                        itemIds.removeIf(item -> item.equals(this.item.getId()));
+                        chipGroup.removeView(chip);
+                        tagRef.document(finalTag.getTagLabel()).update("items", itemIds);
+                    }
+                });
+            });
         }
     }
-
 }
