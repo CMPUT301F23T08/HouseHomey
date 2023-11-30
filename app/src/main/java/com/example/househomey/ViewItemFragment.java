@@ -26,7 +26,6 @@ import com.google.firebase.firestore.CollectionReference;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -105,6 +104,11 @@ public class ViewItemFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * Adds tags such that they can be viewed on the view item page. Also enables tags to be deleted when clicking the close icon.
+     * @param tagList list of tags to be added
+     * @param rootView the root view of the view item page
+     */
     private void addTags(Set<Tag> tagList, View rootView) {
         ChipGroup chipGroup = rootView.findViewById(R.id.tag_chip_group_labels);
         CollectionReference tagRef = ((MainActivity) requireActivity()).getTagRef();
