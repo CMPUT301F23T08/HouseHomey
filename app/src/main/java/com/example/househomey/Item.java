@@ -78,7 +78,7 @@ public class Item implements Serializable, Parcelable {
     private void initTags(CollectionReference tagRef) {
         tags = new TreeSet<>(new TagComparator());
 
-        tagRef.whereArrayContains("item", id)
+        tagRef.whereArrayContains("items", id)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -86,6 +86,7 @@ public class Item implements Serializable, Parcelable {
                             Tag tag = new Tag(document.getId(), document.getData());
                             tags.add(tag);
                         }
+                        Log.i("Item Tag", tags.toString());
                     } else {
                         Log.e("Tag", "Couldn't set item tag");
                     }
@@ -255,7 +256,8 @@ public class Item implements Serializable, Parcelable {
         out.writeString(serialNumber);
         out.writeString(comment);
         out.writeSerializable(cost.toString());
-        out.writeSerializable(photoIds.toArray());
+        out.writeList(photoIds);
+        out.writeList(new ArrayList<>(tags));
     }
 
     /**
@@ -271,7 +273,11 @@ public class Item implements Serializable, Parcelable {
         this.serialNumber = in.readString();
         this.comment = in.readString();
         this.cost = new BigDecimal(in.readString()).setScale(2, RoundingMode.HALF_UP);
-        this.photoIds = in.createStringArrayList();
+        in.readStringList(this.photoIds);
+        this.tags = new TreeSet<>(new TagComparator());
+        List<Tag> tagList = new ArrayList<>();
+        in.readList(tagList, Tag.class.getClassLoader(), Tag.class);
+        this.tags.addAll(tagList);
     }
 
     /**

@@ -71,7 +71,7 @@ public class DatabaseSetupRule<T extends Activity> implements TestRule {
             // Ensure that mock data can be used to create a valid Item
             Item item;
             try {
-                item = new Item("", itemDetails);
+                item = new Item("", itemDetails, userDoc.collection("tag"));
             } catch (NullPointerException e) {
                 throw new RuntimeException("Mock data cannot create a valid Item: " + e.getMessage());
             }

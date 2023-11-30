@@ -98,7 +98,7 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         // Ensure that form data can be used to create a valid Item
         Item item;
         try {
-            item = new Item(itemId, data);
+            item = new Item(itemId, data, ((MainActivity) requireActivity()).getTagRef());
         } catch (NullPointerException e) {
             return null;
         }

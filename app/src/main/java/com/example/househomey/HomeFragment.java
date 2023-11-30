@@ -168,13 +168,13 @@ public class HomeFragment extends Fragment implements FilterCallback {
         }
         if (querySnapshots != null) {
             tagList.clear();
-
+            itemList.forEach(Item::clearTags);
             for (QueryDocumentSnapshot doc: querySnapshots) {
                 Tag tag = new Tag(doc.getId(), doc.getData());
                 tagList.add(tag);
-                itemList.forEach(Item::clearTags);
                 for (String id : tag.getItemIds()) {
-                    itemIdMap.get(id).addTag(tag);
+                    Item item = itemIdMap.get(id);
+                    if (item != null) item.addTag(tag);
                 }
             }
 
