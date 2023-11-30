@@ -107,13 +107,21 @@ public class EditItemFragment extends ItemFormFragment {
     }
 
     /**
-     * Edits an existing Item in the user's Firestore item collection.
+     * Edits an existing item by validating and preparing it for storage.
      */
     private void editItem() {
-        updatedItem = prepareItem(item.getId());
-        if (updatedItem == null) return;
+        updatedItem = validateItem(item.getId());
+        if (updatedItem != null) prepareItem(updatedItem);
+    }
 
-        // Update the existing item document in Firestore
+    /**
+     * Writes updated item data to Firestore and handles success or failure.
+     * Updates the Firestore document with the data of the provided updated item.
+     * Logs success with the updated item's ID and navigates to the ViewItemFragment to display
+     * the updated item. In case of failure, logs an error and displays an error message.
+     */
+    @Override
+    public void writeToFirestore() {
         itemRef.document(updatedItem.getId())
                 .set(updatedItem.getData())
                 .addOnSuccessListener(aVoid -> {

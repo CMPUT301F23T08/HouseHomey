@@ -19,6 +19,7 @@ import java.util.Map;
  * @author Owen Cooke
  */
 public class AddItemFragment extends ItemFormFragment {
+    private Item newItem;
     /**
      * This creates the view to add an item to a user's inventory and set's the button listeners
      *
@@ -48,13 +49,20 @@ public class AddItemFragment extends ItemFormFragment {
     }
 
     /**
-     * Adds the user input data to a new item in a user's Firestore item collection
+     * Adds a new item by validating and preparing it for storage.
      */
     private void addItem() {
-        Item newItem = prepareItem("");
-        if (newItem == null) return;
+        newItem = validateItem("");
+        if (newItem != null) prepareItem(newItem);
+    }
 
-        // Create new item document in Firestore
+    /**
+     * Writes new item data to Firestore and handles success or failure.
+     * Adds new item data to Firestore, logs success with the created item's ID,
+     * and navigates home. Logs failure and displays an error message in case of an error.
+     */
+    @Override
+    public void writeToFirestore() {
         itemRef.add(newItem.getData()).addOnSuccessListener(documentReference -> {
                     Log.d("Firestore", "Successfully created new item with id:" + documentReference.getId());
                     navigateHomeWithIndicator(getContext());

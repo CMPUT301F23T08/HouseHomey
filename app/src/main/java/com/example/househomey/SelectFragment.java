@@ -1,5 +1,6 @@
 package com.example.househomey;
 
+import static com.example.househomey.utils.FragmentUtils.deletePhotosFromCloud;
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
 
 import android.os.Bundle;
@@ -161,6 +162,7 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
     public void onOKPressed(ArrayList<Item> selectedItems){
         WriteBatch batch = FirebaseFirestore.getInstance().batch();
         for (Item item : selectedItems) {
+            deletePhotosFromCloud(requireActivity(), item.getPhotoIds());
             batch.delete(itemRef.document(item.getId()));
         }
         batch.commit()
@@ -221,6 +223,7 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
             if (itemView!=null) {
                 CheckBox itemCheckBox = itemView.findViewById(R.id.item_checkBox);
                 itemCheckBox.setChecked(false);
+                itemList.get(i).setChecked(false);
             }
         }
         itemAdapter.notifyDataSetChanged();

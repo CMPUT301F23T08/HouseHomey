@@ -42,6 +42,7 @@ public class Item implements Serializable, Parcelable {
     private BigDecimal cost;
     private List<String> photoIds = new ArrayList<>();
     private Set<Tag> tags = new TreeSet<>(new TagComparator());
+    private boolean checked = false;
 
     /**
      * This constructs a new item from a Map of data with a reference to its Firestore document
@@ -173,6 +174,22 @@ public class Item implements Serializable, Parcelable {
         return itemData;
     }
 
+    /**
+     * Getter for checked
+     *
+     * @return The checked state of this item
+     */
+    public boolean getChecked() {
+        return checked;
+    }
+
+    /**
+     * Setter for checked
+     * @param newChecked The new value for checked
+     */
+    public void setChecked(boolean newChecked) {
+        checked = newChecked;
+    }
 
     /**
      * Getter for id

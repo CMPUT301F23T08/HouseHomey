@@ -4,6 +4,9 @@ import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.intent.Intents.intended;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
+import static androidx.test.espresso.matcher.ViewMatchers.hasChildCount;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
@@ -11,9 +14,19 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static com.example.househomey.testUtils.TestHelpers.enterText;
 import static com.example.househomey.testUtils.TestHelpers.hasListLength;
+import static com.example.househomey.testUtils.TestHelpers.mockImageBitmap;
+import static com.example.househomey.testUtils.TestHelpers.mockImageUri;
 import static com.example.househomey.testUtils.TestHelpers.waitFor;
+import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.anything;
 
+import android.app.Activity;
+import android.app.Instrumentation;
+import android.content.Intent;
+import android.provider.MediaStore;
+
+import androidx.test.espresso.intent.Intents;
+import androidx.test.espresso.intent.matcher.IntentMatchers;
 import androidx.test.espresso.matcher.RootMatchers;
 
 import com.example.househomey.testUtils.TestSetup;
@@ -62,7 +75,7 @@ public class AddItemFragmentTest extends TestSetup {
         // Click the confirm button to add the item
         onView(withId(R.id.add_item_confirm_button)).perform(click());
         // Wait for Firebase to update list on home page
-        waitFor(() ->  hasListLength(1));
+        waitFor(() -> hasListLength(1));
         // Check that the item in list matches description, date, and cost
         onData(anything())
                 .inAdapterView(withId(R.id.item_list))
@@ -97,5 +110,51 @@ public class AddItemFragmentTest extends TestSetup {
     public void testRoundCostTo2Decimals() {
         enterText(R.id.add_item_cost, "99.9852323324");
         onView(withId(R.id.add_item_cost)).check(matches(withText("99.99")));
+    }
+
+    @Test
+    public void testAddPhotoFromCamera() {
+        // Mock a result for the system's camera
+        Intents.init();
+        Intent resultData = new Intent();
+        resultData.putExtra("data", mockImageBitmap(mainActivity, R.raw.classic_guitar));
+        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+        Intents.intending(IntentMatchers.hasAction(MediaStore.ACTION_IMAGE_CAPTURE)).respondWith(result);
+
+        // Check that there are no photos and open menu
+        onView(withId(R.id.add_photo_grid)).check(matches(hasChildCount(1)));
+        onView(withId(R.id.add_photo_button)).perform(click());
+
+        // Click the camera option and ensure intent was fired
+        onView(withId(R.id.camera_button)).perform(click());
+        intended(hasAction(MediaStore.ACTION_IMAGE_CAPTURE));
+        Intents.release();
+
+        // Check that the photo was added
+        onView(withId(R.id.add_photo_grid)).check(matches(hasChildCount(2)));
+        onView(withId(R.id.add_photo_grid)).check(matches(hasDescendant(allOf(withId(R.id.gallery_image_view), isDisplayed()))));
+    }
+
+    @Test
+    public void testAddPhotoFromGallery() {
+        // Mock a result for the system's gallery
+        Intents.init();
+        Intent resultData = new Intent();
+        resultData.setData(mockImageUri(R.raw.shoes));
+        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+        Intents.intending(IntentMatchers.hasAction(Intent.ACTION_PICK)).respondWith(result);
+
+        // Check that there are no photos and open menu
+        onView(withId(R.id.add_photo_grid)).check(matches(hasChildCount(1)));
+        onView(withId(R.id.add_photo_button)).perform(click());
+
+        // Click the gallery option and ensure intent was fired
+        onView(withId(R.id.gallery_button)).perform(click());
+        intended(hasAction(Intent.ACTION_PICK));
+        Intents.release();
+
+        // Check that the photo was added
+        onView(withId(R.id.add_photo_grid)).check(matches(hasChildCount(2)));
+        onView(withId(R.id.add_photo_grid)).check(matches(hasDescendant(allOf(withId(R.id.gallery_image_view), isDisplayed()))));
     }
 }

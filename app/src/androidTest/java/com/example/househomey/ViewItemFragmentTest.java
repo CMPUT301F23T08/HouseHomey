@@ -3,6 +3,7 @@ package com.example.househomey;
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -56,7 +57,7 @@ public class ViewItemFragmentTest extends TestSetup {
                 .atPosition(0)
                 .onChildView(withId(R.id.action_view))
                 .perform(click()));
-        onView(withId(R.id.delete_button)).perform(click());
+        onView(withId(R.id.delete_button)).perform(scrollTo(), click());
 
         waitFor(() -> onView(withId(R.id.total_count_text)).check(matches(withText("0"))));
     }

@@ -2,6 +2,7 @@ package com.example.househomey.filter.model;
 
 import com.example.househomey.Item;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -33,7 +34,7 @@ public class MakeFilter extends Filter {
             return itemList;
         }
         return itemList.stream()
-                .filter(item -> item.getMake().equals(makeToFilterBy))
+                .filter(item -> item.getMake().equalsIgnoreCase(makeToFilterBy))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 }

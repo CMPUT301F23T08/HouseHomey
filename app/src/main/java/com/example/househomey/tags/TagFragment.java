@@ -162,4 +162,66 @@ public class TagFragment extends DialogFragment {
             }
         });
     }
+
+    /**
+     * Creates a new chip for the new tag with a delete option
+     * @param label Name of the tag for the new chip
+     */
+    private void makeTagChip(String label) {
+        chip = FragmentUtils.makeChip(label, true, chipGroup, requireContext(), R.drawable.tag_chip, R.color.brown, R.color.brown, true);
+        final Chip thisChip = chip;
+        chip.setOnCloseIconClickListener(v ->
+            tagRef.document(label).delete().addOnSuccessListener(result -> {
+                chipGroup.removeView(thisChip);
+                tagList.removeIf(tag -> tag.getTagLabel().equals(thisChip.getText().toString()));
+            })
+        );
+    }
+
+    /**
+     * Save items to Firestore for the given tags.
+     * @param selectedItems Items to which the tags will be applied
+     */
+    private void applyItemsToTag(View rootView, ArrayList<Item> selectedItems) {
+        ArrayList<String> selectedTags = new ArrayList<>();
+        for (int id: chipGroup.getCheckedChipIds()) {
+            Chip chip = rootView.findViewById(id);
+            selectedTags.add(chip.getText().toString());
+        }
+        if (!selectedItems.isEmpty()) {
+            List<String> idList = selectedItems.stream()
+                    .map(Item::getId)
+                    .collect(Collectors.toList());
+            WriteBatch batch = FirebaseFirestore.getInstance().batch();
+            for (String tag : selectedTags) {
+                batch.update(tagRef.document(tag),
+                        "items", FieldValue.arrayUnion(idList.toArray()));
+            }
+            batch.commit()
+                    .addOnSuccessListener((result) -> {
+                        Log.i("Firestore", "Items successfully applied to tag");
+                    })
+                    .addOnFailureListener((error) -> {
+                        Log.e("Firestore", "Failed to apply items to tag.", error);
+                    });
+        }
+    }
+
+
+    /**
+     * Gets a snapshot of the tags collection in Firestore
+     */
+    private void getTagCollection() {
+        tagRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                Tag tag = new Tag(document.getId(), document.getData());
+                if (!tagList.stream()
+                        .map(Tag::getTagLabel)
+                        .collect(Collectors.toList()).contains(tag.getTagLabel())) {
+                    tagList.add(tag);
+                    makeTagChip(tag.getTagLabel());
+                }
+            }
+        });
+    }
 }

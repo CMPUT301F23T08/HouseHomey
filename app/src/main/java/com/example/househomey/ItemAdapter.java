@@ -114,8 +114,10 @@ public class ItemAdapter extends ArrayAdapter<Item> {
 
         // Make checkboxes visible based on whether or not we are in select state
         CheckBox itemCheckBox = view.findViewById(R.id.item_checkBox);
-        if (!this.isSelectState()) {
-            itemCheckBox.setChecked(false);
+        if (this.isSelectState()) {
+            itemCheckBox.setChecked(items.get(position).getChecked());
+            itemCheckBox.setOnClickListener((buttonView) ->
+                    items.get(position).setChecked(!items.get(position).getChecked()));
         }
         itemCheckBox.setVisibility(this.isSelectState() ? View.VISIBLE : View.GONE);
 
