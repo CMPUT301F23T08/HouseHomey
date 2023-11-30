@@ -15,10 +15,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class UserProfileFragment extends Fragment {
 
     private String username;
-
     TextView usernameTextView;
     Button logoutButton;
 
@@ -40,6 +41,7 @@ public class UserProfileFragment extends Fragment {
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
                 logoutButton.setBackgroundResource(R.drawable.logout_button_clicked);
                 logoutButton.setTextColor(getResources().getColor(R.color.creme, rootView.getContext().getTheme()));
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {

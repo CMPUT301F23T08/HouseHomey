@@ -1,13 +1,10 @@
 package com.example.househomey;
 
-import static com.google.firebase.appcheck.internal.util.Logger.TAG;
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +18,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -37,13 +40,17 @@ public class SignUpFragment extends Fragment {
     private CollectionReference collRef;
     private Button signupButton;
     // Define a regex pattern for lowercase alphanumeric with underscores or periods
-    private final String regex = "^[a-z0-9_.]+$";
+    private final String regex = "^[\\w!#$%&amp;'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&amp;'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
+    private FirebaseAuth auth;
     private String username;
     private String password;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_user_signup, container, false);
+
+        // Initialize Firebase Auth
+        auth = FirebaseAuth.getInstance();
 
         usernameEdittext = rootView.findViewById(R.id.signup_username);
         passwordEdittext = rootView.findViewById(R.id.signup_password);
@@ -66,29 +73,36 @@ public class SignUpFragment extends Fragment {
 
             collRef = FirebaseFirestore.getInstance().collection("user");
             boolean filled = confirmPassword();
-            collRef.document(username).get().addOnCompleteListener(t -> {
-                    if (t.isSuccessful() & filled) {
-                        usernameEdittext.setError("username already exists!");
-                    } else {
-                        if (filled) {
-                            // Create a new document with a field
-                            Map<String, Object> data = new HashMap<>();
-                            data.put("password", confirmedPassword);
-                            collRef.document(username).set(data).addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    // Replace YourSignUpFragment with the actual class name of your sign-up fragment
-                                    FragmentManager fragmentManager = getParentFragmentManager();
-                                    FragmentTransaction transaction = fragmentManager.beginTransaction();
-                                    transaction.replace(R.id.fragmentContainerSignIn, new SignInFragment());
-                                    transaction.addToBackStack("signup");
-                                    transaction.commit();
-                                } else {
-                                    Log.d(TAG, "get failed with ", task.getException());
-                                }
-                            });
-                        }
+            if (filled) {
+                auth.createUserWithEmailAndPassword(username, password).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = auth.getCurrentUser();
+                        Map<String, Object> fields = new HashMap<>();
+                        fields.put("username", user.getEmail());
+                        collRef.document(user.getEmail()).set(fields).addOnCompleteListener(task1 -> {
+                            if (task1.isSuccessful()) {
+                                // Replace YourSignUpFragment with the actual class name of your sign-up fragment
+                                FragmentManager fragmentManager = getParentFragmentManager();
+                                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                                transaction.replace(R.id.fragmentContainerSignIn, new SignInFragment());
+                                transaction.addToBackStack("signup");
+                                transaction.commit();
+                            } else {
+                                usernameEdittext.setError(task1.getException().getMessage());
+                                passwordEdittext.setError(task1.getException().getMessage());
+                            }
+                        });
+                    } else if (task.getException() instanceof FirebaseAuthUserCollisionException)
+                    {
+                        //If email already registered.
+                        usernameEdittext.setError(task.getException().getMessage());
+
+                    } else if (task.getException() instanceof FirebaseAuthWeakPasswordException) {
+                        //if password not 'stronger'
+                        passwordEdittext.setError(task.getException().getMessage());
                     }
-            });
+                });
+            }
         });
 
         usernameEdittext.addTextChangedListener(new TextWatcher() {
@@ -109,7 +123,7 @@ public class SignUpFragment extends Fragment {
                 if (username.isEmpty()) {
                     usernameEdittext.setError("username cannot be empty");
                 } else if(!matcher.matches()) {
-                    usernameEdittext.setError("character not allowed");
+                    usernameEdittext.setError("must be an email");
                 }
             }
         });

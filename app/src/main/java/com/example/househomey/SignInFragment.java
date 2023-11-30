@@ -23,6 +23,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -39,13 +44,18 @@ public class SignInFragment extends Fragment {
     private DocumentReference docRef;
     private Button loginButton;
     // Define a regex pattern for lowercase alphanumeric with underscores or periods
-    private final String regex = "^[a-z0-9_.]+$";
+    private final String regex = "^[\\w!#$%&amp;'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&amp;'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
+    private FirebaseAuth auth;
     private String username;
     private String password;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_user_signin, container, false);
+
+        // Initialize Firebase Auth
+        auth = FirebaseAuth.getInstance();
+        auth.signOut();
 
         usernameEdittext = rootView.findViewById(R.id.signin_username);
         passwordEdittext = rootView.findViewById(R.id.signin_password);
@@ -70,40 +80,60 @@ public class SignInFragment extends Fragment {
             usernameEdittext.setError(null);
             passwordEdittext.setError(null);
 
-            userRef = FirebaseFirestore.getInstance().collection("user");
-
-            if (!username.isEmpty() & !password.isEmpty()) {
-                docRef = userRef.document(username);
-                docRef.get().addOnCompleteListener(task -> {
+            auth.signInWithEmailAndPassword(username, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            String db_password = (String) document.get("password");
-                            if (Objects.equals(db_password, password)) {
-                                Bundle userData = new Bundle();
-                                userData.putString("username", username);
-                                Activity activity = getActivity();
-                                if (activity != null) {
-                                    Intent intent = new Intent(activity, MainActivity.class);
-                                    intent.putExtra("userData", userData);
-                                    activity.startActivity(intent);
-                                }
-                            } else {
-                                usernameEdittext.setError("username or password not recognized");
-                                passwordEdittext.setError("username or password not recognized");
-                            }
-                        } else {
-                            usernameEdittext.setError("username or password not recognized");
-                            passwordEdittext.setError("username or password not recognized");
+                        FirebaseUser user = auth.getCurrentUser();
+                        Bundle userData = new Bundle();
+                        userData.putString("username", user.getEmail());
+                        Activity activity = getActivity();
+                        if (activity != null) {
+                            Intent intent = new Intent(activity, MainActivity.class);
+                            intent.putExtra("userData", userData);
+                            activity.startActivity(intent);
                         }
                     } else {
-                        Log.d(TAG, "get failed with ", task.getException());
+                        usernameEdittext.setError("username or password not recognized");
+                        passwordEdittext.setError("username or password not recognized");
+
                     }
-                });
-            } else {
-                usernameEdittext.setError("username or password empty");
-                passwordEdittext.setError("username or password empty");
-            }
+                }
+            });
+//            userRef = FirebaseFirestore.getInstance().collection("user");
+
+//            if (!username.isEmpty() & !password.isEmpty()) {
+//                docRef = userRef.document(username);
+//                docRef.get().addOnCompleteListener(task -> {
+//                    if (task.isSuccessful()) {
+//                        DocumentSnapshot document = task.getResult();
+//                        if (document.exists()) {
+//                            String db_password = (String) document.get("password");
+//                            if (Objects.equals(db_password, password)) {
+//                                Bundle userData = new Bundle();
+//                                userData.putString("username", username);
+//                                Activity activity = getActivity();
+//                                if (activity != null) {
+//                                    Intent intent = new Intent(activity, MainActivity.class);
+//                                    intent.putExtra("userData", userData);
+//                                    activity.startActivity(intent);
+//                                }
+//                            } else {
+//                                usernameEdittext.setError("username or password not recognized");
+//                                passwordEdittext.setError("username or password not recognized");
+//                            }
+//                        } else {
+//                            usernameEdittext.setError("username or password not recognized");
+//                            passwordEdittext.setError("username or password not recognized");
+//                        }
+//                    } else {
+//                        Log.d(TAG, "get failed with ", task.getException());
+//                    }
+//                });
+//            } else {
+//                usernameEdittext.setError("username or password empty");
+//                passwordEdittext.setError("username or password empty");
+//            }
 
         });
 
@@ -125,7 +155,7 @@ public class SignInFragment extends Fragment {
                 if (username.isEmpty()) {
                     usernameEdittext.setError("username cannot be empty");
                 } else if(!matcher.matches()) {
-                    usernameEdittext.setError("character not allowed");
+                    usernameEdittext.setError("must be an email");
                 }
             }
         });
