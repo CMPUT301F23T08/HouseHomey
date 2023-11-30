@@ -67,6 +67,12 @@ public class EditItemFragment extends ItemFormFragment {
         return rootView;
     }
 
+    /**
+     * Creates the new Item and waits for tags to finish loading
+     * @param itemId Id of the new item
+     * @param data   Data for the new item
+     * @return New Item with tag listener set
+     */
     @Override
     protected Item createItem(String itemId, Map<String, Object> data) {
         return new Item(itemId, data, ((MainActivity) requireActivity()).getTagRef(), item -> {
@@ -121,6 +127,9 @@ public class EditItemFragment extends ItemFormFragment {
                 });
     }
 
+    /**
+     * Sends the new item to the view item fragment
+     */
     private void sendItem() {
         ViewItemFragment viewItemFragment = new ViewItemFragment();
         Bundle args = new Bundle();

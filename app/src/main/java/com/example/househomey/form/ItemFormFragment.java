@@ -119,6 +119,12 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         return item;
     }
 
+    /**
+     * Creates a new item
+     * @param itemId Id of the new item
+     * @param data Data for the new item
+     * @return The newly created item
+     */
     protected abstract Item createItem(String itemId, Map<String, Object> data);
 
     /**

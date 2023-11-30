@@ -72,7 +72,7 @@ public class Tag implements Parcelable {
     }
 
     /**
-     * Constructs an item object by reading its attributes from a Parcel object
+     * Constructs a Tag object by reading its attributes from a Parcel object
      * @param in The parcel object that reads the data
      */
     protected Tag(Parcel in) {

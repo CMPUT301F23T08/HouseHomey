@@ -12,6 +12,8 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import org.checkerframework.common.returnsreceiver.qual.This;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -41,7 +43,13 @@ public class Item implements Serializable, Parcelable {
     private List<String> photoIds = new ArrayList<>();
     private Set<Tag> tags = new TreeSet<>(new TagComparator());
 
-
+    /**
+     * This constructs a new item from a Map of data with a reference to its Firestore document
+     *
+     * @param id   The id of this object's document in the firestore database
+     * @param data The data from that document to initialize the instance
+     * @throws NullPointerException if a null required field is given
+     */
     public Item(String id, @NonNull Map<String, Object> data) {
         // Required fields, will throw exceptions
         this.id = Objects.requireNonNull(id);
@@ -65,13 +73,15 @@ public class Item implements Serializable, Parcelable {
         if (data.containsKey("photoIds")) {
             this.photoIds = new ArrayList<>((List<String>) data.get("photoIds"));
         }
-
     }
+
     /**
      * This constructs a new item from a Map of data with a reference to its Firestore document
      *
      * @param id   The id of this object's document in the firestore database
      * @param data The data from that document to initialize the instance
+     * @param tagRef The tag collection
+     * @param listener The listener for completion of tag intialization
      * @throws NullPointerException if a null required field is given
      */
     public Item(String id, @NonNull Map<String, Object> data, CollectionReference tagRef, OnItemInitializedListener listener) {
@@ -79,11 +89,18 @@ public class Item implements Serializable, Parcelable {
         initTags(tagRef, listener);
     }
 
+    /**
+     * Listens for completion of the item's tag initialization
+     */
     public interface OnItemInitializedListener {
         void onItemInitialized(Item item);
     }
 
 
+    /**
+     * @param tagRef the collection of tags
+     * @param listener The listener to notify when tag intialization is complete
+     */
     private void initTags(CollectionReference tagRef, OnItemInitializedListener listener) {
         tagRef.whereArrayContains("items", id)
                 .get()
@@ -101,14 +118,25 @@ public class Item implements Serializable, Parcelable {
                 });
     }
 
+    /**
+     * Adds new tag to tag set
+     * @param tag new tag to add
+     */
     public void addTag(Tag tag) {
         tags.add(tag);
     }
 
+    /**
+     * Clears the tags in the set
+     */
     public void clearTags() {
         tags.clear();
     }
 
+    /**
+     * Getter for tags
+     * @return set of tags
+     */
     public Set<Tag> getTags() {
         return tags;
     }
