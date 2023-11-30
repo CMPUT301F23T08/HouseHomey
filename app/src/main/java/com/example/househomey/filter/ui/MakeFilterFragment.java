@@ -1,9 +1,16 @@
 package com.example.househomey.filter.ui;
 
+import android.app.Dialog;
+import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.example.househomey.R;
+import com.example.househomey.filter.model.DateFilter;
 import com.example.househomey.filter.model.FilterCallback;
 import com.example.househomey.filter.model.MakeFilter;
 
@@ -13,27 +20,25 @@ import com.example.househomey.filter.model.MakeFilter;
 public class MakeFilterFragment extends FilterFragment {
     protected MakeFilter makeFilter;
 
-    /**
-     * Constructs a new MakeFilterFragment when a makeFilter is already applied.
-     * @param title         The title of the "Make" filter dialog.
-     * @param contentView   The content view of the "Make" filter dialog.
-     * @param filterCallback The callback interface for handling filter changes.
-     * @param makeFilter The existing applied filter.
-     */
-    public MakeFilterFragment(String title, View contentView, FilterCallback filterCallback, MakeFilter makeFilter) {
-        super(title, contentView, filterCallback);
-        this.makeFilter = makeFilter;
-        autoFillLastFilter(makeFilter.makeToFilterBy);
-    }
 
     /**
-     * Constructs a new MakeFilterFragment when no make filter has been applied yet.
-     * @param title         The title of the "Make" filter dialog.
-     * @param contentView   The content view of the "Make" filter dialog.
-     * @param filterCallback The callback interface for handling filter changes.
+     * Creates dialog for date filter fragment
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
+     * @return dialog object for date filter fragment
      */
-    public MakeFilterFragment(String title, View contentView, FilterCallback filterCallback) {
-        super(title, contentView, filterCallback);
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        contentView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_make, null);
+
+        Dialog dialog = createBuilder().setTitle("Modify Make Filter").setView(contentView).create();
+
+        filterCallback = getArguments().getSerializable("callback", FilterCallback.class);
+
+        makeFilter = getArguments().getSerializable("filter", MakeFilter.class);
+        if (makeFilter != null)
+            autoFillLastFilter(makeFilter.makeToFilterBy);
+        return dialog;
     }
 
     /**

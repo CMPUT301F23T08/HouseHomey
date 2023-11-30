@@ -9,14 +9,24 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.app.Dialog;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.example.househomey.R;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import com.example.househomey.Item;
 import com.example.househomey.R;
 import com.example.househomey.filter.model.FilterCallback;
+import com.example.househomey.filter.model.MakeFilter;
 import com.example.househomey.filter.model.TagFilter;
+import com.example.househomey.tags.Tag;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import java.util.ArrayList;
@@ -33,8 +43,13 @@ import java.util.Set;
 public class TagFilterFragment extends FilterFragment {
     protected TagFilter tagFilter;
     private ChipGroup tagChipGroup;
+    private ArrayList<Tag> tagList = new ArrayList<>();
     private Map<String, Boolean> tagSelectionMap = new HashMap<>();
-
+    /**
+     * Creates dialog for tag filter fragment
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
+     * @return dialog object for tag filter fragment
+     */
     @NonNull
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         contentView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_tags, null);
@@ -43,14 +58,14 @@ public class TagFilterFragment extends FilterFragment {
 
         if (getArguments() != null) {
             this.filterCallback = getArguments().getSerializable("callback", FilterCallback.class);
-
             this.tagFilter = getArguments().getSerializable("filter", TagFilter.class);
+            this.tagList = getArguments().getSerializable("tags", ArrayList.class);
             if (this.tagFilter != null)
                 tagSelectionMap = tagFilter.tagSelectionMap;
         }
 
         tagChipGroup = contentView.findViewById(R.id.chip_group_labels);
-        populateTagChipGroup(new ArrayList<>());
+        populateTagChipGroup(tagList);
 
         return dialog;
     }
@@ -58,16 +73,14 @@ public class TagFilterFragment extends FilterFragment {
     /**
      * Populates the tag {@link ChipGroup} with tags from the provided item list.
      *
-     * @param itemList The list of items containing tags.
+     * @param tagList The list of tags.
      */
-    private void populateTagChipGroup(ArrayList<Item> itemList) {
+    private void populateTagChipGroup(ArrayList<Tag> tagList) {
         Set<String> existingTags = new HashSet<>();
-        for (Item item : itemList) {
-            for (String tag : item.getTags()) {
-                if (existingTags.add(tag)) {
-                    Chip chip = createTagChip(tag);
-                    tagChipGroup.addView(chip);
-                }
+        for (Tag tag: tagList) {
+            if (existingTags.add(tag.getTagLabel())) {
+                Chip chip = createTagChip(tag.getTagLabel());
+                tagChipGroup.addView(chip);
             }
         }
     }

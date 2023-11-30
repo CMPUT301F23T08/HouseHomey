@@ -1,6 +1,9 @@
 package com.example.househomey.filter.model;
 
+import android.util.Log;
+
 import com.example.househomey.Item;
+import com.example.househomey.tags.Tag;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -35,8 +38,9 @@ public class TagFilter extends Filter implements Serializable {
         if (!tagSelectionMap.values().stream().anyMatch(Boolean::booleanValue)) return itemList;
         return itemList.stream()
                 .filter(item ->
-                    item.getTags().stream()
-                        .anyMatch(tagSelectionMap::get)
+                        item.getTags().stream()
+                                .map(Tag::getTagLabel)
+                                .anyMatch(tagSelectionMap::get)
                 )
                 .collect(Collectors.toCollection(ArrayList::new));
     }

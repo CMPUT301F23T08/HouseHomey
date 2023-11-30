@@ -2,6 +2,7 @@ package com.example.househomey.filter.ui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
@@ -17,30 +18,15 @@ import com.example.househomey.filter.model.FilterCallback;
 public abstract class FilterFragment extends DialogFragment {
     /**
      * Constructs a new FilterFragment.
-     * title         The title of the filter dialog.
      * contentView   The content view of the filter dialog.
      * filterCallback The callback interface for handling filter changes.
      */
-    protected String title;
     protected View contentView;
     protected FilterCallback filterCallback;
 
     /**
-     * Constructs a new FilterFragment with the provided title, content view, and filter callback.
-     * @param title           The title of the filter dialog.
-     * @param contentView     The content view of the filter dialog.
-     * @param filterCallback  The callback interface for handling filter changes.
-     */
-    public FilterFragment(String title, View contentView, FilterCallback filterCallback) {
-        this.title = title;
-        this.contentView = contentView;
-        this.filterCallback = filterCallback;
-    }
-
-    public FilterFragment() {}
-    /**
-     * Called to create and return the filter dialog.
-     * @return The alert builder for filters
+     * Called to create and return the filter dialog builder.
+     * @return The builder for filter dialog to be displayed.
      */
     public AlertDialog.Builder createBuilder() {
         DialogInterface.OnClickListener onApplyListener = (dialog, which) -> getFilterInput();

@@ -19,13 +19,19 @@ import androidx.annotation.Nullable;
 import androidx.core.os.BundleCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.househomey.tags.Tag;
 import com.example.househomey.tags.TagFragment;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This fragment is a child of the home fragment containing the list of the user's inventory
@@ -41,6 +47,8 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
     private boolean sortOrder;
     private ArrayList<Item> itemList;
     private ItemAdapter itemAdapter;
+    private CollectionReference tagRef;
+    private Map<String, Item> itemIdMap = new HashMap<>();
 
     /**
      *
@@ -67,6 +75,7 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
         Bundle args = getArguments();
         if (args!=null){
             itemList = BundleCompat.getParcelableArrayList(args, "itemList", Item.class);
+            createItemIdMap();
             sortOrder = args.getBoolean("sortOrder");
             currentSortName = args.getString("currentSortName");
             ((TextView) rootView.findViewById(R.id.total_value_text)).setText("$" + args.getString("listSum"));
@@ -76,6 +85,9 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
         itemAdapter = new ItemAdapter(getContext(), itemList);
         itemListView.setAdapter(itemAdapter);
         itemAdapter.setSelectState(true);
+
+        tagRef = ((MainActivity) requireActivity()).getTagRef();
+        tagRef.addSnapshotListener(this::setupTagListener);
 
         final Button cancelButton = rootView.findViewById(R.id.cancel_select_button);
         cancelButton.setOnClickListener(v -> {
@@ -114,6 +126,30 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
         });
 
         return rootView;
+    }
+
+    private void createItemIdMap() {
+        for (Item item : itemList) {
+            itemIdMap.put(item.getId(), item);
+        }
+    }
+
+    private void setupTagListener(QuerySnapshot querySnapshots, FirebaseFirestoreException error) {
+        if (error != null) {
+            Log.e("Firestore", error.toString());
+            return;
+        }
+        if (querySnapshots != null) {
+            itemList.forEach(Item::clearTags);
+            for (QueryDocumentSnapshot doc: querySnapshots) {
+                Tag tag = new Tag(doc.getId(), doc.getData());
+                for (String id : tag.getItemIds()) {
+                    Item item = itemIdMap.get(id);
+                    if (item != null) item.addTag(tag);
+                }
+            }
+            itemAdapter.notifyDataSetChanged();
+        }
     }
 
     /**

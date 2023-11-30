@@ -28,8 +28,7 @@ import java.util.List;
 public class BarcodeImageScanner extends ImageScanner{
 
     private InputImage image;
-    private BarcodeScanner scanner;
-    private Context context;
+    private final Context context;
     private final OnBarcodeScannedListener listener;
 
     /**
@@ -54,7 +53,7 @@ public class BarcodeImageScanner extends ImageScanner{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        scanner = BarcodeScanning.getClient();
+        BarcodeScanner scanner = BarcodeScanning.getClient();
         Task<List<Barcode>> result = scanner.process(image)
                 .addOnSuccessListener(new OnSuccessListener<List<Barcode>>() {
                     @Override

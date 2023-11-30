@@ -65,10 +65,11 @@ public class AddItemFragmentTest extends TestSetup {
         // Add required description and estimated cost
         String itemDescription = "Test Item";
         String estimatedCost = "99.99";
+        String itemMake = "MyMake";
         enterText(R.id.add_item_description, itemDescription);
         enterText(R.id.add_item_cost, estimatedCost);
         // Add values to other non-required fields
-        enterText(R.id.add_item_make, "MyMake");
+        enterText(R.id.add_item_make, itemMake);
         enterText(R.id.add_item_model, "MyModel");
         enterText(R.id.add_item_serial_number, "1234567890");
         enterText(R.id.add_item_comment, "this is a comment");
@@ -85,8 +86,18 @@ public class AddItemFragmentTest extends TestSetup {
         onData(anything())
                 .inAdapterView(withId(R.id.item_list))
                 .atPosition(0)
-                .onChildView(withId(R.id.item_text))
-                .check(matches(withText(acquisitionDate + " | $" + estimatedCost)));
+                .onChildView(withId(R.id.item_date_text))
+                .check(matches(withText(acquisitionDate)));
+        onData(anything())
+                .inAdapterView(withId(R.id.item_list))
+                .atPosition(0)
+                .onChildView(withId(R.id.item_make_text))
+                .check(matches(withText(itemMake)));
+        onData(anything())
+                .inAdapterView(withId(R.id.item_list))
+                .atPosition(0)
+                .onChildView(withId(R.id.item_cost_text))
+                .check(matches(withText("$"+estimatedCost)));
     }
 
     @Test
