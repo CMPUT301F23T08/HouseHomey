@@ -148,9 +148,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
 
         //Sort dropdown functionality
         final Button sortButton = rootView.findViewById(R.id.sort_by_alpha_button);
-        sortButton.setOnClickListener(v -> {
-            showSortMenu(sortButton);
-        });
+        sortButton.setOnClickListener(v -> showSortMenu(sortButton));
 
         //Toggle sorting order functionality
         toggleOrder = rootView.findViewById(R.id.sort_order_toggle);
@@ -182,7 +180,6 @@ public class HomeFragment extends Fragment implements FilterCallback {
             }
 
             applyFilters();
-            sortItems();
         }
     }
 
@@ -207,7 +204,6 @@ public class HomeFragment extends Fragment implements FilterCallback {
                 Item item = new Item(doc.getId(), data, tagRef, item1 -> {
                     if (initializedItems.incrementAndGet() == totalItems) {
                         applyFilters();
-                        sortItems();
                     }
                 });
                 itemList.add(item);
@@ -315,6 +311,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
         filteredItemList.addAll(tempList);
         itemAdapter.notifyDataSetChanged();
         updateListData();
+        sortItems();
     }
 
     /**
