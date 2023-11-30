@@ -12,9 +12,9 @@
         android:id="@+id/cancel_select_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/cancel"
+        android:text="@string/done"
         android:textSize="20sp"
-        android:padding="0dp"
+        android:padding="16sp"
         android:textStyle="bold"
         android:backgroundTint="@color/subTitle" />
 
