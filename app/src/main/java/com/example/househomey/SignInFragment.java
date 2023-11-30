@@ -44,7 +44,7 @@ public class SignInFragment extends Fragment {
     private DocumentReference docRef;
     private Button loginButton;
     // Define a regex pattern for lowercase alphanumeric with underscores or periods
-    private final String regex = "^[\\w!#$%&amp;'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&amp;'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
+    private final String regex = "^[a-zA-Z0-9_.]+$";
     private FirebaseAuth auth;
     private String username;
     private String password;
@@ -80,57 +80,45 @@ public class SignInFragment extends Fragment {
             usernameEdittext.setError(null);
             passwordEdittext.setError(null);
 
-            auth.signInWithEmailAndPassword(username, password).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    FirebaseUser user = auth.getCurrentUser();
-                    Bundle userData = new Bundle();
-                    userData.putString("username", user.getEmail());
-                    Activity activity = getActivity();
-                    if (activity != null) {
-                        Intent intent = new Intent(activity, MainActivity.class);
-                        intent.putExtra("userData", userData);
-                        activity.startActivity(intent);
+
+            userRef = FirebaseFirestore.getInstance().collection("user");
+
+            if (!username.isEmpty() & !password.isEmpty()) {
+                docRef = userRef.document(username);
+                docRef.get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            String email = (String) document.get("email");
+                            auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task1 -> {
+                                if (task1.isSuccessful()) {
+                                    FirebaseUser user = auth.getCurrentUser();
+                                    Bundle userData = new Bundle();
+                                    userData.putString("username", user.getDisplayName());
+                                    Activity activity = getActivity();
+                                    if (activity != null) {
+                                        Intent intent = new Intent(activity, MainActivity.class);
+                                        intent.putExtra("userData", userData);
+                                        activity.startActivity(intent);
+                                    }
+                                } else {
+                                    usernameEdittext.setError("username or password not recognized");
+                                    passwordEdittext.setError("username or password not recognized");
+
+                                }
+                            });
+                        } else {
+                            usernameEdittext.setError("username or password not recognized");
+                            passwordEdittext.setError("username or password not recognized");
+                        }
+                    } else {
+                        Log.d(TAG, "get failed with ", task.getException());
                     }
-                } else {
-                    usernameEdittext.setError("username or password not recognized");
-                    passwordEdittext.setError("username or password not recognized");
-
-                }
-            });
-//            userRef = FirebaseFirestore.getInstance().collection("user");
-
-//            if (!username.isEmpty() & !password.isEmpty()) {
-//                docRef = userRef.document(username);
-//                docRef.get().addOnCompleteListener(task -> {
-//                    if (task.isSuccessful()) {
-//                        DocumentSnapshot document = task.getResult();
-//                        if (document.exists()) {
-//                            String db_password = (String) document.get("password");
-//                            if (Objects.equals(db_password, password)) {
-//                                Bundle userData = new Bundle();
-//                                userData.putString("username", username);
-//                                Activity activity = getActivity();
-//                                if (activity != null) {
-//                                    Intent intent = new Intent(activity, MainActivity.class);
-//                                    intent.putExtra("userData", userData);
-//                                    activity.startActivity(intent);
-//                                }
-//                            } else {
-//                                usernameEdittext.setError("username or password not recognized");
-//                                passwordEdittext.setError("username or password not recognized");
-//                            }
-//                        } else {
-//                            usernameEdittext.setError("username or password not recognized");
-//                            passwordEdittext.setError("username or password not recognized");
-//                        }
-//                    } else {
-//                        Log.d(TAG, "get failed with ", task.getException());
-//                    }
-//                });
-//            } else {
-//                usernameEdittext.setError("username or password empty");
-//                passwordEdittext.setError("username or password empty");
-//            }
+                });
+            } else {
+                usernameEdittext.setError("username or password empty");
+                passwordEdittext.setError("username or password empty");
+            }
 
         });
 
@@ -152,7 +140,7 @@ public class SignInFragment extends Fragment {
                 if (username.isEmpty()) {
                     usernameEdittext.setError("username cannot be empty");
                 } else if(!matcher.matches()) {
-                    usernameEdittext.setError("must be an email");
+                    usernameEdittext.setError("only alphanumeric, underscore, or period");
                 }
             }
         });
