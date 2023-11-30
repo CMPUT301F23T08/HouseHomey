@@ -80,24 +80,21 @@ public class SignInFragment extends Fragment {
             usernameEdittext.setError(null);
             passwordEdittext.setError(null);
 
-            auth.signInWithEmailAndPassword(username, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = auth.getCurrentUser();
-                        Bundle userData = new Bundle();
-                        userData.putString("username", user.getEmail());
-                        Activity activity = getActivity();
-                        if (activity != null) {
-                            Intent intent = new Intent(activity, MainActivity.class);
-                            intent.putExtra("userData", userData);
-                            activity.startActivity(intent);
-                        }
-                    } else {
-                        usernameEdittext.setError("username or password not recognized");
-                        passwordEdittext.setError("username or password not recognized");
-
+            auth.signInWithEmailAndPassword(username, password).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    FirebaseUser user = auth.getCurrentUser();
+                    Bundle userData = new Bundle();
+                    userData.putString("username", user.getEmail());
+                    Activity activity = getActivity();
+                    if (activity != null) {
+                        Intent intent = new Intent(activity, MainActivity.class);
+                        intent.putExtra("userData", userData);
+                        activity.startActivity(intent);
                     }
+                } else {
+                    usernameEdittext.setError("username or password not recognized");
+                    passwordEdittext.setError("username or password not recognized");
+
                 }
             });
 //            userRef = FirebaseFirestore.getInstance().collection("user");
