@@ -20,7 +20,7 @@ import java.util.Objects;
  * This class represents a tag object
  * @author Matthew Neufeld
  */
-public class Tag implements Parcelable {
+public class Tag implements Parcelable, Comparable<Tag> {
     private String tagLabel;
     private ArrayList<String> itemIds = new ArrayList<>();
 
@@ -37,6 +37,16 @@ public class Tag implements Parcelable {
     }
 
     /**
+     * Sorts by alphabetical tag
+     * @param o the object to be compared.
+     * @return The compared objects
+     */
+    @Override
+    public int compareTo(Tag o) {
+        return this.getTagLabel().compareTo(o.getTagLabel());
+    }
+
+    /**
      * Getter for the tag label
      * @return tag label for the tag
      */
@@ -44,6 +54,10 @@ public class Tag implements Parcelable {
         return tagLabel;
     }
 
+    /**
+     * Getter for item ids
+     * @return list of item ids with this tag
+     */
     public ArrayList<String> getItemIds() {
         return itemIds;
     }

@@ -32,6 +32,7 @@ import com.example.househomey.sort.CostComparator;
 import com.example.househomey.sort.DateComparator;
 import com.example.househomey.sort.DescriptionComparator;
 import com.example.househomey.sort.MakeComparator;
+import com.example.househomey.sort.TagComparator;
 import com.example.househomey.tags.Tag;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -107,6 +108,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
         sortProperties.put("date",new DateComparator());
         sortProperties.put("make", new MakeComparator());
         sortProperties.put("cost", new CostComparator());
+        sortProperties.put("tag", new TagComparator());
 
         Bundle received_args = getArguments();
         if (received_args!=null){
@@ -352,6 +354,8 @@ public class HomeFragment extends Fragment implements FilterCallback {
                 currentSortName = "make";
             } else if (itemId == R.id.sort_by_estimatedValue) {
                 currentSortName = "cost";
+            } else if (itemId == R.id.sort_by_tag) {
+                currentSortName = "tag";
             } else {
                 return false;
             }
