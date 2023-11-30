@@ -97,7 +97,7 @@ public class ItemAdapter extends ArrayAdapter<Item> {
             Bundle args = new Bundle();
             args.putSerializable("item", item);
             viewItemFragment.setArguments(args);
-            navigateToFragmentPage(context, viewItemFragment, R.id.fragmentContainer);
+            navigateToFragmentPage(context, viewItemFragment);
         });
 
         // Make checkboxes visible based on whether or not we are in select state

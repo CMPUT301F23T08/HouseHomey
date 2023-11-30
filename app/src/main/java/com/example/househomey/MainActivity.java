@@ -38,13 +38,10 @@ public class MainActivity extends AppCompatActivity {
         if (userData != null) {
             String username = userData.getString("username");
             user = new User(username);
-        } else {
-            // create or login a user, for now just assume...
-            user = new User("john_doe");
         }
 
         // Init home fragment
-        navigateToFragmentPage(this, new HomeFragment(), R.id.fragmentContainer);
+        navigateToFragmentPage(this, new HomeFragment());
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -57,13 +54,12 @@ public class MainActivity extends AppCompatActivity {
                 // Go to Add Item page
                 fragment = new AddItemFragment();
             } else {
-                // TODO: Go to Profile Page
                 Bundle name = new Bundle();
-                name.putString("username", "john_doe");
+                name.putString("username", user.getUsername());
                 fragment = new UserProfileFragment();
                 fragment.setArguments(name);
             }
-            navigateToFragmentPage(this, fragment, R.id.fragmentContainer);
+            navigateToFragmentPage(this, fragment);
             return true;
         });
     }

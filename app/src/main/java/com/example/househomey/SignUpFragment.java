@@ -22,32 +22,25 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SignUpFragment extends Fragment {
-    private User user;
     private EditText usernameEdittext;
     private EditText passwordEdittext;
     private EditText confirmPasswordEdittext;
     private String confirmedPassword;
     private CollectionReference collRef;
-    private DocumentReference docRef;
     private Button signupButton;
     // Define a regex pattern for lowercase alphanumeric with underscores or periods
-    private String regex = "^[a-z0-9_.]+$";
-    private boolean matches;
+    private final String regex = "^[a-z0-9_.]+$";
     private String username;
     private String password;
-    private TextView signinRedirectMessage;
-    private TextView signinRedirect;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_user_signup, container, false);
@@ -56,8 +49,8 @@ public class SignUpFragment extends Fragment {
         passwordEdittext = rootView.findViewById(R.id.signup_password);
         confirmPasswordEdittext = rootView.findViewById(R.id.signup_confirm_password);
         signupButton = rootView.findViewById(R.id.signup_button);
-        signinRedirectMessage = rootView.findViewById(R.id.signin_redirect_message);
-        signinRedirect = rootView.findViewById(R.id.signin_redirect);
+        TextView signinRedirectMessage = rootView.findViewById(R.id.signin_redirect_message);
+        TextView signinRedirect = rootView.findViewById(R.id.signin_redirect);
 
         signupButton.setText("Register");
         signinRedirectMessage.setText("Already have an account?");
@@ -72,24 +65,30 @@ public class SignUpFragment extends Fragment {
             }, 150);
 
             collRef = FirebaseFirestore.getInstance().collection("user");
-
-            if (confirmPassword()) {
-                // Create a new document with a field
-                Map<String, Object> data = new HashMap<>();
-                data.put("password", confirmedPassword);
-                collRef.document(username).set(data).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        // Replace YourSignUpFragment with the actual class name of your sign-up fragment
-                        FragmentManager fragmentManager = getParentFragmentManager();
-                        FragmentTransaction transaction = fragmentManager.beginTransaction();
-                        transaction.replace(R.id.fragmentContainerSignIn, new SignInFragment());
-                        transaction.addToBackStack("signup");
-                        transaction.commit();
+            boolean filled = confirmPassword();
+            collRef.document(username).get().addOnCompleteListener(t -> {
+                    if (t.isSuccessful() & filled) {
+                        usernameEdittext.setError("username already exists!");
                     } else {
-                        Log.d(TAG, "get failed with ", task.getException());
+                        if (filled) {
+                            // Create a new document with a field
+                            Map<String, Object> data = new HashMap<>();
+                            data.put("password", confirmedPassword);
+                            collRef.document(username).set(data).addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    // Replace YourSignUpFragment with the actual class name of your sign-up fragment
+                                    FragmentManager fragmentManager = getParentFragmentManager();
+                                    FragmentTransaction transaction = fragmentManager.beginTransaction();
+                                    transaction.replace(R.id.fragmentContainerSignIn, new SignInFragment());
+                                    transaction.addToBackStack("signup");
+                                    transaction.commit();
+                                } else {
+                                    Log.d(TAG, "get failed with ", task.getException());
+                                }
+                            });
+                        }
                     }
-                });
-            }
+            });
         });
 
         usernameEdittext.addTextChangedListener(new TextWatcher() {
@@ -111,10 +110,6 @@ public class SignUpFragment extends Fragment {
                     usernameEdittext.setError("username cannot be empty");
                 } else if(!matcher.matches()) {
                     usernameEdittext.setError("character not allowed");
-                    matches = false;
-                }
-                if (!usernameEdittext.isFocused()) {
-                    usernameEdittext.setError(null);
                 }
             }
         });

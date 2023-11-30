@@ -33,6 +33,18 @@ public class FragmentUtils {
      * @param context The AppCompatActivity instance used for accessing the FragmentManager.
      * @param page    The Fragment to navigate to and replace the current fragment with.
      */
+    public static void navigateToFragmentPage(Context context, Fragment page) {
+        navigateToFragmentPage(context, page, R.id.fragmentContainer);
+    }
+
+    /**
+     * Navigates to a specified fragment page by replacing the fragment
+     * within the provided AppCompatActivity's fragment container.
+     *
+     * @param context The AppCompatActivity instance used for accessing the FragmentManager.
+     * @param page    The Fragment to navigate to and replace the current fragment with.
+     * @param fragmentContainer The parent container of the old fragment which will contain the new one.
+     */
     public static void navigateToFragmentPage(Context context, Fragment page, @IdRes int fragmentContainer) {
         FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
