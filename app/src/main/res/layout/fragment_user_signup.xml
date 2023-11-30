@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/signup_layout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -21,7 +22,8 @@
             android:layout_height="128dp"
             android:layout_gravity="center"
             android:background="@drawable/logo"
-            android:backgroundTint="@color/brown"></ImageView>
+            android:backgroundTint="@color/brown">
+        </ImageView>
 
         <TextView
             android:layout_width="wrap_content"
@@ -29,8 +31,9 @@
             android:layout_margin="12dp"
             android:text="HouseHomey"
             android:textColor="@color/brown"
-            android:textSize="28dp"
-            android:textStyle="bold"></TextView>
+            android:textSize="28sp"
+            android:textStyle="bold">
+        </TextView>
 
     </LinearLayout>
 
@@ -42,9 +45,11 @@
         app:hintEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/signin_username"
+            android:id="@+id/signup_username"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textSize="20sp"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -55,32 +60,41 @@
         app:hintEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/signin_password"
+            android:id="@+id/signup_password"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:inputType="textPassword"
+            android:textSize="20sp"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         style="@style/TextInputLayoutStyle"
+        android:id="@+id/confirm_password_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Confirm Password"
         app:hintEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/signin_confirm_password"
+            android:id="@+id/signup_confirm_password"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:inputType="textPassword"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/signin_button"
+        android:id="@+id/signup_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/user_profile_auth_button"
+        android:background="@drawable/signin_button_unclicked"
         android:text="Register"
+        android:padding="18dp"
+        android:textSize="20sp"
         android:textAllCaps="false"
-        android:textColor="@color/brown"></androidx.appcompat.widget.AppCompatButton>
+        android:textColor="@color/brown">
+    </androidx.appcompat.widget.AppCompatButton>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -93,14 +107,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingEnd="4dp"
-            android:text="Already have an account?"></TextView>
+            android:text="Already have an account?"
+            android:textSize="18sp">
+        </TextView>
 
         <TextView
             android:id="@+id/signin_redirect"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:clickable="true"
-            android:text="Sign In"
-            android:textColor="@color/brown"></TextView>
+            android:text="@string/sign_up_string"
+            android:textSize="18sp"
+            android:textColor="@color/brown">
+        </TextView>
     </LinearLayout>
 </LinearLayout>

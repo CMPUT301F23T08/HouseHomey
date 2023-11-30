@@ -81,10 +81,11 @@
         </Space>
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/user_profile_logout_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@drawable/outlined_button"
+            android:background="@drawable/logout_button_unclicked"
             android:text="Logout"
             android:textAllCaps="false"
             android:layout_weight="1">

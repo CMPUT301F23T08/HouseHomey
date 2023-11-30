@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Init home fragment
-        navigateToFragmentPage(this, new HomeFragment());
+        navigateToFragmentPage(this, new HomeFragment(), R.id.fragmentContainer);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                 fragment = new UserProfileFragment();
                 fragment.setArguments(name);
             }
-            navigateToFragmentPage(this, fragment);
+            navigateToFragmentPage(this, fragment, R.id.fragmentContainer);
             return true;
         });
     }

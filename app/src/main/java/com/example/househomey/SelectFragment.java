@@ -84,7 +84,7 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
             outgoing_args.putString("currentSortName",currentSortName);
             outgoing_args.putBoolean("sortOrder", sortOrder);
             homeFragment.setArguments(outgoing_args);
-            navigateToFragmentPage(getContext(),homeFragment);
+            navigateToFragmentPage(getContext(), homeFragment, R.id.fragmentContainer);
         });
 
         final Button deleteButton = rootView.findViewById(R.id.action_delete);
@@ -142,7 +142,7 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
         outgoing_args.putString("currentSortName",currentSortName);
         outgoing_args.putBoolean("sortOrder", sortOrder);
         homeFragment.setArguments(outgoing_args);
-        navigateToFragmentPage(getContext(),homeFragment);
+        navigateToFragmentPage(getContext(), homeFragment, R.id.fragmentContainer);
     }
 
     /**

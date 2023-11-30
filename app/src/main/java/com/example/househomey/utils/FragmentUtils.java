@@ -1,6 +1,7 @@
 package com.example.househomey.utils;
 import android.content.Context;
 
+import androidx.annotation.IdRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -32,10 +33,10 @@ public class FragmentUtils {
      * @param context The AppCompatActivity instance used for accessing the FragmentManager.
      * @param page    The Fragment to navigate to and replace the current fragment with.
      */
-    public static void navigateToFragmentPage(Context context, Fragment page) {
+    public static void navigateToFragmentPage(Context context, Fragment page, @IdRes int fragmentContainer) {
         FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.fragmentContainer, page);
+        transaction.replace(fragmentContainer, page);
         transaction.addToBackStack(page.toString());
         transaction.commit();
     }

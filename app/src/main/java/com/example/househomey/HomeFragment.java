@@ -131,7 +131,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
             args.putBoolean("sortOrder",sortOrder);
             args.putString("currentSortName",currentSortName);
             selectStateFragment.setArguments(args);
-            navigateToFragmentPage(getContext(), selectStateFragment);
+            navigateToFragmentPage(getContext(), selectStateFragment, R.id.fragmentContainer);
         });
 
         View filterButton = rootView.findViewById(R.id.filter_dropdown_button);

@@ -62,13 +62,13 @@ public class ViewItemFragment extends Fragment {
 
         // On edit button click, pass item to EditItemFragment
         rootView.findViewById(R.id.edit_button).setOnClickListener(v ->
-                navigateToFragmentPage(getContext(), new EditItemFragment(item))
+                navigateToFragmentPage(getContext(), new EditItemFragment(item), R.id.fragmentContainer)
         );
 
         rootView.findViewById(R.id.delete_button).setOnClickListener(v ->
                 {
                     ((MainActivity) requireActivity()).getItemRef().document(item.getId()).delete();
-                    navigateToFragmentPage(getContext(), new HomeFragment());
+                    navigateToFragmentPage(getContext(), new HomeFragment(), R.id.fragmentContainer);
                 }
         );
 

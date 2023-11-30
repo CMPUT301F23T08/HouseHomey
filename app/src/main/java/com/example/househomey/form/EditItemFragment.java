@@ -102,7 +102,7 @@ public class EditItemFragment extends ItemFormFragment {
                     Bundle args = new Bundle();
                     args.putSerializable("item", updatedItem);
                     viewItemFragment.setArguments(args);
-                    navigateToFragmentPage(getContext(), viewItemFragment);
+                    navigateToFragmentPage(getContext(), viewItemFragment, R.id.fragmentContainer);
                 })
                 .addOnFailureListener(e -> {
                     Log.d("Firestore", "Failed to update item with id: " + updatedItem.getId());

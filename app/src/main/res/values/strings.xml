@@ -12,5 +12,6 @@
     <string name="ascending_alias">Asc</string>
     <string name="descending_alias">Desc</string>
     <string name="user_real_name">John Smith</string>
-    <string name="sign_up_string"><u>Register</u></string>
+    <string name="sign_up_string"><u>Sign Up</u></string>
+    <string name="sign_in_string"><u>Sign In</u></string>
 </resources>
