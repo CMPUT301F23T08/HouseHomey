@@ -3,6 +3,7 @@ package com.example.househomey;
 import static com.example.househomey.utils.FragmentUtils.formatDate;
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,7 +17,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.househomey.tags.Tag;
+import com.example.househomey.utils.FragmentUtils;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
+
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * A child of ArrayAdapter this adapter specifically displays a list of class Item objects
@@ -70,6 +77,7 @@ public class ItemAdapter extends ArrayAdapter<Item> {
      * @param parent      The parent that this view will eventually be attached to
      * @return The view with all data from the items displayed
      */
+    @SuppressLint("SetTextI18n")
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -82,23 +90,26 @@ public class ItemAdapter extends ArrayAdapter<Item> {
 
         // Get the correct item
         Item item = items.get(position);
+        ChipGroup chipGroup = view.findViewById(R.id.item_list_chips);
+        chipGroup.removeAllViews();
 
         // Set all the text views to their appropriate values
         ((TextView) view.findViewById(R.id.item_description_text)).setText(item.getDescription());
-        String dateCost = formatDate(item.getAcquisitionDate()) + " | $" + item.getCost();
-        ((TextView) view.findViewById(R.id.item_text)).setText(dateCost);
+        ((TextView) view.findViewById(R.id.item_date_text)).setText(formatDate(item.getAcquisitionDate()));
+        ((TextView) view.findViewById(R.id.item_cost_text)).setText("$" + item.getCost());
 
-        // Initialize button for viewing details of the item
-        Button viewItemButton = view.findViewById(R.id.action_view);
-
-        // When view item button clicked, pass Item to ViewItemFragment via bundle
-        viewItemButton.setOnClickListener(v -> {
-            ViewItemFragment viewItemFragment = new ViewItemFragment();
-            Bundle args = new Bundle();
-            args.putSerializable("item", item);
-            viewItemFragment.setArguments(args);
-            navigateToFragmentPage(context, viewItemFragment);
-        });
+        String makeString = item.getMake();
+        Set<Tag> itemTags = item.getTags();
+        ((TextView) view.findViewById(R.id.item_extra_tags_text)).setText("");
+        if (itemTags.size() > 0) {
+            makeString += " | ";
+            Chip chip = FragmentUtils.makeChip(itemTags.iterator().next().getTagLabel(), false, chipGroup, view.getContext(), R.color.white, R.color.black, R.color.black);
+            chip.setFocusable(false);
+            chip.setClickable(false);
+            if (itemTags.size() > 1)
+                ((TextView) view.findViewById(R.id.item_extra_tags_text)).setText(" +" + (itemTags.size()-1));
+        }
+        ((TextView) view.findViewById(R.id.item_make_text)).setText(makeString);
 
         // Make checkboxes visible based on whether or not we are in select state
         CheckBox itemCheckBox = view.findViewById(R.id.item_checkBox);
@@ -108,6 +119,17 @@ public class ItemAdapter extends ArrayAdapter<Item> {
                     items.get(position).setChecked(!items.get(position).getChecked()));
         }
         itemCheckBox.setVisibility(this.isSelectState() ? View.VISIBLE : View.GONE);
+
+        // When view item button clicked, pass Item to ViewItemFragment via bundle
+        view.setOnClickListener(v -> {
+            if (v != itemCheckBox) {
+                ViewItemFragment viewItemFragment = new ViewItemFragment();
+                Bundle args = new Bundle();
+                args.putSerializable("item", item);
+                viewItemFragment.setArguments(args);
+                navigateToFragmentPage(context, viewItemFragment);
+            }
+        });
 
         return view;
     }

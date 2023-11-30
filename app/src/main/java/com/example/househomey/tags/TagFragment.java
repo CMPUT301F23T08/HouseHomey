@@ -148,7 +148,6 @@ public class TagFragment extends DialogFragment {
         }
     }
 
-
     /**
      * Gets a snapshot of the tags collection in Firestore
      */

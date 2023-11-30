@@ -14,30 +14,23 @@
 
         <CheckBox
             android:id="@+id/item_checkBox"
-            android:layout_width="wrap_content"
+            android:layout_width="28dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="4dp"
             android:gravity="center"
             android:background="@color/offWhite"/>
-
-        <ImageView
-            android:id="@+id/item_image"
-            android:layout_width="64dp"
-            android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@id/item_checkBox"
-            android:background="@color/offWhite"
-            android:padding="16dp"/>
 
         <LinearLayout
             android:id="@+id/text_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/item_image"
-            android:layout_toStartOf="@id/action_view"
+            android:layout_toEndOf="@id/item_checkBox"
+            android:layout_toStartOf="@id/right_text_layout"
             android:orientation="vertical"
-            android:background="@color/offWhite">
+            android:background="@color/offWhite"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp">
 
             <TextView
                 android:id="@+id/item_description_text"
@@ -45,35 +38,68 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:paddingTop="8dp"
-                android:paddingEnd="16dp"
                 android:text="Brief Description"
                 android:textSize="18sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/item_make_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:textSize="16sp"
+                    android:paddingTop="3dp"
+                    android:text="make | "
+                    android:gravity="center_vertical"/>
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/item_list_chips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"/>
+                <TextView
+                    android:id="@+id/item_extra_tags_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:textSize="16sp"
+                    android:text=""
+                    android:gravity="center_vertical"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/right_text_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="8dp"
+            android:orientation="vertical"
+            android:background="@color/offWhite">
 
             <TextView
-                android:id="@+id/item_text"
+                android:id="@+id/item_date_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:paddingTop="8dp"
-                android:paddingEnd="16dp"
-                android:textSize="16sp"
-                android:text="yyyy-mm-dd | $xx.xx" />
+
+                android:text="yyyy-mm-dd"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/item_cost_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textAlignment="textEnd"
+                android:paddingTop="8dp"
+                android:text="$xx.xx"
+                android:textColor="#4CAF50"
+                android:textSize="16sp" />
         </LinearLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/action_view"
-            style="@style/Widget.MaterialComponents.Button.Icon"
-            android:layout_width="48dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="8dp"
-            android:backgroundTint="@color/offWhite"
-            app:icon="@drawable/chevron_right"
-            app:iconSize="32dp"
-            app:iconTint="@color/black"
-            android:elevation="0dp"
-            android:stateListAnimator="@null"
-            />
-
-    </RelativeLayout>
+            </RelativeLayout>
 </LinearLayout>

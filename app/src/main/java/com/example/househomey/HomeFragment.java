@@ -32,6 +32,7 @@ import com.example.househomey.sort.CostComparator;
 import com.example.househomey.sort.DateComparator;
 import com.example.househomey.sort.DescriptionComparator;
 import com.example.househomey.sort.MakeComparator;
+import com.example.househomey.tags.Tag;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -47,6 +48,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * This fragment is a child of the home fragment containing the list of the user's inventory
@@ -72,6 +74,9 @@ public class HomeFragment extends Fragment implements FilterCallback {
     private final boolean ASC = false;
     private ToggleButton toggleOrder;
     private boolean sortOrder;
+    private CollectionReference tagRef;
+    private ArrayList<Tag> tagList = new ArrayList<>();
+    private Map<String, Item> itemIdMap = new HashMap<>();
 
     /**
      * @param inflater           The LayoutInflater object that can be used to inflate
@@ -121,6 +126,8 @@ public class HomeFragment extends Fragment implements FilterCallback {
         itemListView.setAdapter(itemAdapter);
         itemAdapter.setSelectState(false);
 
+        tagRef = ((MainActivity) requireActivity()).getTagRef();
+        tagRef.addSnapshotListener(this::setupTagListener);
 
         final Button selectButton = rootView.findViewById(R.id.select_items_button);
         selectButton.setOnClickListener(v -> {
@@ -131,6 +138,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
             args.putString("listSum", listSum.toString());
             args.putBoolean("sortOrder",sortOrder);
             args.putString("currentSortName",currentSortName);
+            args.putSerializable("idMap", (Serializable) itemIdMap);
             selectStateFragment.setArguments(args);
             navigateToFragmentPage(getContext(), selectStateFragment);
         });
@@ -156,6 +164,28 @@ public class HomeFragment extends Fragment implements FilterCallback {
 
     }
 
+    private void setupTagListener(QuerySnapshot querySnapshots, FirebaseFirestoreException error) {
+        if (error != null) {
+            Log.e("Firestore", error.toString());
+            return;
+        }
+        if (querySnapshots != null) {
+            tagList.clear();
+            itemList.forEach(Item::clearTags);
+            for (QueryDocumentSnapshot doc: querySnapshots) {
+                Tag tag = new Tag(doc.getId(), doc.getData());
+                tagList.add(tag);
+                for (String id : tag.getItemIds()) {
+                    Item item = itemIdMap.get(id);
+                    if (item != null) item.addTag(tag);
+                }
+            }
+
+            applyFilters();
+            sortItems();
+        }
+    }
+
     /**
      * This method updates the itemAdapter with changes in the firestore database and creates new
      * item objects
@@ -169,13 +199,20 @@ public class HomeFragment extends Fragment implements FilterCallback {
         }
         if (querySnapshots != null) {
             itemList.clear();
+            itemIdMap.clear();
+            int totalItems = querySnapshots.size();
+            AtomicInteger initializedItems = new AtomicInteger(0);
             for (QueryDocumentSnapshot doc: querySnapshots) {
                 Map<String, Object> data = new HashMap<>(doc.getData());
-                itemList.add(new Item(doc.getId(), data));
+                Item item = new Item(doc.getId(), data, tagRef, item1 -> {
+                    if (initializedItems.incrementAndGet() == totalItems) {
+                        applyFilters();
+                        sortItems();
+                    }
+                });
+                itemList.add(item);
+                itemIdMap.put(doc.getId(), item);
             }
-
-            applyFilters();
-            sortItems();
         }
     }
 
@@ -331,7 +368,6 @@ public class HomeFragment extends Fragment implements FilterCallback {
      * or ascending order and displays the list
      */
     private void sortItems() {
-
         if (!sortOrder){
             filteredItemList.sort(currentSort);
         }
@@ -340,7 +376,4 @@ public class HomeFragment extends Fragment implements FilterCallback {
         }
         itemAdapter.notifyDataSetChanged();
     }
-
-
-
 }

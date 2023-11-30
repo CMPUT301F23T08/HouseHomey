@@ -13,10 +13,14 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 
 import com.example.househomey.Item;
+import com.example.househomey.MainActivity;
 import com.example.househomey.R;
 import com.example.househomey.ViewItemFragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
+
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * This fragment is responsible for editing an existing item in the database.
@@ -107,15 +111,23 @@ public class EditItemFragment extends ItemFormFragment {
                 .set(updatedItem.getData())
                 .addOnSuccessListener(aVoid -> {
                     Log.d("Firestore", "Successfully updated item with id: " + updatedItem.getId());
-                    ViewItemFragment viewItemFragment = new ViewItemFragment();
-                    Bundle args = new Bundle();
-                    args.putSerializable("item", updatedItem);
-                    viewItemFragment.setArguments(args);
-                    navigateToFragmentPage(getContext(), viewItemFragment);
+                    updatedItem.setTags(item.getTags());
+                    sendItem();
                 })
                 .addOnFailureListener(e -> {
                     Log.d("Firestore", "Failed to update item with id: " + updatedItem.getId());
                     getView().findViewById(R.id.add_item_error_msg).setVisibility(View.VISIBLE);
                 });
+    }
+
+    /**
+     * Sends the new item to the view item fragment
+     */
+    private void sendItem() {
+        ViewItemFragment viewItemFragment = new ViewItemFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("item", updatedItem);
+        viewItemFragment.setArguments(args);
+        navigateToFragmentPage(getContext(), viewItemFragment);
     }
 }
