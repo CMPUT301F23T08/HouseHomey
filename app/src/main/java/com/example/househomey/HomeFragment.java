@@ -162,6 +162,12 @@ public class HomeFragment extends Fragment implements FilterCallback {
 
     }
 
+    /**
+     * This method updates the tags with changes in the firestore database and creates new
+     * tag objects
+     * @param querySnapshots The updated information on the inventory from the database
+     * @param error Non-null if an error occurred in Firestore
+     */
     private void setupTagListener(QuerySnapshot querySnapshots, FirebaseFirestoreException error) {
         if (error != null) {
             Log.e("Firestore", error.toString());
