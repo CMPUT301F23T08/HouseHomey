@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import com.example.househomey.Item;
 import com.example.househomey.R;
 
+import java.util.Map;
+
 /**
  * This fragment is responsible for creating and loading to the database a new item
  *

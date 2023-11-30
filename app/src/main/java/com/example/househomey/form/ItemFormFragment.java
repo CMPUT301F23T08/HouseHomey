@@ -37,6 +37,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -179,7 +180,6 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         textInputLayout.setError(null);
         return false;
     }
-
 
     /**
      * Gets the user input as a string from a given TextInputEditText

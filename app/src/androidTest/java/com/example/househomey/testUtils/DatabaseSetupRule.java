@@ -69,12 +69,12 @@ public class DatabaseSetupRule<T extends Activity> implements TestRule {
      * @throws RuntimeException if the mock data cannot create a valid Item, if adding the mock item to Firestore
      * fails, or if there is a timeout waiting for the operation to complete.
      */
-    public void addTestItem(Map<String, Object> itemDetails) throws Exception {
+    public void addTestItem(Map<String, Object> itemDetails) {
         if (userDoc != null) {
             // Ensure that mock data can be used to create a valid Item
             Item item;
             try {
-                item = new Item("", itemDetails);
+                item = new Item("", itemDetails, userDoc.collection("tag"), item1 -> {});
             } catch (NullPointerException e) {
                 throw new RuntimeException("Mock data cannot create a valid Item: " + e.getMessage());
             }
@@ -85,7 +85,11 @@ public class DatabaseSetupRule<T extends Activity> implements TestRule {
                 throw new RuntimeException("Adding mock item to Firestore failed with: " + e.getMessage());
             });
             // Wait for item creation to finish
-            if (!latch.await(dbTimeoutInSeconds, TimeUnit.SECONDS)) {
+            try {
+                if (!latch.await(dbTimeoutInSeconds, TimeUnit.SECONDS)) {
+                    throw new RuntimeException("Timeout waiting for test user creation.");
+                }
+            } catch (InterruptedException e) {
                 throw new RuntimeException("Timeout waiting for test user creation.");
             }
         }

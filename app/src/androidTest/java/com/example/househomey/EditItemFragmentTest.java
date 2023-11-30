@@ -46,7 +46,6 @@ public class EditItemFragmentTest extends TestSetup {
         waitFor(() -> onData(anything())
                 .inAdapterView(withId(R.id.item_list))
                 .atPosition(0)
-                .onChildView(withId(R.id.action_view))
                 .perform(click()));
         // Click on edit button
         onView(withId(R.id.edit_button)).perform(scrollTo());
