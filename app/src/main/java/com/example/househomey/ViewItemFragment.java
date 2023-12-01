@@ -1,6 +1,7 @@
 package com.example.househomey;
 
 import static com.example.househomey.utils.FragmentUtils.deletePhotosFromCloud;
+import static com.example.househomey.utils.FragmentUtils.goBack;
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
 import static java.util.Optional.ofNullable;
 
@@ -33,7 +34,7 @@ import java.util.Set;
  * to the item
  * @author Matthew Neufeld
  */
-public class ViewItemFragment extends Fragment {
+public class ViewItemFragment extends Fragment implements EditItemFragment.OnItemUpdateListener {
     private Item item;
     protected ViewPhotoAdapter viewPhotoAdapter;
 
@@ -79,7 +80,7 @@ public class ViewItemFragment extends Fragment {
 
         // On edit button click, pass item to EditItemFragment
         rootView.findViewById(R.id.edit_button).setOnClickListener(v ->
-                navigateToFragmentPage(getContext(), new EditItemFragment(item))
+                navigateToFragmentPage(getContext(), new EditItemFragment(item, this))
         );
 
         rootView.findViewById(R.id.delete_button).setOnClickListener(v -> {
@@ -88,7 +89,8 @@ public class ViewItemFragment extends Fragment {
                     navigateToFragmentPage(getContext(), new HomeFragment());
                 }
         );
-        rootView.findViewById(R.id.view_item_back_button).setOnClickListener(v -> navigateToFragmentPage(getContext(), new HomeFragment()));
+
+        rootView.findViewById(R.id.view_item_back_button).setOnClickListener(v -> goBack(getContext()));
 
         viewPhotoAdapter = new ViewPhotoAdapter(getContext(), item.getPhotoIds(), imagePath -> viewPhotoAdapter.loadIntoImageView(mainPhoto, imagePath));
         if (item.getPhotoIds().isEmpty()) {
@@ -126,5 +128,12 @@ public class ViewItemFragment extends Fragment {
                 });
             });
         }
+    }
+
+    @Override
+    public void onItemUpdated(Item updatedItem) {
+        Bundle args = new Bundle();
+        args.putSerializable("item", updatedItem);
+        this.setArguments(args);
     }
 }

@@ -13,6 +13,7 @@ import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
@@ -68,12 +69,12 @@ public class HomeFragment extends Fragment implements FilterCallback {
     private BigDecimal listSum = new BigDecimal("0.00");
     private int listCount = 0;
     private Map<String, Comparator<Item>> sortProperties;
-    private Comparator<Item> currentSort;
-    private String currentSortName;
+    private Comparator<Item> currentSort = new DescriptionComparator(); //Default sorting
+    private String currentSortName = "description";
     private final boolean DESC = true;
     private final boolean ASC = false;
     private ToggleButton toggleOrder;
-    private boolean sortOrder;
+    private boolean sortOrder = ASC; //Default sort order
     private CollectionReference tagRef;
     private ArrayList<Tag> tagList = new ArrayList<>();
     private Map<String, Item> itemIdMap = new HashMap<>();
@@ -113,11 +114,6 @@ public class HomeFragment extends Fragment implements FilterCallback {
             currentSortName = received_args.getString("currentSortName");
             currentSort = sortProperties.get(currentSortName);
             sortOrder = received_args.getBoolean("sortOrder");
-        }
-        else {
-            currentSortName = "description";
-            currentSort = sortProperties.get("description"); //default sort property
-            sortOrder = ASC; //ascending order is default
         }
 
         itemRef.addSnapshotListener(this::setupItemListener);
@@ -163,6 +159,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
         return rootView;
 
     }
+
 
     private void setupTagListener(QuerySnapshot querySnapshots, FirebaseFirestoreException error) {
         if (error != null) {
@@ -359,7 +356,6 @@ public class HomeFragment extends Fragment implements FilterCallback {
             sortItems();
             return true;
         });
-
         popupMenu.show();
     }
 

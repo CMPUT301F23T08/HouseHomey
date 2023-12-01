@@ -31,13 +31,19 @@ public class EditItemFragment extends ItemFormFragment {
     private final Item item;
     private Item updatedItem;
 
+    private OnItemUpdateListener listener;
+    public interface OnItemUpdateListener {
+        void onItemUpdated(Item updatedItem);
+    }
+
     /**
      * Constructs a new EditItemFragment with the item to edit.
      *
      * @param item The item to be edited
      */
-    public EditItemFragment(Item item) {
+    public EditItemFragment(Item item, OnItemUpdateListener listener) {
         this.item = item;
+        this.listener = listener;
     }
 
     /**
@@ -124,10 +130,9 @@ public class EditItemFragment extends ItemFormFragment {
      * Sends the new item to the view item fragment
      */
     private void sendItem() {
-        ViewItemFragment viewItemFragment = new ViewItemFragment();
-        Bundle args = new Bundle();
-        args.putSerializable("item", updatedItem);
-        viewItemFragment.setArguments(args);
-        navigateToFragmentPage(getContext(), viewItemFragment);
+        if (listener!=null) {
+            listener.onItemUpdated(updatedItem);
+        }
+        goBack(getContext());
     }
 }
