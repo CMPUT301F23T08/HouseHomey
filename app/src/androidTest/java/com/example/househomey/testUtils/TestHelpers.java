@@ -54,7 +54,7 @@ public class TestHelpers {
             try {
                 lambda.run();
                 return; // Statement executed successfully, exit
-            } catch (Exception ignore) {
+            } catch (Throwable ignore) {
             }
             try {
                 Thread.sleep(POLLING_INTERVAL);
@@ -65,7 +65,7 @@ public class TestHelpers {
         // Retry one last time, otherwise error out with added description
         try {
             lambda.run();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new AssertionError("Espresso statement did not succeed within the timeout. " + e.getMessage());
         }
     }
