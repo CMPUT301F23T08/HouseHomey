@@ -6,9 +6,11 @@ import static java.util.Optional.ofNullable;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,14 +21,18 @@ import com.example.househomey.form.EditItemFragment;
 
 import com.example.househomey.form.ViewPhotoAdapter;
 import com.example.househomey.tags.Tag;
+import com.example.househomey.tags.ApplyTagFragment;
 import com.example.househomey.utils.FragmentUtils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.Objects;
 
 /**
  * This fragment is for the "View Item Page" - which currently displays the details and comment linked
@@ -36,6 +42,8 @@ import java.util.Set;
 public class ViewItemFragment extends Fragment {
     private Item item;
     protected ViewPhotoAdapter viewPhotoAdapter;
+    private CollectionReference tagRef;
+    private ChipGroup chipGroup;
 
     /**
      *
@@ -52,7 +60,8 @@ public class ViewItemFragment extends Fragment {
     @SuppressLint("SetTextI18n")
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_view_item, container, false);
-
+        tagRef = ((MainActivity) requireActivity()).getTagRef();
+        tagRef.addSnapshotListener(this::setupTagListener);
         // Initialize TextViews
         TextView title = rootView.findViewById(R.id.view_item_title);
         TextView make = rootView.findViewById(R.id.view_item_make);
@@ -62,6 +71,7 @@ public class ViewItemFragment extends Fragment {
         TextView comment = rootView.findViewById(R.id.view_item_comment);
         TextView noPhotosView = rootView.findViewById(R.id.view_item_no_photos);
         ImageView mainPhoto = rootView.findViewById(R.id.view_item_main_photo);
+        chipGroup = rootView.findViewById(R.id.tag_chip_group_labels);
 
         // Set TextViews to Item details sent over from ItemAdapter
         ofNullable(getArguments())
@@ -73,7 +83,7 @@ public class ViewItemFragment extends Fragment {
                     model.setText(item.getModel());
                     serialNumber.setText(item.getSerialNumber());
                     cost.setText(item.getCost().toString());
-                    addTags(item.getTags(), rootView);
+                    addTagsToChipGroup();
                     comment.setText(item.getComment());
                 });
 
@@ -101,26 +111,58 @@ public class ViewItemFragment extends Fragment {
         }
         ((RecyclerView) rootView.findViewById(R.id.view_photo_grid)).setAdapter(viewPhotoAdapter);
 
+        final Button addTagsButton = rootView.findViewById(R.id.add_tags_button);
+        addTagsButton.setOnClickListener(v -> {
+            ApplyTagFragment applyTagFragment = new ApplyTagFragment();
+
+            ArrayList<Item> selectedItem = new ArrayList<>();
+            selectedItem.add(item);
+            Bundle tagArgs = new Bundle();
+            tagArgs.putParcelableArrayList("itemList", selectedItem);
+            applyTagFragment.setArguments(tagArgs);
+            applyTagFragment.show(requireActivity().getSupportFragmentManager(),"tagDialog");
+        });
+
         return rootView;
     }
 
     /**
-     * Adds tags such that they can be viewed on the view item page. Also enables tags to be deleted when clicking the close icon.
-     * @param tagList list of tags to be added
-     * @param rootView the root view of the view item page
+     * This method updates the tags with changes in the firestore database and creates new
+     * tag objects
+     * @param querySnapshots The updated information on the inventory from the database
+     * @param error Non-null if an error occurred in Firestore
      */
-    private void addTags(Set<Tag> tagList, View rootView) {
-        ChipGroup chipGroup = rootView.findViewById(R.id.tag_chip_group_labels);
+    private void setupTagListener(QuerySnapshot querySnapshots, FirebaseFirestoreException error) {
+        if (error != null) {
+            Log.e("Firestore", error.toString());
+            return;
+        }
+        if (querySnapshots != null) {
+            item.clearTags();
+            chipGroup.removeAllViews();
+            for (QueryDocumentSnapshot doc: querySnapshots) {
+                Tag tag = new Tag(doc.getId(), doc.getData());
+                for (String id : tag.getItemIds()) {
+                    if (Objects.equals(item.getId(), id)) item.addTag(tag);
+                }
+            }
+            addTagsToChipGroup();
+        }
+    }
+
+    /**
+     * Adds tags such that they can be viewed on the view item page. Also enables tags to be deleted when clicking the close icon.
+     */
+    private void addTagsToChipGroup() {
         CollectionReference tagRef = ((MainActivity) requireActivity()).getTagRef();
-        for (Tag tag: tagList) {
-            final Chip chip = FragmentUtils.makeChip(tag.getTagLabel(), true, chipGroup, rootView.getContext(), R.color.creme, R.color.black, R.color.black);
+        for (Tag tag: item.getTags()) {
+            final Chip chip = FragmentUtils.makeChip(tag.getTagLabel(), true, chipGroup, getContext(), R.color.creme, R.color.black, R.color.black);
             final Tag finalTag = tag;
             chip.setOnCloseIconClickListener(v -> {
                 tagRef.document(finalTag.getTagLabel()).get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         ArrayList<String> itemIds = new ArrayList<>((List<String>) task.getResult().get("items"));
                         itemIds.removeIf(item -> item.equals(this.item.getId()));
-                        chipGroup.removeView(chip);
                         tagRef.document(finalTag.getTagLabel()).update("items", itemIds);
                     }
                 });

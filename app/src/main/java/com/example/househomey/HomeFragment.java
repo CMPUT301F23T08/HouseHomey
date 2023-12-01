@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 import com.example.househomey.filter.model.DateFilter;
 import com.example.househomey.filter.model.KeywordFilter;
 import com.example.househomey.filter.model.MakeFilter;
+import com.example.househomey.filter.model.TagFilter;
 import com.example.househomey.filter.ui.DateFilterFragment;
 import com.example.househomey.filter.model.Filter;
 import com.example.househomey.filter.model.FilterCallback;
@@ -32,6 +33,7 @@ import com.example.househomey.sort.CostComparator;
 import com.example.househomey.sort.DateComparator;
 import com.example.househomey.sort.DescriptionComparator;
 import com.example.househomey.sort.MakeComparator;
+import com.example.househomey.sort.TagComparator;
 import com.example.househomey.tags.Tag;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -107,6 +109,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
         sortProperties.put("date",new DateComparator());
         sortProperties.put("make", new MakeComparator());
         sortProperties.put("cost", new CostComparator());
+        sortProperties.put("tag", new TagComparator());
 
         Bundle received_args = getArguments();
         if (received_args!=null){
@@ -148,9 +151,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
 
         //Sort dropdown functionality
         final Button sortButton = rootView.findViewById(R.id.sort_by_alpha_button);
-        sortButton.setOnClickListener(v -> {
-            showSortMenu(sortButton);
-        });
+        sortButton.setOnClickListener(v -> showSortMenu(sortButton));
 
         //Toggle sorting order functionality
         toggleOrder = rootView.findViewById(R.id.sort_order_toggle);
@@ -164,6 +165,12 @@ public class HomeFragment extends Fragment implements FilterCallback {
 
     }
 
+    /**
+     * This method updates the tags with changes in the firestore database and creates new
+     * tag objects
+     * @param querySnapshots The updated information on the inventory from the database
+     * @param error Non-null if an error occurred in Firestore
+     */
     private void setupTagListener(QuerySnapshot querySnapshots, FirebaseFirestoreException error) {
         if (error != null) {
             Log.e("Firestore", error.toString());
@@ -182,7 +189,6 @@ public class HomeFragment extends Fragment implements FilterCallback {
             }
 
             applyFilters();
-            sortItems();
         }
     }
 
@@ -207,7 +213,6 @@ public class HomeFragment extends Fragment implements FilterCallback {
                 Item item = new Item(doc.getId(), data, tagRef, item1 -> {
                     if (initializedItems.incrementAndGet() == totalItems) {
                         applyFilters();
-                        sortItems();
                     }
                 });
                 itemList.add(item);
@@ -262,7 +267,13 @@ public class HomeFragment extends Fragment implements FilterCallback {
                 keywordFilterFragment.show(requireActivity().getSupportFragmentManager(), "keywords_filter_dialog");
             } else if (itemId == R.id.filter_by_tags) {
                 TagFilterFragment tagFilterFragment = new TagFilterFragment();
-
+                filterArgs.putSerializable("tags", tagList);
+                for (Filter filter : appliedFilters) {
+                    if (filter instanceof TagFilter) {
+                        TagFilter tagFilter = (TagFilter) filter;
+                        filterArgs.putSerializable("filter", tagFilter);
+                    }
+                }
                 tagFilterFragment.setArguments(filterArgs);
                 tagFilterFragment.show(requireActivity().getSupportFragmentManager(), "tags_filter_dialog");
             } else {
@@ -315,6 +326,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
         filteredItemList.addAll(tempList);
         itemAdapter.notifyDataSetChanged();
         updateListData();
+        sortItems();
     }
 
     /**
@@ -352,6 +364,8 @@ public class HomeFragment extends Fragment implements FilterCallback {
                 currentSortName = "make";
             } else if (itemId == R.id.sort_by_estimatedValue) {
                 currentSortName = "cost";
+            } else if (itemId == R.id.sort_by_tag) {
+                currentSortName = "tag";
             } else {
                 return false;
             }

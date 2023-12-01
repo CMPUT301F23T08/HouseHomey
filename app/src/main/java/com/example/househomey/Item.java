@@ -6,13 +6,10 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.example.househomey.sort.TagComparator;
 import com.example.househomey.tags.Tag;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-
-import org.checkerframework.common.returnsreceiver.qual.This;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -41,7 +38,7 @@ public class Item implements Serializable, Parcelable {
     private String comment = "";
     private BigDecimal cost;
     private List<String> photoIds = new ArrayList<>();
-    private Set<Tag> tags = new TreeSet<>(new TagComparator());
+    private Set<Tag> tags = new TreeSet<>();
     private boolean checked = false;
 
     /**
@@ -335,7 +332,7 @@ public class Item implements Serializable, Parcelable {
         this.comment = in.readString();
         this.cost = new BigDecimal(in.readString()).setScale(2, RoundingMode.HALF_UP);
         in.readStringList(this.photoIds);
-        this.tags = new TreeSet<>(new TagComparator());
+        this.tags = new TreeSet<>();
         List<Tag> tagList = new ArrayList<>();
         in.readList(tagList, Tag.class.getClassLoader(), Tag.class);
         this.tags.addAll(tagList);

@@ -33,7 +33,6 @@ public class BarcodeScannerTest extends TestSetup {
     @Test
     public void testSetSerialNumber() {
         // Mock a result for the system's gallery
-        Intents.init();
         Intent resultData = new Intent();
         resultData.setData(mockImageUri(R.raw.barcode_test));
         Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
@@ -46,7 +45,6 @@ public class BarcodeScannerTest extends TestSetup {
         // Click the gallery option and ensure intent was fired
         onView(withId(R.id.gallery_button)).perform(click());
         intended(hasAction(Intent.ACTION_PICK));
-        Intents.release();
 
         waitFor(() -> onView(withText("Serial Number")).perform(click()));
 
@@ -57,7 +55,6 @@ public class BarcodeScannerTest extends TestSetup {
     @Test
     public void testSetDescription() {
         // Mock a result for the system's gallery
-        Intents.init();
         Intent resultData = new Intent();
         resultData.setData(mockImageUri(R.raw.barcode_test));
         Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
@@ -70,7 +67,6 @@ public class BarcodeScannerTest extends TestSetup {
         // Click the gallery option and ensure intent was fired
         onView(withId(R.id.gallery_button)).perform(click());
         intended(hasAction(Intent.ACTION_PICK));
-        Intents.release();
 
         waitFor(() -> onView(withText("Description")).perform(click()));
 
@@ -81,7 +77,6 @@ public class BarcodeScannerTest extends TestSetup {
     @Test
     public void testQRCodeScan() {
         // Mock a result for the system's gallery
-        Intents.init();
         Intent resultData = new Intent();
         resultData.setData(mockImageUri(R.raw.househomey_qrcode));
         Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
@@ -94,7 +89,6 @@ public class BarcodeScannerTest extends TestSetup {
         // Click the gallery option and ensure intent was fired
         onView(withId(R.id.gallery_button)).perform(click());
         intended(hasAction(Intent.ACTION_PICK));
-        Intents.release();
 
         waitFor(() -> onView(withText("YES")).perform(click()));
 

@@ -35,7 +35,7 @@ public abstract class FilterFragment extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
-                .setNegativeButton("Reset", onResetListener) // TODO: Logic for how resetting filters work
+                .setNegativeButton("Reset", onResetListener)
                 .setNeutralButton("Cancel", null)
                 .setPositiveButton("Apply", onApplyListener);
     }
