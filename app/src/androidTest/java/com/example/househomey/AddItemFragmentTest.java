@@ -9,13 +9,13 @@ import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static androidx.test.espresso.matcher.ViewMatchers.hasChildCount;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static com.example.househomey.testUtils.TestHelpers.enterText;
 import static com.example.househomey.testUtils.TestHelpers.hasListLength;
 import static com.example.househomey.testUtils.TestHelpers.mockImageBitmap;
 import static com.example.househomey.testUtils.TestHelpers.mockImageUri;
+import static com.example.househomey.testUtils.TestHelpers.pickDate;
 import static com.example.househomey.testUtils.TestHelpers.waitFor;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.anything;
@@ -27,15 +27,11 @@ import android.provider.MediaStore;
 
 import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.intent.matcher.IntentMatchers;
-import androidx.test.espresso.matcher.RootMatchers;
 
 import com.example.househomey.testUtils.TestSetup;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 public class AddItemFragmentTest extends TestSetup {
     @Before
@@ -43,30 +39,14 @@ public class AddItemFragmentTest extends TestSetup {
         onView(withId(R.id.action_add)).perform(click());
     }
 
-    public String selectFirstDayOfMonth() {
-        onView(withId(R.id.add_item_date)).perform(click());
-        // Get the first day of the month matching MaterialDatePicker content description format
-        LocalDate currentDate = LocalDate.now().withDayOfMonth(1);
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("EEEE, MMMM d");
-        String formattedDate = currentDate.format(dateFormat);
-        // Select the day and click confirm
-        onView(withContentDescription(formattedDate))
-                .inRoot(RootMatchers.isDialog())
-                .perform(click());
-        onView(withId(com.google.android.material.R.id.confirm_button)).perform(click());
-        // Return HomePage's formatted date
-        return currentDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-    }
-
     @Test
     public void testAddItemWithNewUser() {
-        // Add acquisition date
-        String acquisitionDate = selectFirstDayOfMonth();
-        // Add required description and estimated cost
         String itemDescription = "Test Item";
         String estimatedCost = "99.99";
         String itemMake = "MyMake";
+        // Add required fields
         enterText(R.id.add_item_description, itemDescription);
+        pickDate(R.id.add_item_date, "10/01/2023");
         enterText(R.id.add_item_cost, estimatedCost);
         // Add values to other non-required fields
         enterText(R.id.add_item_make, itemMake);
@@ -87,7 +67,7 @@ public class AddItemFragmentTest extends TestSetup {
                 .inAdapterView(withId(R.id.item_list))
                 .atPosition(0)
                 .onChildView(withId(R.id.item_date_text))
-                .check(matches(withText(acquisitionDate)));
+                .check(matches(withText("2023-10-01")));
         onData(anything())
                 .inAdapterView(withId(R.id.item_list))
                 .atPosition(0)
@@ -126,7 +106,6 @@ public class AddItemFragmentTest extends TestSetup {
     @Test
     public void testAddPhotoFromCamera() {
         // Mock a result for the system's camera
-        Intents.init();
         Intent resultData = new Intent();
         resultData.putExtra("data", mockImageBitmap(mainActivity, R.raw.classic_guitar));
         Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
@@ -139,7 +118,6 @@ public class AddItemFragmentTest extends TestSetup {
         // Click the camera option and ensure intent was fired
         onView(withId(R.id.camera_button)).perform(click());
         intended(hasAction(MediaStore.ACTION_IMAGE_CAPTURE));
-        Intents.release();
 
         // Check that the photo was added
         onView(withId(R.id.add_photo_grid)).check(matches(hasChildCount(2)));
@@ -149,7 +127,6 @@ public class AddItemFragmentTest extends TestSetup {
     @Test
     public void testAddPhotoFromGallery() {
         // Mock a result for the system's gallery
-        Intents.init();
         Intent resultData = new Intent();
         resultData.setData(mockImageUri(R.raw.shoes));
         Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
@@ -162,7 +139,6 @@ public class AddItemFragmentTest extends TestSetup {
         // Click the gallery option and ensure intent was fired
         onView(withId(R.id.gallery_button)).perform(click());
         intended(hasAction(Intent.ACTION_PICK));
-        Intents.release();
 
         // Check that the photo was added
         onView(withId(R.id.add_photo_grid)).check(matches(hasChildCount(2)));
