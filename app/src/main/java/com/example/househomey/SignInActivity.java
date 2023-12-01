@@ -31,8 +31,21 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+/**
+ * SignInActivity of the application, handles setting up the sign in page
+ * @author Antonio Lech Martin-Ozimek
+ */
 public class SignInActivity extends AppCompatActivity {
 
+    /**
+     * Called when the activity is first created. This is where you should do all of your normal
+     * static set up: create views, bind data to lists, etc. This method also provides a Bundle
+     * containing the activity's previously frozen state, if there was one.
+     *
+     * @param savedInstanceState A Bundle containing the activity's previously frozen state, or null
+     *                           if there was none.
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

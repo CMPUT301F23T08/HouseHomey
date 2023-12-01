@@ -33,6 +33,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+/**
+ * SignInFragment of the application, defines the sign in page
+ * and links to the SignUpFragment. Deals with validating sign in
+ * information from user.
+ * @author Antonio Lech Martin-Ozimek
+ */
 public class SignInFragment extends Fragment {
     private EditText usernameEdittext;
     private EditText passwordEdittext;
@@ -45,6 +52,22 @@ public class SignInFragment extends Fragment {
     private String username;
     private String password;
 
+    /**
+     * Overrides the default implementation to inflate the layout for the SignInFragment,
+     * initialize Firebase Authentication, and set up UI components such as username and password
+     * fields, login button, and redirection text views. Handles user input for login, validates
+     * username and password, and initiates the login process using Firebase Authentication.
+     * Navigates to the Sign Up fragment when the redirection link is clicked.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views in
+     *                           the fragment.
+     * @param container          If non-null, this is the parent view that the fragment's UI should
+     *                           be attached to. The fragment should not add the view itself, but
+     *                           this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous
+     *                           saved state as given here.
+     * @return The root view of the fragment's layout.
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_user_signin, container, false);

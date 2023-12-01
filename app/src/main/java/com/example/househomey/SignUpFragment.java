@@ -18,21 +18,16 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,6 +47,23 @@ public class SignUpFragment extends Fragment {
     private String email;
     private String password;
 
+    /**
+     * Overrides the default implementation to inflate the layout for the SignUpFragment,
+     * initialize Firebase Authentication, and set up UI components such as username, email,
+     * password, and confirmation fields, and the registration button. Handles user input for
+     * registration, validates user inputs, creates a new user account using Firebase
+     * Authentication, updates the user profile, and stores user data in Firestore. Navigates
+     * to the SignInFragment when the redirection link is clicked.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views in
+     *                           the fragment.
+     * @param container          If non-null, this is the parent view that the fragment's UI should
+     *                           be attached to. The fragment should not add the view itself, but
+     *                           this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous
+     *                           saved state as given here.
+     * @return The root view of the fragment's layout.
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_user_signup, container, false);
@@ -226,6 +238,15 @@ public class SignUpFragment extends Fragment {
         });
         return rootView;
     }
+
+    /**
+     * Validates the user's registration inputs, including username, email, password, and confirmation
+     * password. Checks for non-empty and error-free inputs, ensuring that the confirmation password
+     * matches the original password. Clears any previous error messages associated with the fields
+     * upon successful validation.
+     *
+     * @return {@code true} if all registration inputs are valid; {@code false} otherwise.
+     */
     private boolean confirmPassword() {
         username = usernameEdittext.getText().toString().trim();
         email = emailEdittext.getText().toString().trim();
