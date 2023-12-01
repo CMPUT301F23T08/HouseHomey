@@ -163,7 +163,6 @@ public class ViewItemFragment extends Fragment {
                     if (task.isSuccessful()) {
                         ArrayList<String> itemIds = new ArrayList<>((List<String>) task.getResult().get("items"));
                         itemIds.removeIf(item -> item.equals(this.item.getId()));
-//                        chipGroup.removeView(chip);
                         tagRef.document(finalTag.getTagLabel()).update("items", itemIds);
                     }
                 });
