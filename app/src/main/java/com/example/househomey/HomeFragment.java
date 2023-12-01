@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 import com.example.househomey.filter.model.DateFilter;
 import com.example.househomey.filter.model.KeywordFilter;
 import com.example.househomey.filter.model.MakeFilter;
+import com.example.househomey.filter.model.TagFilter;
 import com.example.househomey.filter.ui.DateFilterFragment;
 import com.example.househomey.filter.model.Filter;
 import com.example.househomey.filter.model.FilterCallback;
@@ -266,7 +267,13 @@ public class HomeFragment extends Fragment implements FilterCallback {
                 keywordFilterFragment.show(requireActivity().getSupportFragmentManager(), "keywords_filter_dialog");
             } else if (itemId == R.id.filter_by_tags) {
                 TagFilterFragment tagFilterFragment = new TagFilterFragment();
-
+                filterArgs.putSerializable("tags", tagList);
+                for (Filter filter : appliedFilters) {
+                    if (filter instanceof TagFilter) {
+                        TagFilter tagFilter = (TagFilter) filter;
+                        filterArgs.putSerializable("filter", tagFilter);
+                    }
+                }
                 tagFilterFragment.setArguments(filterArgs);
                 tagFilterFragment.show(requireActivity().getSupportFragmentManager(), "tags_filter_dialog");
             } else {
