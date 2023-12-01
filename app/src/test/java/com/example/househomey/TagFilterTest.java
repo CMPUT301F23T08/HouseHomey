@@ -6,9 +6,12 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import com.example.househomey.filter.model.TagFilter;
 import com.example.househomey.tags.Tag;
 import com.google.firebase.Timestamp;
@@ -42,36 +45,46 @@ public class TagFilterTest {
 
     @Test
     public void testNoTagSelected() {
-        Map<String, Boolean> tagSelectionMap = new HashMap<>();
-        tagSelectionMap.put("Electronics", false);
-        tagSelectionMap.put("Furniture", false);
-
-        TagFilter tagFilter = new TagFilter(tagSelectionMap);
-
+        Set<Tag> selectedTags = new HashSet<>();
+        TagFilter tagFilter = new TagFilter(selectedTags);
         ArrayList<Item> filteredList = tagFilter.filterList(itemList);
         assertEquals(3, filteredList.size());
     }
 
     @Test
-    public void testOneTagSelected() {
-        Map<String, Boolean> tagSelectionMap = new HashMap<>();
-        tagSelectionMap.put("Electronics", true);
-        tagSelectionMap.put("Furniture", false);
+    public void testOneTagWithOneItem() {
+        Set<Tag> selectedTags = new HashSet<>();
+        Map<String, Object> tagData = new HashMap<>();
+        tagData.put("items", new ArrayList<>(Collections.singletonList("2")));
+        selectedTags.add(new Tag("Electronics", tagData));
+        TagFilter tagFilter = new TagFilter(selectedTags);
+        ArrayList<Item> filteredList = tagFilter.filterList(itemList);
+        assertEquals(1, filteredList.size());
+    }
 
-        TagFilter tagFilter = new TagFilter(tagSelectionMap);
-
+    @Test
+    public void testOneTagWithMultipleItems() {
+        Set<Tag> selectedTags = new HashSet<>();
+        Map<String, Object> tagData = new HashMap<>();
+        tagData.put("items", new ArrayList<>(Arrays.asList("3", "1")));
+        selectedTags.add(new Tag("Electronics", tagData));
+        TagFilter tagFilter = new TagFilter(selectedTags);
         ArrayList<Item> filteredList = tagFilter.filterList(itemList);
         assertEquals(2, filteredList.size());
     }
 
     @Test
-    public void testAllTagsSelected() {
-        Map<String, Boolean> tagSelectionMap = new HashMap<>();
-        tagSelectionMap.put("Electronics", true);
-        tagSelectionMap.put("Furniture", true);
+    public void testAllTags() {
+        Set<Tag> selectedTags = new HashSet<>();
+        Map<String, Object> electronicTagData = new HashMap<>();
+        Map<String, Object> furnitureData = new HashMap<>();
+        electronicTagData.put("items", new ArrayList<>(Arrays.asList("3", "1")));
+        furnitureData.put("items", new ArrayList<>(Collections.singletonList("2")));
 
-        TagFilter tagFilter = new TagFilter(tagSelectionMap);
+        selectedTags.add(new Tag("Electronics", electronicTagData));
+        selectedTags.add(new Tag("Furniture", furnitureData));
 
+        TagFilter tagFilter = new TagFilter(selectedTags);
         ArrayList<Item> filteredList = tagFilter.filterList(itemList);
         assertEquals(3, filteredList.size());
     }
