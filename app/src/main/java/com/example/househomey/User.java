@@ -3,8 +3,6 @@ package com.example.househomey;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.io.Serializable;
-
 /**
  * This class represents a user and gets references to the appropriate information from firestore
  * @author Lukas Bonkowski, Owen Cooke

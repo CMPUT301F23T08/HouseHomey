@@ -82,8 +82,8 @@ public class SignInFragment extends Fragment {
         TextView signinRedirectMessage = rootView.findViewById(R.id.signin_redirect_message);
         TextView signinRedirect = rootView.findViewById(R.id.signin_redirect);
 
-        loginButton.setText("Login");
-        signinRedirectMessage.setText("Don't have an account?");
+        loginButton.setText(R.string.signin_button_text);
+        signinRedirectMessage.setText(R.string.signin_text);
         signinRedirect.setText(R.string.sign_up_string);
 
         loginButton.setOnClickListener(v -> {
@@ -119,12 +119,9 @@ public class SignInFragment extends Fragment {
                                             usernameEdittext.setError("database error");
                                             passwordEdittext.setError("database error");
                                         } else {
-                                            Bundle userData = new Bundle();
-                                            userData.putString("username", user.getDisplayName());
                                             Activity activity = getActivity();
                                             if (activity != null) {
                                                 Intent intent = new Intent(activity, MainActivity.class);
-                                                intent.putExtra("userData", userData);
                                                 activity.startActivity(intent);
                                             }
                                         }
