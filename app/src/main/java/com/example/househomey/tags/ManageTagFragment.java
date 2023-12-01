@@ -2,9 +2,7 @@ package com.example.househomey.tags;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,19 +31,12 @@ public class ManageTagFragment extends TagFragment {
      * @param savedInstanceState Bundle containing the saved state of the fragment.
      * @return The created AlertDialog.
      */
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        View rootView = requireActivity().getLayoutInflater().inflate(R.layout.fragment_manage_tags, null);
         this.tagRef = ((MainActivity) requireActivity()).getTagRef();
-
-        Bundle args = getArguments();
-        final ArrayList<Item> selectedItems = BundleCompat.getParcelableArrayList(args, "itemList", Item.class);
-
-        // Initialize AlertDialog builder
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-        // Inflate the layout for this fragment
-        LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View rootView = inflater.inflate(R.layout.fragment_manage_tags, null);
+        final ArrayList<Item> selectedItems = BundleCompat.getParcelableArrayList(getArguments(), "itemList", Item.class);
 
         // Initialize UI components
         chipGroup = rootView.findViewById(R.id.chip_group_labels);
@@ -61,18 +52,20 @@ public class ManageTagFragment extends TagFragment {
 
         getTagCollection();
 
-        return builder
+        // Build the dialog window
+        AlertDialog dialog = new AlertDialog.Builder(getActivity())
                 .setView(rootView)
                 .setTitle("Manage Tags")
-                .setPositiveButton("Done", (dialog, which) -> {
+                .setPositiveButton("Done", (d, which) -> {
                     ApplyTagFragment applyTagFragment = new ApplyTagFragment();
-
                     Bundle tagArgs = new Bundle();
                     tagArgs.putParcelableArrayList("itemList", selectedItems);
                     applyTagFragment.setArguments(tagArgs);
                     applyTagFragment.show(requireActivity().getSupportFragmentManager(),"tagDialog");
                 })
                 .create();
+        dialog.setCanceledOnTouchOutside(false);
+        return dialog;
     }
 
     /**
