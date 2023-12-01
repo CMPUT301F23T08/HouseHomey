@@ -31,7 +31,7 @@ public class Tag implements Parcelable, Comparable<Tag> {
      */
     public Tag(String tagLabel, @NonNull Map<String, Object> data) {
         this.tagLabel = Objects.requireNonNull(tagLabel);
-        if (data.containsKey("items")) {
+        if (data.containsKey("items") && data.get("items") instanceof List) {
             this.itemIds = new ArrayList<>((List<String>) Objects.requireNonNull(data.get("items")));
         }
     }
