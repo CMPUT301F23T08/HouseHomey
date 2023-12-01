@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,203 +8,350 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <FrameLayout
-        android:id="@+id/fragmentContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:gravity="center_vertical">
+        android:layout_height="78dp"
+        android:background="@color/brown"
+        android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="40dp"
-            android:text="Details"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="40dp"
-            android:text="Make"
-            android:textSize="18sp"
-            android:textColor="@color/subTitle" />
-
-        <TextView
-            android:id="@+id/view_item_make"
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="40dp"
-            android:text="Make"
-            android:textSize="18sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="40dp"
-            android:text="Model"
-            android:textSize="18sp"
-            android:textColor="@color/subTitle" />
-
-        <TextView
-            android:id="@+id/view_item_model"
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="40dp"
-            android:text="Model"
-            android:textSize="18sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="40dp"
-            android:text="Serial Number"
-            android:textSize="18sp"
-            android:textColor="@color/subTitle" />
-
-        <TextView
-            android:id="@+id/view_item_serial_number"
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="40dp"
-            android:text="Serial"
-            android:textSize="18sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="40dp"
-            android:text="Est. Cost (CAD)"
-            android:textSize="18sp"
-            android:textColor="@color/subTitle" />
-
-        <TextView
-            android:id="@+id/view_item_cost"
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="40dp"
-            android:text="Cost"
-            android:textSize="18sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="40dp"
-            android:text="Comment"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:id="@+id/view_item_comment"
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="40dp"
-            android:text="Comment"
-            android:textSize="15sp" />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:orientation="horizontal"
-        android:layout_marginTop="16dp">
-
-        <Space
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/view_item_back_button"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="32dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:gravity="center"
+            app:icon="@drawable/baseline_chevron_left_24"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="32dp"
+            app:iconTint="@color/white" />
 
-        <Button
-            android:id="@+id/edit_button"
-            android:layout_width="160dp"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/view_item_title"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:text="Edit Item"
-            android:layout_weight="1"/>
-        <Space
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Item Title"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <View
             android:layout_width="32dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
-        <Button
-            android:id="@+id/delete_button"
-            android:layout_width="160dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_gravity="center"
-
-            android:text="Delete"
-            android:backgroundTint="@color/red"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/edit_button"
-            android:layout_weight="1"/>
-        <Space
-            android:layout_width="32dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
     </LinearLayout>
 
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/view_item_main_photo"
+                layout="@layout/gallery_photo"
+                android:layout_width="380dp"
+                android:layout_height="380dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitXY" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:paddingHorizontal="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Gallery"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/view_item_no_photos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="No attached photos"
+                    android:textColor="@color/subTitle"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/view_photo_grid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingHorizontal="12dp"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="4" />
+
+            <FrameLayout
+                android:id="@+id/fragmentContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="24dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.5"
+                    android:text="Details"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.5"
+                    android:text="Make"
+                    android:textColor="@color/subTitle"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/view_item_make"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.5"
+                    android:text="Make"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.5"
+                    android:text="Model"
+                    android:textColor="@color/subTitle"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/view_item_model"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.5"
+                    android:text="Model"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.5"
+                    android:text="Serial Number"
+                    android:textColor="@color/subTitle"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/view_item_serial_number"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.5"
+                    android:text="Serial"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.5"
+                    android:text="Est. Cost (CAD)"
+                    android:textColor="@color/subTitle"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/view_item_cost"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.5"
+                    android:text="Cost"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="12dp">
+
+                <TextView
+                    android:layout_width="50dp"
+                    android:layout_height="40dp"
+                    android:gravity="center_vertical"
+                    android:text="Tags"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/add_tags_button"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="0dp"
+                    android:gravity="center_vertical"
+                    app:icon="@drawable/baseline_add_24"
+                    app:iconSize="25dp"
+                    app:iconTint="@color/black" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="12dp">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/tag_chip_group_labels"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:singleLine="false" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.5"
+                    android:paddingHorizontal="12dp"
+                    android:text="Comment"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="12dp">
+
+                <TextView
+                    android:id="@+id/view_item_comment"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.5"
+                    android:text="Comment"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+                <Space
+                    android:layout_width="32dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:id="@+id/edit_button"
+                    android:layout_width="160dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:text="Edit Item" />
+
+                <Space
+                    android:layout_width="32dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:id="@+id/delete_button"
+                    android:layout_width="160dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_gravity="center"
+
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/red"
+                    android:text="Delete"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/edit_button"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Space
+                    android:layout_width="32dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 </LinearLayout>

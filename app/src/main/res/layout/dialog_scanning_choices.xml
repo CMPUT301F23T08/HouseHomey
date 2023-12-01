@@ -1,0 +1,43 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/brown"
+    android:orientation="vertical"
+    android:paddingVertical="4dp">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/serialNum_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="24dp"
+        android:text="Scan Serial Number"
+        android:textAlignment="textStart"
+        android:textColor="@color/white"
+        app:icon="@drawable/number_sign_icon"
+        android:textSize="24sp"
+        app:iconGravity="textStart"
+        app:iconSize="32dp"
+        app:iconTint="@color/white" />
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginVertical="4dp"
+        app:dividerColor="@color/white" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/barcode_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="24dp"
+        android:text="Scan Barcode"
+        android:textAlignment="textStart"
+        android:textColor="@color/white"
+        app:icon="@drawable/baseline_barcode_scanner_24"
+        app:iconGravity="textStart"
+        android:textSize="24sp"
+        app:iconSize="32dp"
+        app:iconTint="@color/white" />
+
+</LinearLayout>

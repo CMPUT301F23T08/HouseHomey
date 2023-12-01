@@ -12,11 +12,12 @@
         android:layout_height="wrap_content"
         android:paddingHorizontal="24dp"
         android:text="Take photo"
+        android:textSize="24sp"
         android:textAlignment="textStart"
         android:textColor="@color/white"
         app:icon="@drawable/baseline_camera_alt_24"
         app:iconGravity="textStart"
-        app:iconSize="24dp"
+        app:iconSize="32dp"
         app:iconTint="@color/white" />
 
     <com.google.android.material.divider.MaterialDivider
@@ -30,12 +31,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="24dp"
+        android:textSize="24sp"
         android:text="Select from gallery"
         android:textAlignment="textStart"
         android:textColor="@color/white"
         app:icon="@drawable/baseline_insert_photo_24"
         app:iconGravity="textStart"
-        app:iconSize="24dp"
+        app:iconSize="32dp"
         app:iconTint="@color/white" />
 
 </LinearLayout>

@@ -38,12 +38,15 @@
             app:iconTint="@color/black" />
     </LinearLayout>
 
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chip_group_labels"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:singleLine="false"
-        app:chipSpacingVertical="0sp">
-    </com.google.android.material.chip.ChipGroup>
+        android:layout_height="wrap_content">
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group_labels"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:singleLine="false">
+        </com.google.android.material.chip.ChipGroup>
+    </ScrollView>
 
 </LinearLayout>

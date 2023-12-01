@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 import com.example.househomey.filter.model.DateFilter;
 import com.example.househomey.filter.model.KeywordFilter;
 import com.example.househomey.filter.model.MakeFilter;
+import com.example.househomey.filter.model.TagFilter;
 import com.example.househomey.filter.ui.DateFilterFragment;
 import com.example.househomey.filter.model.Filter;
 import com.example.househomey.filter.model.FilterCallback;
@@ -32,11 +33,14 @@ import com.example.househomey.sort.CostComparator;
 import com.example.househomey.sort.DateComparator;
 import com.example.househomey.sort.DescriptionComparator;
 import com.example.househomey.sort.MakeComparator;
+import com.example.househomey.sort.TagComparator;
+import com.example.househomey.tags.Tag;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import java.math.BigDecimal;
@@ -46,6 +50,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * This fragment is a child of the home fragment containing the list of the user's inventory
@@ -71,6 +76,9 @@ public class HomeFragment extends Fragment implements FilterCallback {
     private final boolean ASC = false;
     private ToggleButton toggleOrder;
     private boolean sortOrder;
+    private CollectionReference tagRef;
+    private ArrayList<Tag> tagList = new ArrayList<>();
+    private Map<String, Item> itemIdMap = new HashMap<>();
 
     /**
      * @param inflater           The LayoutInflater object that can be used to inflate
@@ -101,6 +109,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
         sortProperties.put("date",new DateComparator());
         sortProperties.put("make", new MakeComparator());
         sortProperties.put("cost", new CostComparator());
+        sortProperties.put("tag", new TagComparator());
 
         Bundle received_args = getArguments();
         if (received_args!=null){
@@ -120,6 +129,8 @@ public class HomeFragment extends Fragment implements FilterCallback {
         itemListView.setAdapter(itemAdapter);
         itemAdapter.setSelectState(false);
 
+        tagRef = ((MainActivity) requireActivity()).getTagRef();
+        tagRef.addSnapshotListener(this::setupTagListener);
 
         final Button selectButton = rootView.findViewById(R.id.select_items_button);
         selectButton.setOnClickListener(v -> {
@@ -130,6 +141,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
             args.putString("listSum", listSum.toString());
             args.putBoolean("sortOrder",sortOrder);
             args.putString("currentSortName",currentSortName);
+            args.putSerializable("idMap", (Serializable) itemIdMap);
             selectStateFragment.setArguments(args);
             navigateToFragmentPage(getContext(), selectStateFragment, R.id.fragmentContainer);
         });
@@ -139,9 +151,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
 
         //Sort dropdown functionality
         final Button sortButton = rootView.findViewById(R.id.sort_by_alpha_button);
-        sortButton.setOnClickListener(v -> {
-            showSortMenu(sortButton);
-        });
+        sortButton.setOnClickListener(v -> showSortMenu(sortButton));
 
         //Toggle sorting order functionality
         toggleOrder = rootView.findViewById(R.id.sort_order_toggle);
@@ -153,6 +163,33 @@ public class HomeFragment extends Fragment implements FilterCallback {
 
         return rootView;
 
+    }
+
+    /**
+     * This method updates the tags with changes in the firestore database and creates new
+     * tag objects
+     * @param querySnapshots The updated information on the inventory from the database
+     * @param error Non-null if an error occurred in Firestore
+     */
+    private void setupTagListener(QuerySnapshot querySnapshots, FirebaseFirestoreException error) {
+        if (error != null) {
+            Log.e("Firestore", error.toString());
+            return;
+        }
+        if (querySnapshots != null) {
+            tagList.clear();
+            itemList.forEach(Item::clearTags);
+            for (QueryDocumentSnapshot doc: querySnapshots) {
+                Tag tag = new Tag(doc.getId(), doc.getData());
+                tagList.add(tag);
+                for (String id : tag.getItemIds()) {
+                    Item item = itemIdMap.get(id);
+                    if (item != null) item.addTag(tag);
+                }
+            }
+
+            applyFilters();
+        }
     }
 
     /**
@@ -168,13 +205,19 @@ public class HomeFragment extends Fragment implements FilterCallback {
         }
         if (querySnapshots != null) {
             itemList.clear();
+            itemIdMap.clear();
+            int totalItems = querySnapshots.size();
+            AtomicInteger initializedItems = new AtomicInteger(0);
             for (QueryDocumentSnapshot doc: querySnapshots) {
                 Map<String, Object> data = new HashMap<>(doc.getData());
-                itemList.add(new Item(doc.getId(), data));
+                Item item = new Item(doc.getId(), data, tagRef, item1 -> {
+                    if (initializedItems.incrementAndGet() == totalItems) {
+                        applyFilters();
+                    }
+                });
+                itemList.add(item);
+                itemIdMap.put(doc.getId(), item);
             }
-
-            applyFilters();
-            sortItems();
         }
     }
 
@@ -189,39 +232,49 @@ public class HomeFragment extends Fragment implements FilterCallback {
 
         popupMenu.setOnMenuItemClickListener(item -> {
             int itemId = item.getItemId();
+            Bundle filterArgs = new Bundle();
+            filterArgs.putSerializable("callback", this);
+
             if (itemId == R.id.filter_by_dates) {
-                View dateFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_dates, null);
-                DateFilterFragment dateFilterFragment = new DateFilterFragment("Modify Date Filter", dateFilterView, this);
+                DateFilterFragment dateFilterFragment = new DateFilterFragment();
                 for (Filter filter : appliedFilters) {
                     if (filter instanceof DateFilter) {
                         DateFilter dateFilter = (DateFilter) filter;
-                        dateFilterFragment = new DateFilterFragment("Modify Make Filter", dateFilterView, this, dateFilter);
+                        filterArgs.putSerializable("filter", dateFilter);
                     }
                 }
+                dateFilterFragment.setArguments(filterArgs);
                 dateFilterFragment.show(requireActivity().getSupportFragmentManager(), "dates_filter_dialog");
             } else if (itemId == R.id.filter_by_make) {
-                View makeFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_make, null);
-                MakeFilterFragment makeFilterFragment = new MakeFilterFragment("Modify Make Filter", makeFilterView, this);
+                MakeFilterFragment makeFilterFragment = new MakeFilterFragment();
                 for (Filter filter : appliedFilters) {
                     if (filter instanceof MakeFilter) {
                         MakeFilter makeFilter = (MakeFilter) filter;
-                        makeFilterFragment = new MakeFilterFragment("Modify Make Filter", makeFilterView, this, makeFilter);
+                        filterArgs.putSerializable("filter", makeFilter);
                     }
                 }
+                makeFilterFragment.setArguments(filterArgs);
                 makeFilterFragment.show(requireActivity().getSupportFragmentManager(), "make_filter_dialog");
             } else if (itemId == R.id.filter_by_keywords) {
-                View keywordFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_keywords, null);
-                KeywordFilterFragment keywordFilterFragment = new KeywordFilterFragment("Modify Keyword Filter", keywordFilterView, this);
+                KeywordFilterFragment keywordFilterFragment = new KeywordFilterFragment();
                 for (Filter filter : appliedFilters) {
                     if (filter instanceof KeywordFilter) {
                         KeywordFilter myFilter = (KeywordFilter) filter;
-                        keywordFilterFragment = new KeywordFilterFragment("Modify Keyword Filter", keywordFilterView, this, myFilter);
+                        filterArgs.putSerializable("filter", myFilter);
                     }
                 }
+                keywordFilterFragment.setArguments(filterArgs);
                 keywordFilterFragment.show(requireActivity().getSupportFragmentManager(), "keywords_filter_dialog");
             } else if (itemId == R.id.filter_by_tags) {
-                View tagFilterView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_tags, null);
-                TagFilterFragment tagFilterFragment = new TagFilterFragment("Modify Tag Filter", tagFilterView, this);
+                TagFilterFragment tagFilterFragment = new TagFilterFragment();
+                filterArgs.putSerializable("tags", tagList);
+                for (Filter filter : appliedFilters) {
+                    if (filter instanceof TagFilter) {
+                        TagFilter tagFilter = (TagFilter) filter;
+                        filterArgs.putSerializable("filter", tagFilter);
+                    }
+                }
+                tagFilterFragment.setArguments(filterArgs);
                 tagFilterFragment.show(requireActivity().getSupportFragmentManager(), "tags_filter_dialog");
             } else {
                 return false;
@@ -273,6 +326,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
         filteredItemList.addAll(tempList);
         itemAdapter.notifyDataSetChanged();
         updateListData();
+        sortItems();
     }
 
     /**
@@ -310,6 +364,8 @@ public class HomeFragment extends Fragment implements FilterCallback {
                 currentSortName = "make";
             } else if (itemId == R.id.sort_by_estimatedValue) {
                 currentSortName = "cost";
+            } else if (itemId == R.id.sort_by_tag) {
+                currentSortName = "tag";
             } else {
                 return false;
             }
@@ -326,7 +382,6 @@ public class HomeFragment extends Fragment implements FilterCallback {
      * or ascending order and displays the list
      */
     private void sortItems() {
-
         if (!sortOrder){
             filteredItemList.sort(currentSort);
         }
@@ -335,7 +390,4 @@ public class HomeFragment extends Fragment implements FilterCallback {
         }
         itemAdapter.notifyDataSetChanged();
     }
-
-
-
 }

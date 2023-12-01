@@ -13,10 +13,14 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 
 import com.example.househomey.Item;
+import com.example.househomey.MainActivity;
 import com.example.househomey.R;
 import com.example.househomey.ViewItemFragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
+
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * This fragment is responsible for editing an existing item in the database.
@@ -25,6 +29,7 @@ import com.google.android.material.textview.MaterialTextView;
  */
 public class EditItemFragment extends ItemFormFragment {
     private final Item item;
+    private Item updatedItem;
 
     /**
      * Constructs a new EditItemFragment with the item to edit.
@@ -87,26 +92,42 @@ public class EditItemFragment extends ItemFormFragment {
     }
 
     /**
-     * Edits an existing Item in the user's Firestore item collection.
+     * Edits an existing item by validating and preparing it for storage.
      */
     private void editItem() {
-        Item updatedItem = prepareItem(item.getId());
-        if (updatedItem == null) return;
+        updatedItem = validateItem(item.getId());
+        if (updatedItem != null) prepareItem(updatedItem);
+    }
 
-        // Update the existing item document in Firestore
+    /**
+     * Writes updated item data to Firestore and handles success or failure.
+     * Updates the Firestore document with the data of the provided updated item.
+     * Logs success with the updated item's ID and navigates to the ViewItemFragment to display
+     * the updated item. In case of failure, logs an error and displays an error message.
+     */
+    @Override
+    public void writeToFirestore() {
         itemRef.document(updatedItem.getId())
                 .set(updatedItem.getData())
                 .addOnSuccessListener(aVoid -> {
                     Log.d("Firestore", "Successfully updated item with id: " + updatedItem.getId());
-                    ViewItemFragment viewItemFragment = new ViewItemFragment();
-                    Bundle args = new Bundle();
-                    args.putSerializable("item", updatedItem);
-                    viewItemFragment.setArguments(args);
-                    navigateToFragmentPage(getContext(), viewItemFragment);
+                    updatedItem.setTags(item.getTags());
+                    sendItem();
                 })
                 .addOnFailureListener(e -> {
                     Log.d("Firestore", "Failed to update item with id: " + updatedItem.getId());
                     getView().findViewById(R.id.add_item_error_msg).setVisibility(View.VISIBLE);
                 });
+    }
+
+    /**
+     * Sends the new item to the view item fragment
+     */
+    private void sendItem() {
+        ViewItemFragment viewItemFragment = new ViewItemFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("item", updatedItem);
+        viewItemFragment.setArguments(args);
+        navigateToFragmentPage(getContext(), viewItemFragment);
     }
 }

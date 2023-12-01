@@ -1,6 +1,7 @@
 package com.example.househomey.form;
 
 import static com.example.househomey.utils.FragmentUtils.createDatePicker;
+import static com.example.househomey.utils.FragmentUtils.isValidUUID;
 import static java.util.Objects.requireNonNull;
 
 import android.net.Uri;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +21,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.househomey.Item;
 import com.example.househomey.MainActivity;
 import com.example.househomey.R;
+import com.example.househomey.utils.FragmentUtils;
+import com.example.househomey.scanner.BarcodeImageScanner;
+import com.example.househomey.scanner.SNImageScanner;
+import com.example.househomey.scanner.ScannerPickerDialog;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -31,6 +37,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -39,13 +46,21 @@ import java.util.UUID;
  *
  * @author Owen Cooke
  */
-public abstract class ItemFormFragment extends Fragment implements ImagePickerDialog.OnImagePickedListener, PhotoAdapter.OnAddButtonClickListener {
+public abstract class ItemFormFragment extends Fragment implements ImagePickerDialog.OnImagePickedListener,
+        PhotoAdapter.OnButtonClickListener, SNImageScanner.OnImageScannedListener,
+        BarcodeImageScanner.OnBarcodeScannedListener {
     protected Date dateAcquired;
+    private TextInputEditText dateTextView;
     protected CollectionReference itemRef;
     protected ArrayList<String> photoUris = new ArrayList<>();
     protected PhotoAdapter photoAdapter;
-    private TextInputEditText dateTextView;
+    private TextInputEditText sNTextView;
+    private TextInputEditText descriptionTextView;
+    private final ArrayList<String> photosToDelete = new ArrayList<>();
     private ImagePickerDialog imagePickerDialog;
+    private int count = 0;
+    private boolean failedToUpload = false;
+    private long expectedCount;
 
     /**
      * Creates the basic view for a validated Item form.
@@ -65,17 +80,63 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         initAddImageHandler(rootView);
         // Get item collection reference from main activity
         itemRef = ((MainActivity) requireActivity()).getItemRef();
+        sNTextView = rootView.findViewById(R.id.add_item_serial_number);
+        descriptionTextView = rootView.findViewById(R.id.add_item_description);
+        View scanButton = rootView.findViewById(R.id.add_item_scan_button);
+        scanButton.setOnClickListener(v -> launchScannerPicker());
         return rootView;
     }
 
     /**
-     * Validates the user input and constructs an Item object if the input is valid.
-     * If validation succeeds, uploads new attached photos to Firebase Cloud Storage.
-     *
-     * @param itemId The unique identifier of the item, if it exists, or an empty string for new items.
-     * @return An Item object representing the validated item data, or null if validation fails.
+     * Launches the scanner picker dialog
      */
-    protected Item prepareItem(String itemId) {
+    private void launchScannerPicker() {
+        ScannerPickerDialog dialog = new ScannerPickerDialog();
+        dialog.show(getChildFragmentManager(), dialog.getTag());
+    }
+
+    /**
+     * Writes data to Firestore.
+     * Subclasses must implement this method to define the specific logic for writing data to Firestore.
+     */
+    public abstract void writeToFirestore();
+
+    /**
+     * Prepares the item for storage by handling photo-related tasks.
+     * This method calculates the expected count of valid photo URIs, uploads new photos (if any)
+     * to Cloud Storage, sets the photo IDs on the provided item, removes deleted photos (if any)
+     * from Cloud Storage, and writes the item to Firestore if no valid photos are present.
+     *
+     * @param item The item to be prepared, which may include associated photos.
+     */
+    protected void prepareItem(Item item) {
+        expectedCount = photoUris.stream().filter(uri -> !FragmentUtils.isValidUUID(uri)).count();
+        // Upload new photos (if any) to Cloud Storage
+        photoUris.replaceAll(this::uploadImageToFirebase);
+        item.setPhotoIds(photoUris);
+
+        // Remove deleted photos (if any) from Cloud Storage
+        for (String imageId : photosToDelete) {
+            StorageReference imageRef = ((MainActivity) requireActivity()).getImageRef(imageId);
+            imageRef.delete()
+                    .addOnSuccessListener(taskSnapshot -> Log.d("IMAGE_DELETE", "Successfully removed image from: " + imageRef))
+                    .addOnFailureListener(e -> Log.e("IMAGE_DELETE", "Failed to delete image from Cloud Storage: " + e));
+        }
+        if (expectedCount == 0) {
+            writeToFirestore();
+        }
+    }
+
+    /**
+     * Validates and creates an Item using form data.
+     * Checks that required fields are filled, creates a map with form data, and attempts
+     * to create a valid Item. Returns null if validation fails or if the creation
+     * of the Item results in a NullPointerException.
+     *
+     * @param itemId The ID of the item to be validated, can be null for new items.
+     * @return A validated Item or null if validation fails.
+     */
+    protected Item validateItem(String itemId) {
         // Check that required fields are filled before validating
         boolean invalidDesc = isRequiredFieldEmpty(R.id.add_item_description_layout);
         boolean invalidDate = isRequiredFieldEmpty(R.id.add_item_date_layout);
@@ -94,17 +155,12 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         data.put("photos", photoUris);
 
         // Ensure that form data can be used to create a valid Item
-        Item item;
         try {
-            item = new Item(itemId, data);
+            return new Item(itemId, data);
         } catch (NullPointerException e) {
+            Log.d("Item", "Tried to create an invalid item.");
             return null;
         }
-
-        // Item is valid, upload new photos (if any) to Cloud Storage
-        photoUris.replaceAll(this::uploadImageToFirebase);
-        item.setPhotoIds(photoUris);
-        return item;
     }
 
     /**
@@ -124,7 +180,6 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         textInputLayout.setError(null);
         return false;
     }
-
 
     /**
      * Gets the user input as a string from a given TextInputEditText
@@ -232,24 +287,88 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
     }
 
     /**
-     * Uploads a local image to Firebase Cloud Storage and returns its UUID.
-     *
-     * @param imageUri The local URI of the image to be uploaded.
-     * @return The UUID of the uploaded image.
+     * Sets the result of the Serial Number scanning in the serial number text view
+     * @param serialNumber the scanned serial number to set
+     */
+    @Override
+    public void onSNScanningComplete(String serialNumber) {
+        sNTextView.setText(serialNumber);
+    }
+
+    /**
+     * Sets the item description field to the decoded barcode value after scanning image
+     * @param description the decoded barcode value to set as description
+     */
+    @Override
+    public void onBarcodeOKPressed(String description) {
+        descriptionTextView.setText(description);
+    }
+
+    /**
+     * Sets the item serial number field to the decoded barcode value after scanning image
+     * @param serialNumber the decoded barcode value to set as serial number
+     */
+    @Override
+    public void onSerialNumberOKPressed(String serialNumber) {sNTextView.setText(serialNumber);}
+
+    /**
+     * Uploads an image to Firebase Cloud Storage.
+     * If the image URI is not a valid UUID, it creates a unique storage reference,
+     * uploads the image to Cloud Storage, and returns the generated image ID.
+     * If the image URI is a valid UUID, it is assumed that the image is already uploaded,
+     * and the original image URI is returned.
+     * @param imageUri The URI of the image to be uploaded.
+     * @return The image ID if the image is uploaded, or the original image URI if already uploaded.
      */
     private String uploadImageToFirebase(String imageUri) {
-        if (imageUri.contains("content://") || imageUri.contains("file://")) {
+        if (!isValidUUID(imageUri)) {
             // New image to upload, create a unique storage reference
             String imageId = UUID.randomUUID().toString();
             StorageReference imageRef = ((MainActivity) requireActivity()).getImageRef(imageId);
 
             // Upload the image to Cloud Storage
             imageRef.putFile(Uri.parse(imageUri))
-                    .addOnSuccessListener(taskSnapshot -> Log.d("IMAGE_UPLOAD", "Successfully uploaded image to: " + taskSnapshot.getStorage()))
-                    .addOnFailureListener(e -> Log.e("IMAGE_UPLOAD", "Failed to upload image: " + e));
+                    .addOnSuccessListener(taskSnapshot -> {
+                        count++;
+                        if (count == expectedCount) {
+                            if (failedToUpload) {
+                                Toast.makeText(requireActivity().getApplicationContext(),
+                                        "Failed to upload images.",
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                writeToFirestore();
+                            }
+                        }
+                        Log.d("IMAGE_UPLOAD", "Successfully uploaded image to: " + taskSnapshot.getStorage());
+                    })
+                    .addOnFailureListener(e -> {
+                        failedToUpload = true;
+                        count++;
+                        if (count == expectedCount) {
+                            Toast.makeText(requireActivity().getApplicationContext(),
+                                    "Failed to upload images.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
             return imageId;
         }
         // Already uploaded to Firebase
         return imageUri;
+    }
+
+    /**
+     * Callback method for when the Delete button on a photo is clicked.
+     * @param position The integer index of the clicked position in the adapter.
+     */
+    @Override
+    public void onDeleteButtonClicked(int position) {
+        // Keep track of Cloud Storage IDs to delete when confirm button clicked
+        String imageId = photoUris.get(position);
+        if (isValidUUID(imageId)) {
+            photosToDelete.add(imageId);
+        }
+        // Remove photo from adapter
+        photoUris.remove(position);
+        photoAdapter.notifyItemRemoved(position);
     }
 }

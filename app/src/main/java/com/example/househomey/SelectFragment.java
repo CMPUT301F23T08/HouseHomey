@@ -1,5 +1,6 @@
 package com.example.househomey;
 
+import static com.example.househomey.utils.FragmentUtils.deletePhotosFromCloud;
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
 
 import android.os.Bundle;
@@ -18,13 +19,19 @@ import androidx.annotation.Nullable;
 import androidx.core.os.BundleCompat;
 import androidx.fragment.app.Fragment;
 
-import com.example.househomey.tags.TagFragment;
+import com.example.househomey.tags.Tag;
+import com.example.househomey.tags.ApplyTagFragment;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This fragment is a child of the home fragment containing the list of the user's inventory
@@ -40,6 +47,8 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
     private boolean sortOrder;
     private ArrayList<Item> itemList;
     private ItemAdapter itemAdapter;
+    private CollectionReference tagRef;
+    private Map<String, Item> itemIdMap = new HashMap<>();
 
     /**
      *
@@ -66,6 +75,7 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
         Bundle args = getArguments();
         if (args!=null){
             itemList = BundleCompat.getParcelableArrayList(args, "itemList", Item.class);
+            createItemIdMap();
             sortOrder = args.getBoolean("sortOrder");
             currentSortName = args.getString("currentSortName");
             ((TextView) rootView.findViewById(R.id.total_value_text)).setText("$" + args.getString("listSum"));
@@ -75,6 +85,9 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
         itemAdapter = new ItemAdapter(getContext(), itemList);
         itemListView.setAdapter(itemAdapter);
         itemAdapter.setSelectState(true);
+
+        tagRef = ((MainActivity) requireActivity()).getTagRef();
+        tagRef.addSnapshotListener(this::setupTagListener);
 
         final Button cancelButton = rootView.findViewById(R.id.cancel_select_button);
         cancelButton.setOnClickListener(v -> {
@@ -90,7 +103,7 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
         final Button deleteButton = rootView.findViewById(R.id.action_delete);
         deleteButton.setOnClickListener(v -> {
             ArrayList<Item> selectedItems = getSelectedItems();
-            if (selectedItems.size()>0) {
+            if (selectedItems.size() > 0) {
                 DeleteItemsFragment fragment = new DeleteItemsFragment(this, selectedItems);
                 fragment.show(requireActivity().getSupportFragmentManager(),"Delete Items");
             }
@@ -103,18 +116,46 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
 
         final Button actionTagsButton = rootView.findViewById(R.id.action_tags);
         actionTagsButton.setOnClickListener(v -> {
-            openTagDialog();
+            ApplyTagFragment applyTagFragment = new ApplyTagFragment();
+
+            ArrayList<Item> selectedItems = getSelectedItems();
+            Bundle tagArgs = new Bundle();
+            tagArgs.putParcelableArrayList("itemList", selectedItems);
+            applyTagFragment.setArguments(tagArgs);
+            applyTagFragment.show(requireActivity().getSupportFragmentManager(),"tagDialog");
         });
 
         return rootView;
     }
 
+    private void createItemIdMap() {
+        for (Item item : itemList) {
+            itemIdMap.put(item.getId(), item);
+        }
+    }
+
     /**
-     * Opens the TagFragment dialog.
+     * This method updates the tags with changes in the firestore database and creates new
+     * tag objects
+     * @param querySnapshots The updated information on the inventory from the database
+     * @param error Non-null if an error occurred in Firestore
      */
-    private void openTagDialog() {
-        TagFragment tagsDialogFragment = new TagFragment();
-        tagsDialogFragment.show(getChildFragmentManager(), "tagDialog");
+    private void setupTagListener(QuerySnapshot querySnapshots, FirebaseFirestoreException error) {
+        if (error != null) {
+            Log.e("Firestore", error.toString());
+            return;
+        }
+        if (querySnapshots != null) {
+            itemList.forEach(Item::clearTags);
+            for (QueryDocumentSnapshot doc: querySnapshots) {
+                Tag tag = new Tag(doc.getId(), doc.getData());
+                for (String id : tag.getItemIds()) {
+                    Item item = itemIdMap.get(id);
+                    if (item != null) item.addTag(tag);
+                }
+            }
+            itemAdapter.notifyDataSetChanged();
+        }
     }
 
     /**
@@ -127,6 +168,7 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
     public void onOKPressed(ArrayList<Item> selectedItems){
         WriteBatch batch = FirebaseFirestore.getInstance().batch();
         for (Item item : selectedItems) {
+            deletePhotosFromCloud(requireActivity(), item.getPhotoIds());
             batch.delete(itemRef.document(item.getId()));
         }
         batch.commit()
@@ -162,17 +204,9 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
      * @return List of selected items
      */
     public ArrayList<Item> getSelectedItems() {
-        ArrayList<Item> selectedItems = new ArrayList<>();
-        for (int i = 0; i< itemList.size(); i++) {
-            View itemView = itemListView.getChildAt(i);
-            if (itemView!=null) {
-               CheckBox checkBox = itemView.findViewById(R.id.item_checkBox);
-               if (checkBox.isChecked()) {
-                   selectedItems.add(itemList.get(i));
-               }
-            }
-        }
-        return selectedItems;
+        return itemList.stream()
+                .filter(Item::getChecked)
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
     /**
@@ -189,6 +223,7 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
             if (itemView!=null) {
                 CheckBox itemCheckBox = itemView.findViewById(R.id.item_checkBox);
                 itemCheckBox.setChecked(false);
+                itemList.get(i).setChecked(false);
             }
         }
         itemAdapter.notifyDataSetChanged();
