@@ -33,6 +33,7 @@ import com.example.househomey.sort.CostComparator;
 import com.example.househomey.sort.DateComparator;
 import com.example.househomey.sort.DescriptionComparator;
 import com.example.househomey.sort.MakeComparator;
+import com.example.househomey.sort.TagComparator;
 import com.example.househomey.tags.Tag;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -108,6 +109,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
         sortProperties.put("date",new DateComparator());
         sortProperties.put("make", new MakeComparator());
         sortProperties.put("cost", new CostComparator());
+        sortProperties.put("tag", new TagComparator());
 
         Bundle received_args = getArguments();
         if (received_args!=null){
@@ -149,9 +151,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
 
         //Sort dropdown functionality
         final Button sortButton = rootView.findViewById(R.id.sort_by_alpha_button);
-        sortButton.setOnClickListener(v -> {
-            showSortMenu(sortButton);
-        });
+        sortButton.setOnClickListener(v -> showSortMenu(sortButton));
 
         //Toggle sorting order functionality
         toggleOrder = rootView.findViewById(R.id.sort_order_toggle);
@@ -165,6 +165,12 @@ public class HomeFragment extends Fragment implements FilterCallback {
 
     }
 
+    /**
+     * This method updates the tags with changes in the firestore database and creates new
+     * tag objects
+     * @param querySnapshots The updated information on the inventory from the database
+     * @param error Non-null if an error occurred in Firestore
+     */
     private void setupTagListener(QuerySnapshot querySnapshots, FirebaseFirestoreException error) {
         if (error != null) {
             Log.e("Firestore", error.toString());
@@ -358,6 +364,8 @@ public class HomeFragment extends Fragment implements FilterCallback {
                 currentSortName = "make";
             } else if (itemId == R.id.sort_by_estimatedValue) {
                 currentSortName = "cost";
+            } else if (itemId == R.id.sort_by_tag) {
+                currentSortName = "tag";
             } else {
                 return false;
             }
