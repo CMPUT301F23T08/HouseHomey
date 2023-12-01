@@ -48,7 +48,7 @@ public class EditItemFragmentTest extends TestSetup {
                 .atPosition(0)
                 .perform(click()));
         // Click on edit button
-        onView(withId(R.id.edit_button)).perform(scrollTo());
+        waitFor(() -> onView(withId(R.id.edit_button)).perform(scrollTo()));
         onView(withId(R.id.edit_button)).perform(click());
     }
 

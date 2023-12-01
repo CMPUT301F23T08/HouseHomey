@@ -47,7 +47,7 @@ public class SelectDeleteTest extends TestSetup {
         database.addTestItem(mockData);
         database.addTestItem(mockData);
         database.addTestItem(mockData);
-        waitFor(() -> onView(withId(R.id.total_count_text)).check(matches(withText("3"))));
+        waitFor(() -> hasListLength(3));
     }
 
     @Test
