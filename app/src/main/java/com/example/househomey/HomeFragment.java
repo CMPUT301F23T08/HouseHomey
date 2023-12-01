@@ -148,9 +148,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
 
         //Sort dropdown functionality
         final Button sortButton = rootView.findViewById(R.id.sort_by_alpha_button);
-        sortButton.setOnClickListener(v -> {
-            showSortMenu(sortButton);
-        });
+        sortButton.setOnClickListener(v -> showSortMenu(sortButton));
 
         //Toggle sorting order functionality
         toggleOrder = rootView.findViewById(R.id.sort_order_toggle);
@@ -164,6 +162,12 @@ public class HomeFragment extends Fragment implements FilterCallback {
 
     }
 
+    /**
+     * This method updates the tags with changes in the firestore database and creates new
+     * tag objects
+     * @param querySnapshots The updated information on the inventory from the database
+     * @param error Non-null if an error occurred in Firestore
+     */
     private void setupTagListener(QuerySnapshot querySnapshots, FirebaseFirestoreException error) {
         if (error != null) {
             Log.e("Firestore", error.toString());
@@ -182,7 +186,6 @@ public class HomeFragment extends Fragment implements FilterCallback {
             }
 
             applyFilters();
-            sortItems();
         }
     }
 
@@ -207,7 +210,6 @@ public class HomeFragment extends Fragment implements FilterCallback {
                 Item item = new Item(doc.getId(), data, tagRef, item1 -> {
                     if (initializedItems.incrementAndGet() == totalItems) {
                         applyFilters();
-                        sortItems();
                     }
                 });
                 itemList.add(item);
@@ -315,6 +317,7 @@ public class HomeFragment extends Fragment implements FilterCallback {
         filteredItemList.addAll(tempList);
         itemAdapter.notifyDataSetChanged();
         updateListData();
+        sortItems();
     }
 
     /**

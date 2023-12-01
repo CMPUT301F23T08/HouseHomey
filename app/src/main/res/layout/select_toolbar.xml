@@ -13,10 +13,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/done"
-        android:textSize="20sp"
-        android:padding="16sp"
-        android:textStyle="bold"
-        android:backgroundTint="@color/subTitle" />
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:backgroundTint="#1D1B201F" />
 
     <LinearLayout
         android:id="@+id/select_state_tools"

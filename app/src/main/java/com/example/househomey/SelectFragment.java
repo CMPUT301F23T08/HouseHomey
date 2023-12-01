@@ -20,7 +20,7 @@ import androidx.core.os.BundleCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.househomey.tags.Tag;
-import com.example.househomey.tags.TagFragment;
+import com.example.househomey.tags.ApplyTagFragment;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * This fragment is a child of the home fragment containing the list of the user's inventory
@@ -117,13 +116,13 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
 
         final Button actionTagsButton = rootView.findViewById(R.id.action_tags);
         actionTagsButton.setOnClickListener(v -> {
-            TagFragment tagFragment = new TagFragment();
+            ApplyTagFragment applyTagFragment = new ApplyTagFragment();
 
             ArrayList<Item> selectedItems = getSelectedItems();
             Bundle tagArgs = new Bundle();
             tagArgs.putParcelableArrayList("itemList", selectedItems);
-            tagFragment.setArguments(tagArgs);
-            tagFragment.show(requireActivity().getSupportFragmentManager(),"tagDialog");
+            applyTagFragment.setArguments(tagArgs);
+            applyTagFragment.show(requireActivity().getSupportFragmentManager(),"tagDialog");
         });
 
         return rootView;
@@ -135,6 +134,12 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
         }
     }
 
+    /**
+     * This method updates the tags with changes in the firestore database and creates new
+     * tag objects
+     * @param querySnapshots The updated information on the inventory from the database
+     * @param error Non-null if an error occurred in Firestore
+     */
     private void setupTagListener(QuerySnapshot querySnapshots, FirebaseFirestoreException error) {
         if (error != null) {
             Log.e("Firestore", error.toString());
