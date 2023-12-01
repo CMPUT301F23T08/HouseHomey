@@ -36,7 +36,6 @@ public class SerialNumScannerTest extends TestSetup {
     @Test
     public void testScanPhoto() {
         // Mock a result for the system's gallery
-        Intents.init();
         Intent resultData = new Intent();
         resultData.setData(mockImageUri(R.raw.serial_num));
         Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
@@ -49,7 +48,6 @@ public class SerialNumScannerTest extends TestSetup {
         // Click the gallery option and ensure intent was fired
         onView(withId(R.id.gallery_button)).perform(click());
         intended(hasAction(Intent.ACTION_PICK));
-        Intents.release();
 
         waitFor(() -> onView(withText("YES")).perform(click()));
 

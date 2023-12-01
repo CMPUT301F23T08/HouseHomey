@@ -2,6 +2,7 @@ package com.example.househomey.testUtils;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
+import androidx.test.espresso.intent.Intents;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject;
@@ -10,8 +11,10 @@ import androidx.test.uiautomator.UiSelector;
 
 import com.example.househomey.MainActivity;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.Test;
 
 import java.io.IOException;
 
@@ -51,5 +54,11 @@ public abstract class TestSetup {
     @Before
     public void setup() {
         mainActivity = database.setupActivity();
+        Intents.init();
+    }
+
+    @After
+    public void tearDown() {
+        Intents.release();
     }
 }

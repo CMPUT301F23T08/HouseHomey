@@ -106,7 +106,6 @@ public class AddItemFragmentTest extends TestSetup {
     @Test
     public void testAddPhotoFromCamera() {
         // Mock a result for the system's camera
-        Intents.init();
         Intent resultData = new Intent();
         resultData.putExtra("data", mockImageBitmap(mainActivity, R.raw.classic_guitar));
         Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
@@ -119,7 +118,6 @@ public class AddItemFragmentTest extends TestSetup {
         // Click the camera option and ensure intent was fired
         onView(withId(R.id.camera_button)).perform(click());
         intended(hasAction(MediaStore.ACTION_IMAGE_CAPTURE));
-        Intents.release();
 
         // Check that the photo was added
         onView(withId(R.id.add_photo_grid)).check(matches(hasChildCount(2)));
@@ -129,7 +127,6 @@ public class AddItemFragmentTest extends TestSetup {
     @Test
     public void testAddPhotoFromGallery() {
         // Mock a result for the system's gallery
-        Intents.init();
         Intent resultData = new Intent();
         resultData.setData(mockImageUri(R.raw.shoes));
         Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
@@ -142,7 +139,6 @@ public class AddItemFragmentTest extends TestSetup {
         // Click the gallery option and ensure intent was fired
         onView(withId(R.id.gallery_button)).perform(click());
         intended(hasAction(Intent.ACTION_PICK));
-        Intents.release();
 
         // Check that the photo was added
         onView(withId(R.id.add_photo_grid)).check(matches(hasChildCount(2)));
