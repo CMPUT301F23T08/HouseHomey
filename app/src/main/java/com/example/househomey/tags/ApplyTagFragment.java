@@ -4,9 +4,9 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.core.os.BundleCompat;
 
 import com.example.househomey.Item;
@@ -30,35 +30,25 @@ import java.util.stream.Collectors;
 public class ApplyTagFragment extends TagFragment implements Serializable {
     private ArrayList<Item> selectedItems;
 
-
     /**
      * Called to create the dialog, initializing UI components and setting up button listeners.
      *
      * @param savedInstanceState Bundle containing the saved state of the fragment.
      * @return The created AlertDialog.
      */
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        View rootView = requireActivity().getLayoutInflater().inflate(R.layout.fragment_apply_tags, null);
         this.tagRef = ((MainActivity) requireActivity()).getTagRef();
+        selectedItems = BundleCompat.getParcelableArrayList(getArguments(), "itemList", Item.class);
 
-        Bundle args = getArguments();
-        selectedItems = BundleCompat.getParcelableArrayList(args, "itemList", Item.class);
-
-        // Initialize AlertDialog builder
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-        // Inflate the layout for this fragment
-        LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View rootView = inflater.inflate(R.layout.fragment_apply_tags, null);
-
-        // Initialize UI components
         chipGroup = rootView.findViewById(R.id.chip_group_labels);
-
         getTagCollection();
 
-        return builder
+        return new AlertDialog.Builder(getActivity())
                 .setView(rootView)
-                .setTitle("Tags")
+                .setTitle("Select Tags")
                 .setNeutralButton("Cancel", null)
                 .setNegativeButton("Manage", (d, w) -> {
                     ManageTagFragment manageTagFragment = new ManageTagFragment();
@@ -66,14 +56,15 @@ public class ApplyTagFragment extends TagFragment implements Serializable {
                     Bundle tagArgs = new Bundle();
                     tagArgs.putParcelableArrayList("itemList", selectedItems);
                     manageTagFragment.setArguments(tagArgs);
-                    manageTagFragment.show(requireActivity().getSupportFragmentManager(),"tagDialog");
+                    manageTagFragment.show(requireActivity().getSupportFragmentManager(), "tagDialog");
                 })
-                .setPositiveButton("Apply Tags", (dialog, which) -> applyItemsToTag(rootView, selectedItems))
+                .setPositiveButton("Apply", (dialog, which) -> applyItemsToTag(rootView, selectedItems))
                 .create();
     }
 
     /**
      * Creates a new chip for the new tag
+     *
      * @param label Name of the tag for the new chip
      */
     protected void makeTagChip(String label) {
@@ -82,11 +73,12 @@ public class ApplyTagFragment extends TagFragment implements Serializable {
 
     /**
      * Save items to Firestore for the given tags.
+     *
      * @param selectedItems Items to which the tags will be applied
      */
     private void applyItemsToTag(View rootView, ArrayList<Item> selectedItems) {
         ArrayList<String> selectedTags = new ArrayList<>();
-        for (int id: chipGroup.getCheckedChipIds()) {
+        for (int id : chipGroup.getCheckedChipIds()) {
             Chip chip = rootView.findViewById(id);
             selectedTags.add(chip.getText().toString());
         }
@@ -100,12 +92,8 @@ public class ApplyTagFragment extends TagFragment implements Serializable {
                         "items", FieldValue.arrayUnion(idList.toArray()));
             }
             batch.commit()
-                    .addOnSuccessListener((result) -> {
-                        Log.i("Firestore", "Items successfully applied to tag");
-                    })
-                    .addOnFailureListener((error) -> {
-                        Log.e("Firestore", "Failed to apply items to tag.", error);
-                    });
+                    .addOnSuccessListener((result) -> Log.i("Firestore", "Items successfully applied to tag"))
+                    .addOnFailureListener((error) -> Log.e("Firestore", "Failed to apply items to tag.", error));
         }
     }
 
