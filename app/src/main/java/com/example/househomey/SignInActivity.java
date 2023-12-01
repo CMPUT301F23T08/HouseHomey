@@ -39,9 +39,8 @@ import java.util.regex.Pattern;
 public class SignInActivity extends AppCompatActivity {
 
     /**
-     * Called when the activity is first created. This is where you should do all of your normal
-     * static set up: create views, bind data to lists, etc. This method also provides a Bundle
-     * containing the activity's previously frozen state, if there was one.
+     * This launches the SignInActivity which is the basis for both the SignInFragment
+     * and the SignUpFragment. Once the user has signed in we exit this activity.
      *
      * @param savedInstanceState A Bundle containing the activity's previously frozen state, or null
      *                           if there was none.

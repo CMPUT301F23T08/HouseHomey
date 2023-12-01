@@ -1,5 +1,7 @@
 package com.example.househomey;
 
+import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -105,24 +107,17 @@ public class SignUpFragment extends Fragment {
                                     emailEdittext.setError("database error");
                                     usernameEdittext.setError("database error");
                                 } else {
-                                    user.updateProfile(profileChangeRequest).addOnCompleteListener(task12 -> {
-                                        if (task12.isSuccessful()) {
-                                            Map<String, Object> fields = new HashMap<>();
-                                            fields.put("email", user.getEmail());
-                                            collRef.document(user.getDisplayName()).set(fields).addOnCompleteListener(task2 -> {
-                                                if (task2.isSuccessful()) {
-                                                    // Replace YourSignUpFragment with the actual class name of your sign-up fragment
-                                                    FragmentManager fragmentManager = getParentFragmentManager();
-                                                    FragmentTransaction transaction = fragmentManager.beginTransaction();
-                                                    transaction.replace(R.id.fragmentContainerSignIn, new SignInFragment());
-                                                    transaction.addToBackStack("signup");
-                                                    transaction.commit();
-                                                } else {
-                                                    usernameEdittext.setError(task1.getException().getMessage());
-                                                    passwordEdittext.setError(task1.getException().getMessage());
-                                                }
-                                            });
-                                        }
+                                    user.updateProfile(profileChangeRequest).addOnSuccessListener(task12 -> {
+                                        Map<String, Object> fields = new HashMap<>();
+                                        fields.put("email", user.getEmail());
+                                        collRef.document(user.getDisplayName()).set(fields).addOnCompleteListener(task2 -> {
+                                            if (task2.isSuccessful()) {
+                                                navigateToFragmentPage(getActivity(), new SignInFragment(), R.id.fragmentContainerSignIn);
+                                            } else {
+                                                usernameEdittext.setError(task1.getException().getMessage());
+                                                passwordEdittext.setError(task1.getException().getMessage());
+                                            }
+                                        });
                                     });
                                 }
                             } else if (task1.getException() instanceof FirebaseAuthUserCollisionException)
@@ -151,7 +146,7 @@ public class SignUpFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                String username = editable.toString().trim();
+               username = editable.toString().trim();
 
                 // Use Pattern and Matcher to check if the username matches the pattern
                 Pattern pattern = Pattern.compile(usernameRegex);
@@ -229,12 +224,7 @@ public class SignUpFragment extends Fragment {
         });
 
         signinRedirect.setOnClickListener(v -> {
-            // Replace YourSignUpFragment with the actual class name of your sign-up fragment
-            FragmentManager fragmentManager = getParentFragmentManager();
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.replace(R.id.fragmentContainerSignIn, new SignInFragment());
-            transaction.addToBackStack("signup");
-            transaction.commit();
+            navigateToFragmentPage(getActivity(), new SignInFragment(), R.id.fragmentContainerSignIn);
         });
         return rootView;
     }
@@ -248,10 +238,6 @@ public class SignUpFragment extends Fragment {
      * @return {@code true} if all registration inputs are valid; {@code false} otherwise.
      */
     private boolean confirmPassword() {
-        username = usernameEdittext.getText().toString().trim();
-        email = emailEdittext.getText().toString().trim();
-        password = passwordEdittext.getText().toString().trim();
-        confirmedPassword = confirmPasswordEdittext.getText().toString().trim();
         if (!password.isEmpty() & !username.isEmpty() & !email.isEmpty()){
             if (passwordEdittext.getError() == null & usernameEdittext.getError() == null & emailEdittext.getError() == null) {
                 if(confirmedPassword.equals(password) & confirmPasswordEdittext.getError() == null){

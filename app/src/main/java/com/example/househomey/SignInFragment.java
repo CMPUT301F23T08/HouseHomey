@@ -1,5 +1,6 @@
 package com.example.househomey;
 
+import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
 import static com.google.firebase.appcheck.internal.util.Logger.TAG;
 
 import android.app.Activity;
@@ -30,6 +31,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -94,50 +96,38 @@ public class SignInFragment extends Fragment {
                 loginButton.setTextColor(getResources().getColor(R.color.brown, rootView.getContext().getTheme()));
             }, 150);
 
-            username = usernameEdittext.getText().toString().trim();
-            password = passwordEdittext.getText().toString().trim();
             usernameEdittext.setError(null);
             passwordEdittext.setError(null);
-
 
             userRef = FirebaseFirestore.getInstance().collection("user");
 
             if (!username.isEmpty() & !password.isEmpty()) {
                 docRef = userRef.document(username);
-                docRef.get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            String email = (String) document.get("email");
-                            if (email == null) {
-                                usernameEdittext.setError("no email associated with this account");
-                            } else {
-                                auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task1 -> {
-                                    if (task1.isSuccessful()) {
-                                        FirebaseUser user = auth.getCurrentUser();
-                                        if (user == null) {
-                                            usernameEdittext.setError("database error");
-                                            passwordEdittext.setError("database error");
-                                        } else {
-                                            Activity activity = getActivity();
-                                            if (activity != null) {
-                                                Intent intent = new Intent(activity, MainActivity.class);
-                                                activity.startActivity(intent);
-                                            }
-                                        }
-                                    } else {
-                                        usernameEdittext.setError("username or password not recognized");
-                                        passwordEdittext.setError("username or password not recognized");
-
-                                    }
-                                });
-                            }
+                docRef.get().addOnSuccessListener(task -> {
+                    Map<String, Object> document = task.getData();
+                    if (document != null) {
+                        String email = (String) document.get("email");
+                        if (email == null) {
+                            usernameEdittext.setError("no email associated with this account");
                         } else {
-                            usernameEdittext.setError("username or password not recognized");
-                            passwordEdittext.setError("username or password not recognized");
+                            auth.signInWithEmailAndPassword(email, password).addOnSuccessListener(task1 -> {
+                                FirebaseUser user = task1.getUser();
+                                if (user == null) {
+                                    usernameEdittext.setError("database error");
+                                    passwordEdittext.setError("database error");
+                                } else {
+                                    Activity activity = getActivity();
+                                    if (activity != null) {
+                                        Intent intent = new Intent(activity, MainActivity.class);
+                                        activity.startActivity(intent);
+                                        activity.finish();
+                                    }
+                                }
+                            });
                         }
                     } else {
-                        Log.d(TAG, "get failed with ", task.getException());
+                        usernameEdittext.setError("username or password not recognized");
+                        passwordEdittext.setError("username or password not recognized");
                     }
                 });
             } else {
@@ -156,7 +146,7 @@ public class SignInFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                String username = editable.toString().trim();
+                username = editable.toString().trim();
 
                 // Use Pattern and Matcher to check if the username matches the pattern
                 Pattern pattern = Pattern.compile(regex);
@@ -179,7 +169,7 @@ public class SignInFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                String password = editable.toString().trim();
+                password = editable.toString().trim();
                 if (password.isEmpty()) {
                     passwordEdittext.setError("password cannot be empty");
                 }
@@ -187,12 +177,7 @@ public class SignInFragment extends Fragment {
         });
 
         signinRedirect.setOnClickListener(v -> {
-            // Replace YourSignUpFragment with the actual class name of your sign-up fragment
-            FragmentManager fragmentManager = getParentFragmentManager();
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.replace(R.id.fragmentContainerSignIn, new SignUpFragment());
-            transaction.addToBackStack("signup");
-            transaction.commit();
+            navigateToFragmentPage(getActivity(), new SignUpFragment(), R.id.fragmentContainerSignIn);
         });
 
         return rootView;
