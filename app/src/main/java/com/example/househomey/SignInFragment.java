@@ -23,9 +23,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -33,7 +30,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -90,23 +86,32 @@ public class SignInFragment extends Fragment {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
                             String email = (String) document.get("email");
-                            auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task1 -> {
-                                if (task1.isSuccessful()) {
-                                    FirebaseUser user = auth.getCurrentUser();
-                                    Bundle userData = new Bundle();
-                                    userData.putString("username", user.getDisplayName());
-                                    Activity activity = getActivity();
-                                    if (activity != null) {
-                                        Intent intent = new Intent(activity, MainActivity.class);
-                                        intent.putExtra("userData", userData);
-                                        activity.startActivity(intent);
-                                    }
-                                } else {
-                                    usernameEdittext.setError("username or password not recognized");
-                                    passwordEdittext.setError("username or password not recognized");
+                            if (email == null) {
+                                usernameEdittext.setError("no email associated with this account");
+                            } else {
+                                auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task1 -> {
+                                    if (task1.isSuccessful()) {
+                                        FirebaseUser user = auth.getCurrentUser();
+                                        if (user == null) {
+                                            usernameEdittext.setError("database error");
+                                            passwordEdittext.setError("database error");
+                                        } else {
+                                            Bundle userData = new Bundle();
+                                            userData.putString("username", user.getDisplayName());
+                                            Activity activity = getActivity();
+                                            if (activity != null) {
+                                                Intent intent = new Intent(activity, MainActivity.class);
+                                                intent.putExtra("userData", userData);
+                                                activity.startActivity(intent);
+                                            }
+                                        }
+                                    } else {
+                                        usernameEdittext.setError("username or password not recognized");
+                                        passwordEdittext.setError("username or password not recognized");
 
-                                }
-                            });
+                                    }
+                                });
+                            }
                         } else {
                             usernameEdittext.setError("username or password not recognized");
                             passwordEdittext.setError("username or password not recognized");

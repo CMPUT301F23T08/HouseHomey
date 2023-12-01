@@ -18,13 +18,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -79,39 +81,50 @@ public class SignUpFragment extends Fragment {
             }, 150);
 
             collRef = FirebaseFirestore.getInstance().collection("user");
-            if (confirmPassword() && confirmUsernameUnique(collRef, username)) {
-                UserProfileChangeRequest profileChangeRequest =
-                        new UserProfileChangeRequest.Builder().setDisplayName(username).build();
-                auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = auth.getCurrentUser();
-                        user.updateProfile(profileChangeRequest).addOnCompleteListener(task12 -> {
-                            if (task12.isSuccessful()) {
-                                Map<String, Object> fields = new HashMap<>();
-                                fields.put("email", user.getEmail());
-                                collRef.document(user.getDisplayName()).set(fields).addOnCompleteListener(task1 -> {
-                                    if (task1.isSuccessful()) {
-                                        // Replace YourSignUpFragment with the actual class name of your sign-up fragment
-                                        FragmentManager fragmentManager = getParentFragmentManager();
-                                        FragmentTransaction transaction = fragmentManager.beginTransaction();
-                                        transaction.replace(R.id.fragmentContainerSignIn, new SignInFragment());
-                                        transaction.addToBackStack("signup");
-                                        transaction.commit();
-                                    } else {
-                                        usernameEdittext.setError(task1.getException().getMessage());
-                                        passwordEdittext.setError(task1.getException().getMessage());
-                                    }
-                                });
+            if (confirmPassword()) {
+                collRef.document(username).get().addOnSuccessListener(task -> {
+                    if (task.getData() == null) {
+                        UserProfileChangeRequest profileChangeRequest =
+                                new UserProfileChangeRequest.Builder().setDisplayName(username).build();
+                        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task1 -> {
+                            if (task1.isSuccessful()) {
+                                FirebaseUser user = auth.getCurrentUser();
+                                if (user == null) {
+                                    emailEdittext.setError("database error");
+                                    usernameEdittext.setError("database error");
+                                } else {
+                                    user.updateProfile(profileChangeRequest).addOnCompleteListener(task12 -> {
+                                        if (task12.isSuccessful()) {
+                                            Map<String, Object> fields = new HashMap<>();
+                                            fields.put("email", user.getEmail());
+                                            collRef.document(user.getDisplayName()).set(fields).addOnCompleteListener(task2 -> {
+                                                if (task2.isSuccessful()) {
+                                                    // Replace YourSignUpFragment with the actual class name of your sign-up fragment
+                                                    FragmentManager fragmentManager = getParentFragmentManager();
+                                                    FragmentTransaction transaction = fragmentManager.beginTransaction();
+                                                    transaction.replace(R.id.fragmentContainerSignIn, new SignInFragment());
+                                                    transaction.addToBackStack("signup");
+                                                    transaction.commit();
+                                                } else {
+                                                    usernameEdittext.setError(task1.getException().getMessage());
+                                                    passwordEdittext.setError(task1.getException().getMessage());
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            } else if (task1.getException() instanceof FirebaseAuthUserCollisionException)
+                            {
+                                //If email already registered.
+                                emailEdittext.setError(task1.getException().getMessage());
+
+                            } else if (task1.getException() instanceof FirebaseAuthWeakPasswordException) {
+                                //if password not 'stronger'
+                                passwordEdittext.setError(task1.getException().getMessage());
                             }
                         });
-                    } else if (task.getException() instanceof FirebaseAuthUserCollisionException)
-                    {
-                        //If email already registered.
-                        emailEdittext.setError(task.getException().getMessage());
-
-                    } else if (task.getException() instanceof FirebaseAuthWeakPasswordException) {
-                        //if password not 'stronger'
-                        passwordEdittext.setError(task.getException().getMessage());
+                    } else {
+                        usernameEdittext.setError("username already exists");
                     }
                 });
             }
@@ -230,14 +243,5 @@ public class SignUpFragment extends Fragment {
             }
         }
         return false;
-    }
-    private boolean confirmUsernameUnique(CollectionReference collectionReference, String username) {
-        AtomicBoolean unique = new AtomicBoolean(true);
-        collectionReference.document(username).get().addOnSuccessListener(documentSnapshot -> {
-            if (documentSnapshot.exists()) {
-                unique.set(false);
-            }
-        });
-        return unique.get();
     }
 }
