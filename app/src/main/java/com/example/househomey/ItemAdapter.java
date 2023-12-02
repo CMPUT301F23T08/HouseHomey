@@ -102,7 +102,7 @@ public class ItemAdapter extends ArrayAdapter<Item> {
         Set<Tag> itemTags = item.getTags();
         ((TextView) view.findViewById(R.id.item_extra_tags_text)).setText("");
         if (itemTags.size() > 0) {
-            makeString += " | ";
+            if (makeString != "") makeString += " | ";
             Chip chip = FragmentUtils.makeChip(itemTags.iterator().next().getTagLabel(), false, chipGroup, view.getContext(), R.color.white, R.color.black, R.color.black);
             chip.setFocusable(false);
             chip.setClickable(false);
