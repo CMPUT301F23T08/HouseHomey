@@ -41,6 +41,7 @@
                     android:paddingTop="8dp"
                     android:textColor="@color/black"
                     android:text="Brief Description"
+                    android:layout_marginBottom="5dp"
                     android:textSize="18sp" />
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -53,21 +54,28 @@
                         android:layout_height="wrap_content"
                         android:maxLines="1"
                         android:textSize="16sp"
-                        android:paddingTop="5dp"
                         android:text="make"
                         android:gravity="center_vertical"/>
-                    <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/item_list_chips"
+                    <TextView
+                        android:id="@+id/item_tag"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="top"/>
+                        android:gravity="center_vertical"
+                        android:text="Tag"
+                        android:textSize="14sp"
+                        android:textColor="@color/darkGrey"
+                        android:textStyle="bold"
+                        android:paddingHorizontal="14dp"
+                        android:visibility="gone"
+                        android:background="@drawable/rounded_border"/>
                     <TextView
                         android:id="@+id/item_extra_tags_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:maxLines="1"
-                        android:textSize="16sp"
-                        android:text=""
+                        android:textSize="14sp"
+                        android:textColor="@color/darkGrey"
+                        android:text="+5"
                         android:gravity="center_vertical"/>
                 </LinearLayout>
             </LinearLayout>
