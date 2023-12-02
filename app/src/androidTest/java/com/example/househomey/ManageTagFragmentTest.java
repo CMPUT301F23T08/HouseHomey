@@ -5,8 +5,8 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.hasChildCount;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -15,23 +15,39 @@ import static com.example.househomey.testUtils.TestHelpers.waitFor;
 
 import static org.hamcrest.CoreMatchers.anything;
 
+import androidx.test.espresso.action.ViewActions;
+
 import com.example.househomey.testUtils.TestSetup;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.common.collect.ImmutableMap;
+import com.google.firebase.Timestamp;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Date;
+import java.util.Map;
+
 public class ManageTagFragmentTest extends TestSetup {
 
+    private final Map<String, Object> mockData = ImmutableMap.of(
+            "description", "Test Item",
+            "acquisitionDate", new Timestamp(new Date()),
+            "cost", "99.99",
+            "make", "oldMake",
+            "model", "oldModel",
+            "serialNumber", "020202020",
+            "comment", "original comment"
+    );
+
     @Before
-    public void waitForItems() {
-        waitFor(() -> {
-            onView(withId(R.id.item_list)).check(matches(isDisplayed()));
-        });
+// Create mock initial item in DB
+    public void createData() throws Exception {
+        database.addTestItem(mockData);
+        waitFor(() -> hasListLength(1));
         navigateToManageTagFragment();
     }
-
-
 
     public void navigateToManageTagFragment() {
         onView(withId(R.id.select_items_button)).perform(click());
@@ -45,12 +61,23 @@ public class ManageTagFragmentTest extends TestSetup {
     }
 
     @Test
-    public void testCreateNewTag() {
+    public void testCreateNewTagWithNewUser() {
         String tag1 = "Tag1";
         onView(withId(R.id.tag_edit_text)).perform(clearText(), typeText(tag1));
         onView(withId(R.id.add_tag_button)).perform(click());
-        int expectedChipCount = 4;
-        waitFor(() -> hasChildCount(expectedChipCount));
+        waitFor(() -> onView(withText("Tag1")).check(matches(isDisplayed())));
 
     }
+
+    @Test
+    public void testDeleteTagWithNewUser() {
+        String tag1 = "Tag1";
+        onView(withId(R.id.tag_edit_text)).perform(clearText(), typeText(tag1));
+        onView(withId(R.id.add_tag_button)).perform(click());
+        waitFor(() -> onView(withText("Tag1")).check(matches(isDisplayed())));
+
+        waitFor(() -> onView(withText(tag1)).check(doesNotExist()));
+    }
+
+
 }
