@@ -52,21 +52,18 @@ public class UserProfileFragment extends Fragment {
         logoutButton = rootView.findViewById(R.id.user_profile_logout_button);
 
         usernameTextView.setText(this.username);
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                logoutButton.setBackgroundResource(R.drawable.logout_button_clicked);
-                logoutButton.setTextColor(getResources().getColor(R.color.creme, rootView.getContext().getTheme()));
-                new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                    logoutButton.setBackgroundResource(R.drawable.logout_button_unclicked);
-                    logoutButton.setTextColor(getResources().getColor(R.color.black, rootView.getContext().getTheme()));
-                }, 100);
-                Activity activity = getActivity();
-                if (activity != null) {
-                    Intent intent = new Intent(activity, SignInActivity.class);
-                    activity.startActivity(intent);
-                }
+        logoutButton.setOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut();
+            logoutButton.setBackgroundResource(R.drawable.logout_button_clicked);
+            logoutButton.setTextColor(getResources().getColor(R.color.creme, rootView.getContext().getTheme()));
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                logoutButton.setBackgroundResource(R.drawable.logout_button_unclicked);
+                logoutButton.setTextColor(getResources().getColor(R.color.black, rootView.getContext().getTheme()));
+            }, 100);
+            Activity activity = getActivity();
+            if (activity != null) {
+                Intent intent = new Intent(activity, SignInActivity.class);
+                activity.startActivity(intent);
             }
         });
 

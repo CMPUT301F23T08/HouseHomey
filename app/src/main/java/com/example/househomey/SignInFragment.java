@@ -1,7 +1,6 @@
 package com.example.househomey;
 
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
-import static com.google.firebase.appcheck.internal.util.Logger.TAG;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,7 +9,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,14 +19,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Map;
@@ -81,12 +76,12 @@ public class SignInFragment extends Fragment {
         usernameEdittext = rootView.findViewById(R.id.signin_username);
         passwordEdittext = rootView.findViewById(R.id.signin_password);
         loginButton = rootView.findViewById(R.id.signin_button);
-        TextView signinRedirectMessage = rootView.findViewById(R.id.signin_redirect_message);
-        TextView signinRedirect = rootView.findViewById(R.id.signin_redirect);
+        TextView signInRedirectMessage = rootView.findViewById(R.id.signin_redirect_message);
+        TextView signInRedirect = rootView.findViewById(R.id.signin_redirect);
 
         loginButton.setText(R.string.signin_button_text);
-        signinRedirectMessage.setText(R.string.signin_text);
-        signinRedirect.setText(R.string.sign_up_string);
+        signInRedirectMessage.setText(R.string.signin_text);
+        signInRedirect.setText(R.string.sign_up_string);
 
         loginButton.setOnClickListener(v -> {
             loginButton.setBackgroundResource(R.drawable.signin_button_clicked);
@@ -176,9 +171,7 @@ public class SignInFragment extends Fragment {
             }
         });
 
-        signinRedirect.setOnClickListener(v -> {
-            navigateToFragmentPage(getActivity(), new SignUpFragment(), R.id.fragmentContainerSignIn);
-        });
+        signInRedirect.setOnClickListener(v -> navigateToFragmentPage(getActivity(), new SignUpFragment(), R.id.fragmentContainerSignIn));
 
         return rootView;
     }
