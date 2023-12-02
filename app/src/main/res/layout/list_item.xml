@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="80dp">
+    android:layout_height="wrap_content">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="100dp"
         android:layout_margin="8dp"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="14dp"
         android:elevation="4dp"
         android:background="@drawable/rounded_background">
 
@@ -21,85 +22,86 @@
             android:gravity="center"
             android:background="@color/offWhite"/>
 
-        <LinearLayout
-            android:id="@+id/text_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/item_checkBox"
-            android:layout_toStartOf="@id/right_text_layout"
-            android:orientation="vertical"
-            android:background="@color/offWhite"
-            android:paddingEnd="16dp"
-            android:paddingStart="16dp">
-
-            <TextView
-                android:id="@+id/item_description_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:paddingTop="8dp"
-                android:text="Brief Description"
-                android:textSize="18sp" />
             <LinearLayout
+                android:id="@+id/text_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_toEndOf="@id/item_checkBox"
+                android:layout_toStartOf="@id/right_text_layout"
+                android:orientation="vertical"
+                android:background="@color/offWhite"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp">
 
                 <TextView
-                    android:id="@+id/item_make_text"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/item_description_text"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
-                    android:textSize="16sp"
-                    android:paddingTop="3dp"
-                    android:text="make | "
-                    android:gravity="center_vertical"/>
+                    android:paddingTop="8dp"
+                    android:textColor="@color/black"
+                    android:text="Brief Description"
+                    android:textSize="18sp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/item_list_chips"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="top"/>
-                <TextView
-                    android:id="@+id/item_extra_tags_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:textSize="16sp"
-                    android:text=""
-                    android:gravity="center_vertical"/>
+                    <TextView
+                        android:id="@+id/item_make_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:textSize="16sp"
+                        android:paddingTop="5dp"
+                        android:text="make | "
+                        android:gravity="center_vertical"/>
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/item_list_chips"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="top"/>
+                    <TextView
+                        android:id="@+id/item_extra_tags_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:textSize="16sp"
+                        android:text=""
+                        android:gravity="center_vertical"/>
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/right_text_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="8dp"
-            android:orientation="vertical"
-            android:background="@color/offWhite">
-
-            <TextView
-                android:id="@+id/item_date_text"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:id="@+id/right_text_layout"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:paddingTop="8dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="8dp"
+                android:orientation="vertical"
+                android:background="@color/offWhite">
 
-                android:text="yyyy-mm-dd"
-                android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/item_date_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:paddingTop="8dp"
+                    android:text="yyyy-mm-dd"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/item_cost_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:textAlignment="textEnd"
-                android:paddingTop="8dp"
-                android:text="$xx.xx"
-                android:textColor="#4CAF50"
-                android:textSize="16sp" />
-        </LinearLayout>
-            </RelativeLayout>
+                <TextView
+                    android:id="@+id/item_cost_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:textAlignment="textEnd"
+                    android:paddingTop="8dp"
+                    android:text="$xx.xx"
+                    android:textColor="#4CAF50"
+                    android:textSize="16sp" />
+            </LinearLayout>
+    </RelativeLayout>
 </LinearLayout>
