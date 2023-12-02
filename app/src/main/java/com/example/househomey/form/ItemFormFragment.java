@@ -18,7 +18,7 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.househomey.Item;
+import com.example.househomey.item.Item;
 import com.example.househomey.MainActivity;
 import com.example.househomey.R;
 import com.example.househomey.utils.FragmentUtils;
@@ -37,7 +37,6 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 /**

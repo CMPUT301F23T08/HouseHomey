@@ -9,6 +9,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.househomey.form.AddItemFragment;
+import com.example.househomey.home.HomeFragment;
+import com.example.househomey.signin.SignInActivity;
+import com.example.househomey.user.User;
+import com.example.househomey.user.UserProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -43,8 +47,7 @@ public class MainActivity extends AppCompatActivity {
             this.startActivity(intent);
         }
 
-
-        // Init home fragment
+        // Start on the home fragment
         navigateToFragmentPage(this, new HomeFragment());
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -52,16 +55,11 @@ public class MainActivity extends AppCompatActivity {
             int id = item.getItemId();
             Fragment fragment;
             if (id == R.id.action_home) {
-                // Go to Home page
                 fragment = new HomeFragment();
             } else if (id == R.id.action_add) {
-                // Go to Add Item page
                 fragment = new AddItemFragment();
             } else {
-                Bundle name = new Bundle();
-                name.putString("username", user.getUsername());
                 fragment = new UserProfileFragment();
-                fragment.setArguments(name);
             }
             navigateToFragmentPage(this, fragment);
             return true;

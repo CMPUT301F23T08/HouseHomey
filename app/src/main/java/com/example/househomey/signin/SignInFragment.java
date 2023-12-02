@@ -1,4 +1,4 @@
-package com.example.househomey;
+package com.example.househomey.signin;
 
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
 
@@ -20,6 +20,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.househomey.MainActivity;
+import com.example.househomey.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;

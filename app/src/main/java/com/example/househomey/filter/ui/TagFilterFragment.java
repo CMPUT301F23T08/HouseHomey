@@ -10,30 +10,18 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.app.Dialog;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.househomey.R;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import com.example.househomey.Item;
 import com.example.househomey.R;
 import com.example.househomey.filter.model.FilterCallback;
-import com.example.househomey.filter.model.MakeFilter;
 import com.example.househomey.filter.model.TagFilter;
 import com.example.househomey.tags.Tag;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**

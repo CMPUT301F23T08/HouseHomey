@@ -3,6 +3,7 @@ package com.example.househomey;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
+import com.example.househomey.item.Item;
 import com.google.firebase.Timestamp;
 
 import org.junit.Before;

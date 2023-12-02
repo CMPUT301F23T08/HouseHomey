@@ -9,7 +9,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.core.os.BundleCompat;
 
-import com.example.househomey.Item;
+import com.example.househomey.item.Item;
 import com.example.househomey.MainActivity;
 import com.example.househomey.R;
 import com.example.househomey.utils.FragmentUtils;

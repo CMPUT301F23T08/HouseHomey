@@ -43,7 +43,23 @@
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="jsmith@gmail.com">
+        android:textSize="16dp"
+        android:textStyle="bold"
+        android:text="john_doe">
+    </TextView>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="8dp">
+    </Space>
+
+    <TextView
+        android:id="@+id/user_profile_email"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/subTitle"
+        android:text="jdoe@gmail.com">
     </TextView>
 
     <Space

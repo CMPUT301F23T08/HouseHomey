@@ -1,4 +1,4 @@
-package com.example.househomey;
+package com.example.househomey.item;
 
 import static com.example.househomey.utils.FragmentUtils.deletePhotosFromCloud;
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
@@ -17,9 +17,13 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.househomey.MainActivity;
+import com.example.househomey.R;
 import com.example.househomey.form.EditItemFragment;
 
 import com.example.househomey.form.ViewPhotoAdapter;
+import com.example.househomey.home.HomeFragment;
+import com.example.househomey.item.Item;
 import com.example.househomey.tags.Tag;
 import com.example.househomey.tags.ApplyTagFragment;
 import com.example.househomey.utils.FragmentUtils;

@@ -1,4 +1,4 @@
-package com.example.househomey;
+package com.example.househomey.user;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,13 +15,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.househomey.R;
+import com.example.househomey.signin.SignInActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class UserProfileFragment extends Fragment {
-
-    private String username;
-    TextView usernameTextView;
-    Button logoutButton;
+    private final FirebaseAuth auth = FirebaseAuth.getInstance();
 
     /**
      * Called to create the user profile fragment's view hierarchy. Inflates the fragment layout from
@@ -39,19 +38,13 @@ public class UserProfileFragment extends Fragment {
      */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        // Inflate the fragment's layout
         View rootView = inflater.inflate(R.layout.fragment_user_profile, container, false);
 
-        //Populate the item list from bundle
-        Bundle args = getArguments();
+        // Set the user's info
+        ((TextView) rootView.findViewById(R.id.user_profile_username)).setText(auth.getCurrentUser().getDisplayName());
+        ((TextView) rootView.findViewById(R.id.user_profile_email)).setText(auth.getCurrentUser().getEmail());
 
-        this.username = args.getString("username");
-
-        usernameTextView = rootView.findViewById(R.id.user_profile_username);
-        logoutButton = rootView.findViewById(R.id.user_profile_logout_button);
-
-        usernameTextView.setText(this.username);
+        final Button logoutButton = rootView.findViewById(R.id.user_profile_logout_button);
         logoutButton.setOnClickListener(v -> {
             FirebaseAuth.getInstance().signOut();
             logoutButton.setBackgroundResource(R.drawable.logout_button_clicked);

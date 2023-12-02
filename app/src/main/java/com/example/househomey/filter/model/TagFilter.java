@@ -1,13 +1,10 @@
 package com.example.househomey.filter.model;
 
-import android.util.Log;
-
-import com.example.househomey.Item;
+import com.example.househomey.item.Item;
 import com.example.househomey.tags.Tag;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 

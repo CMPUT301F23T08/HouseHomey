@@ -1,6 +1,6 @@
 package com.example.househomey.sort;
 
-import com.example.househomey.Item;
+import com.example.househomey.item.Item;
 
 import java.util.Comparator;
 

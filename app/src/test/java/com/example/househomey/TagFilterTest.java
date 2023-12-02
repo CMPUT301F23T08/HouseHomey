@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import com.example.househomey.filter.model.TagFilter;
+import com.example.househomey.item.Item;
 import com.example.househomey.tags.Tag;
 import com.google.firebase.Timestamp;
 import static org.junit.Assert.assertEquals;

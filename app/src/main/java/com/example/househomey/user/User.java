@@ -1,4 +1,4 @@
-package com.example.househomey;
+package com.example.househomey.user;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;

@@ -1,6 +1,7 @@
 package com.example.househomey;
 
 import com.example.househomey.filter.model.MakeFilter;
+import com.example.househomey.item.Item;
 import com.google.firebase.Timestamp;
 
 import org.junit.Before;

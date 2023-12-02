@@ -1,9 +1,7 @@
 package com.example.househomey.filter.model;
 
-import com.example.househomey.Item;
-import com.google.android.material.chip.Chip;
+import com.example.househomey.item.Item;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;

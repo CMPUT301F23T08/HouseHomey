@@ -17,7 +17,7 @@
             android:windowSoftInputMode="adjustPan"
             android:exported="true">
         </activity>
-        <activity android:name=".SignInActivity"
+        <activity android:name=".signin.SignInActivity"
             android:windowSoftInputMode="adjustPan"
             android:exported="true">
             <intent-filter>

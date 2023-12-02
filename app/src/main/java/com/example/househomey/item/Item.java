@@ -1,4 +1,4 @@
-package com.example.househomey;
+package com.example.househomey.item;
 
 import android.os.Parcel;
 import android.os.Parcelable;

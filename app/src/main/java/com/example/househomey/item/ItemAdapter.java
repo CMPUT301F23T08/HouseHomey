@@ -1,4 +1,4 @@
-package com.example.househomey;
+package com.example.househomey.item;
 
 import static com.example.househomey.utils.FragmentUtils.formatDate;
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
@@ -10,13 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.househomey.R;
 import com.example.househomey.tags.Tag;
 import com.example.househomey.utils.FragmentUtils;
 import com.google.android.material.chip.Chip;

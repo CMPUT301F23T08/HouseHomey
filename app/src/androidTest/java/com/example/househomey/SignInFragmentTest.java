@@ -10,6 +10,8 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import androidx.test.core.app.ActivityScenario;
 
+import com.example.househomey.signin.SignInActivity;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
