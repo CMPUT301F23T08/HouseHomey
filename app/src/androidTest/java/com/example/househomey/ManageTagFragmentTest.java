@@ -15,11 +15,10 @@ import static com.example.househomey.testUtils.TestHelpers.waitFor;
 
 import static org.hamcrest.CoreMatchers.anything;
 
-import androidx.test.espresso.action.ViewActions;
+
+import androidx.test.espresso.Espresso;
 
 import com.example.househomey.testUtils.TestSetup;
-import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
 import com.google.common.collect.ImmutableMap;
 import com.google.firebase.Timestamp;
 
@@ -42,8 +41,7 @@ public class ManageTagFragmentTest extends TestSetup {
     );
 
     @Before
-// Create mock initial item in DB
-    public void createData() throws Exception {
+    public void createData() {
         database.addTestItem(mockData);
         waitFor(() -> hasListLength(1));
         navigateToManageTagFragment();
@@ -65,18 +63,14 @@ public class ManageTagFragmentTest extends TestSetup {
         String tag1 = "Tag1";
         onView(withId(R.id.tag_edit_text)).perform(clearText(), typeText(tag1));
         onView(withId(R.id.add_tag_button)).perform(click());
-        waitFor(() -> onView(withText("Tag1")).check(matches(isDisplayed())));
+        waitFor(() -> onView(withText(tag1)).check(matches(isDisplayed())));
 
     }
 
     @Test
-    public void testDeleteTagWithNewUser() {
-        String tag1 = "Tag1";
-        onView(withId(R.id.tag_edit_text)).perform(clearText(), typeText(tag1));
-        onView(withId(R.id.add_tag_button)).perform(click());
-        waitFor(() -> onView(withText("Tag1")).check(matches(isDisplayed())));
-
-        waitFor(() -> onView(withText(tag1)).check(doesNotExist()));
+    public void testDoneButtonWithNewUser() {
+        onView(withText("DONE")).perform(click());
+        waitFor(() -> onView(withText("APPLY")).check(matches(isDisplayed())));
     }
 
 

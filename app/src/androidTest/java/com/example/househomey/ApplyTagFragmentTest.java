@@ -40,10 +40,10 @@ public class ApplyTagFragmentTest extends TestSetup {
     public void createData() throws Exception {
         database.addTestItem(mockData);
         waitFor(() -> hasListLength(1));
-        AddNewTag();
+        navigateToApplyTagFragment();
     }
 
-    public void AddNewTag() {
+    public void navigateToApplyTagFragment() {
         onView(withId(R.id.select_items_button)).perform(click());
         onData(anything())
                 .inAdapterView(withId(R.id.item_list))
@@ -51,16 +51,34 @@ public class ApplyTagFragmentTest extends TestSetup {
                 .onChildView(withId(R.id.item_checkBox))
                 .perform(click());
         onView(withId(R.id.action_tags)).perform(click());
+    }
+
+    @Test
+    public void testTagIsPresentWithNewUser() {
         onView(withText("MANAGE")).perform(click());
         String tag1 = "Tag1";
         onView(withId(R.id.tag_edit_text)).perform(clearText(), typeText(tag1));
         onView(withId(R.id.add_tag_button)).perform(click());
         onView(withText("DONE")).perform(click());
+        waitFor(() -> onView(withText("Tag1")).check(matches(isDisplayed())));
     }
 
     @Test
-    public void testTagIsPresentWithNewUser() {
-        waitFor(() -> onView(withText("Tag1")).check(matches(isDisplayed())));
+    public void testCancelButtonWithNewUser() {
+        onView(withText("CANCEL")).perform(click());
+        waitFor(() -> onView(withId(R.id.item_list)).check(matches(isDisplayed())));
+    }
+
+    @Test
+    public void testManageButtonWithNewUser() {
+        onView(withText("MANAGE")).perform(click());
+        waitFor(() -> onView(withText("DONE")).check(matches(isDisplayed())));
+    }
+
+    @Test
+    public void testApplyButtonWithNewUser() {
+        onView(withText("APPLY")).perform(click());
+        waitFor(() -> onView(withId(R.id.item_list)).check(matches(isDisplayed())));
     }
 
 }
