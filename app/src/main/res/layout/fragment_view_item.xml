@@ -59,15 +59,27 @@
             android:orientation="vertical"
             android:paddingBottom="32dp">
 
-            <include
-                android:id="@+id/view_item_main_photo"
-                layout="@layout/gallery_photo"
-                android:layout_width="380dp"
-                android:layout_height="380dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="16dp"
-                android:adjustViewBounds="true"
-                android:scaleType="fitXY" />
+            <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="12dp">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/view_item_main_photo"
+                    android:scaleType="centerCrop"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:shapeAppearanceOverlay="@style/roundedImageView"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:srcCompat="@tools:sample/avatars" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
