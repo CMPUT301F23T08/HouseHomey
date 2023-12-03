@@ -124,10 +124,12 @@ public class SignUpFragment extends Fragment {
                             {
                                 //If email already registered.
                                 emailEdittext.setError(task1.getException().getMessage());
+                                System.out.println(task1.getException().getMessage());
 
                             } else if (task1.getException() instanceof FirebaseAuthWeakPasswordException) {
                                 //if password not 'stronger'
                                 passwordEdittext.setError(task1.getException().getMessage());
+                                confirmPasswordEdittext.setError(task1.getException().getMessage());
                             }
                         });
                     } else {
@@ -197,6 +199,12 @@ public class SignUpFragment extends Fragment {
                 password = editable.toString().trim();
                 if (password.isEmpty()) {
                     passwordEdittext.setError("password cannot be empty");
+                } else if (!password.equals(confirmedPassword)) {
+                    confirmPasswordEdittext.setError("passwords do not match");
+                    passwordEdittext.setError("passwords do not match");
+                } else {
+                    confirmPasswordEdittext.setError(null);
+                    passwordEdittext.setError(null);
                 }
             }
         });
@@ -217,8 +225,12 @@ public class SignUpFragment extends Fragment {
                 confirmedPassword = editable.toString().trim();
                 if(!confirmedPassword.equals(password)) {
                     confirmPasswordEdittext.setError("passwords do not match");
+                    passwordEdittext.setError("passwords do not match");
                 } else if (confirmedPassword.isEmpty()) {
                     confirmPasswordEdittext.setError("cannot be empty");
+                } else {
+                    confirmPasswordEdittext.setError(null);
+                    passwordEdittext.setError(null);
                 }
             }
         });
@@ -240,12 +252,17 @@ public class SignUpFragment extends Fragment {
     private boolean confirmPassword() {
         if (!password.isEmpty() & !username.isEmpty() & !email.isEmpty()){
             if (passwordEdittext.getError() == null & usernameEdittext.getError() == null & emailEdittext.getError() == null) {
-                if(confirmedPassword.equals(password) & confirmPasswordEdittext.getError() == null){
-                    usernameEdittext.setError(null);
-                    emailEdittext.setError(null);
-                    passwordEdittext.setError(null);
-                    confirmPasswordEdittext.setError(null);
-                    return true;
+                if(confirmedPassword.equals(password)){
+                    if(confirmPasswordEdittext.getError() == null) {
+                        usernameEdittext.setError(null);
+                        emailEdittext.setError(null);
+                        passwordEdittext.setError(null);
+                        confirmPasswordEdittext.setError(null);
+                        return true;
+                    }
+                } else {
+                    passwordEdittext.setError("passwords do not match");
+                    confirmPasswordEdittext.setError("passwords do not match");
                 }
             }
         }

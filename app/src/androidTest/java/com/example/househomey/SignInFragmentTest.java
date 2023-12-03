@@ -2,11 +2,20 @@ package com.example.househomey;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.pressImeActionButton;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.assertThat;
 import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+
+import static com.example.househomey.testUtils.TestHelpers.enterText;
+import static com.example.househomey.testUtils.TestHelpers.hasListLength;
+import static com.example.househomey.testUtils.TestHelpers.waitFor;
 
 import androidx.test.core.app.ActivityScenario;
 
@@ -41,7 +50,15 @@ public class SignInFragmentTest {
 
     @Test
     public void testLogin() {
-
+        onView(withId(R.id.signin_username)).perform(clearText(), typeText("ESPRESSO_GENERAL_USER"), pressImeActionButton(), closeSoftKeyboard());
+        onView(withId(R.id.signin_password)).perform(clearText(), typeText("123456"), pressImeActionButton(), closeSoftKeyboard());
+        onView(withId(R.id.signin_button)).perform(click());
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        waitFor(()->hasListLength(15));
     }
 
     @After
