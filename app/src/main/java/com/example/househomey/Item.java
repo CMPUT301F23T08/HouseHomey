@@ -2,10 +2,14 @@ package com.example.househomey;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.househomey.tags.Tag;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -16,6 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * This class represents an inventory item with a variety of properties
@@ -32,6 +38,8 @@ public class Item implements Serializable, Parcelable {
     private String comment = "";
     private BigDecimal cost;
     private List<String> photoIds = new ArrayList<>();
+    private Set<Tag> tags = new TreeSet<>();
+    private boolean checked = false;
 
     /**
      * This constructs a new item from a Map of data with a reference to its Firestore document
@@ -66,6 +74,80 @@ public class Item implements Serializable, Parcelable {
     }
 
     /**
+     * This constructs a new item from a Map of data with a reference to its Firestore document
+     *
+     * @param id   The id of this object's document in the firestore database
+     * @param data The data from that document to initialize the instance
+     * @param tagRef The tag collection
+     * @param listener The listener for completion of tag intialization
+     * @throws NullPointerException if a null required field is given
+     */
+    public Item(String id, @NonNull Map<String, Object> data, CollectionReference tagRef, OnItemInitializedListener listener) {
+        this(id, data);
+        initTags(tagRef, listener);
+    }
+
+    /**
+     * Listens for completion of the item's tag initialization
+     */
+    public interface OnItemInitializedListener {
+        void onItemInitialized(Item item);
+    }
+
+
+    /**
+     * @param tagRef the collection of tags
+     * @param listener The listener to notify when tag intialization is complete
+     */
+    private void initTags(CollectionReference tagRef, OnItemInitializedListener listener) {
+        tagRef.whereArrayContains("items", id)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Tag tag = new Tag(document.getId(), document.getData());
+                            tags.add(tag);
+                        }
+                        Log.i("Item Tag", tags.toString());
+                    } else {
+                        Log.e("Item Tag", "Couldn't set item tag");
+                    }
+                    listener.onItemInitialized(this);
+                });
+    }
+
+    /**
+     * Adds new tag to tag set
+     * @param tag new tag to add
+     */
+    public void addTag(Tag tag) {
+        tags.add(tag);
+    }
+
+    /**
+     * Clears the tags in the set
+     */
+    public void clearTags() {
+        tags.clear();
+    }
+
+    /**
+     * Getter for tags
+     * @return set of tags
+     */
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    /**
+     * Setter for tags
+     * @param tags new set of tags
+     */
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
+    }
+
+    /**
      * Convenient getter for map of properties to be used for Firestore queries
      *
      * @return A Map containing all the properties of this object as key-value pairs
@@ -97,6 +179,22 @@ public class Item implements Serializable, Parcelable {
         return itemData;
     }
 
+    /**
+     * Getter for checked
+     *
+     * @return The checked state of this item
+     */
+    public boolean getChecked() {
+        return checked;
+    }
+
+    /**
+     * Setter for checked
+     * @param newChecked The new value for checked
+     */
+    public void setChecked(boolean newChecked) {
+        checked = newChecked;
+    }
 
     /**
      * Getter for id
@@ -216,7 +314,8 @@ public class Item implements Serializable, Parcelable {
         out.writeString(serialNumber);
         out.writeString(comment);
         out.writeSerializable(cost.toString());
-        out.writeSerializable(photoIds.toArray());
+        out.writeList(photoIds);
+        out.writeList(new ArrayList<>(tags));
     }
 
     /**
@@ -232,7 +331,11 @@ public class Item implements Serializable, Parcelable {
         this.serialNumber = in.readString();
         this.comment = in.readString();
         this.cost = new BigDecimal(in.readString()).setScale(2, RoundingMode.HALF_UP);
-        this.photoIds = in.createStringArrayList();
+        in.readStringList(this.photoIds);
+        this.tags = new TreeSet<>();
+        List<Tag> tagList = new ArrayList<>();
+        in.readList(tagList, Tag.class.getClassLoader(), Tag.class);
+        this.tags.addAll(tagList);
     }
 
     /**

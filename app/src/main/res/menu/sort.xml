@@ -16,4 +16,8 @@
         android:id="@+id/sort_by_estimatedValue"
         android:title="Estimated Value"
         />
+    <item
+        android:id="@+id/sort_by_tag"
+        android:title="Tag"
+        />
 </menu>

@@ -37,6 +37,7 @@ public class DatabaseSetupRule<T extends Activity> implements TestRule {
     private DocumentReference userDoc;
     private boolean isDatabaseTest;
     private final int dbTimeoutInSeconds = 30;
+    private T activity;
 
     public DatabaseSetupRule(Class<T> activityClass) {
         this.activityClass = activityClass;
@@ -48,14 +49,16 @@ public class DatabaseSetupRule<T extends Activity> implements TestRule {
      * ESPRESSO_GENERAL_USER exists in Firebase for testing general, non-DB changing tests
      * ex) proper page navigation, field validation, etc.
      */
-    public void setupActivity() {
+    public T setupActivity() {
         Bundle userData = new Bundle();
         userData.putString("username", isDatabaseTest ? userDoc.getId() : "ESPRESSO_GENERAL_USER");
         ActivityScenario.launch(activityClass).onActivity(activity -> {
+            this.activity = activity;
             Intent intent = new Intent(activity, MainActivity.class);
             intent.putExtra("userData", userData);
             activity.startActivity(intent);
         });
+        return activity;
     }
 
     /*
@@ -66,12 +69,12 @@ public class DatabaseSetupRule<T extends Activity> implements TestRule {
      * @throws RuntimeException if the mock data cannot create a valid Item, if adding the mock item to Firestore
      * fails, or if there is a timeout waiting for the operation to complete.
      */
-    public void addTestItem(Map<String, Object> itemDetails) throws Exception {
+    public void addTestItem(Map<String, Object> itemDetails) {
         if (userDoc != null) {
             // Ensure that mock data can be used to create a valid Item
             Item item;
             try {
-                item = new Item("", itemDetails);
+                item = new Item("", itemDetails, userDoc.collection("tag"), item1 -> {});
             } catch (NullPointerException e) {
                 throw new RuntimeException("Mock data cannot create a valid Item: " + e.getMessage());
             }
@@ -82,7 +85,11 @@ public class DatabaseSetupRule<T extends Activity> implements TestRule {
                 throw new RuntimeException("Adding mock item to Firestore failed with: " + e.getMessage());
             });
             // Wait for item creation to finish
-            if (!latch.await(dbTimeoutInSeconds, TimeUnit.SECONDS)) {
+            try {
+                if (!latch.await(dbTimeoutInSeconds, TimeUnit.SECONDS)) {
+                    throw new RuntimeException("Timeout waiting for test user creation.");
+                }
+            } catch (InterruptedException e) {
                 throw new RuntimeException("Timeout waiting for test user creation.");
             }
         }
