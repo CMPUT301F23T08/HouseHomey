@@ -14,5 +14,5 @@
         android:scaleType="centerInside"
         android:src="@drawable/baseline_add_32"
         android:tint="@color/black"
-        app:shapeAppearanceOverlay="@style/roundedImageView" />
+        app:shapeAppearanceOverlay="@style/smallRoundedImageView" />
 </RelativeLayout>
