@@ -3,6 +3,7 @@ package com.example.househomey;
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
 import static com.example.househomey.utils.FragmentUtils.navigateViaBottomNavBar;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +12,8 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.househomey.form.AddItemFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -36,21 +39,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // Handle the test user data
-        Bundle userData = getIntent().getBundleExtra("userData");
-        if (userData != null) {
-            String username = userData.getString("username");
-            user = new User(username);
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            user = new User(currentUser.getDisplayName());
         } else {
-            // create or login a user, for now just assume...
-            user = new User("john_doe");
+            Intent intent = new Intent(this, SignInActivity.class);
+            this.startActivity(intent);
         }
+
 
         // Init primary fragments and show home fragment
         HomeFragment homeFragment = new HomeFragment();
         AddItemFragment addFragment = new AddItemFragment();
-        HomeFragment userFragment = new HomeFragment(); // TODO: initalize userProfilePage properly
+        UserProfileFragment userFragment = new UserProfileFragment();
         getSupportFragmentManager().beginTransaction()
                         .add(R.id.fragmentContainer, homeFragment,homeFragment.toString())
                         .add(R.id.fragmentContainer, addFragment,addFragment.toString())
@@ -61,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
-            Fragment fragment;
             if (id == R.id.action_home) {
                 // Go to Home page
                 navigateViaBottomNavBar(homeFragment,this);
@@ -69,7 +69,9 @@ public class MainActivity extends AppCompatActivity {
                 // Go to Add Item page
                 navigateViaBottomNavBar(addFragment,this);
             } else {
-                // TODO: Go to Profile Page
+                Bundle name = new Bundle();
+                name.putString("username", user.getUsername());
+                userFragment.setArguments(name);
                 navigateViaBottomNavBar(userFragment,this);
             }
             return true;
