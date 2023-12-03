@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -370,5 +371,26 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         // Remove photo from adapter
         photoUris.remove(position);
         photoAdapter.notifyItemRemoved(position);
+    }
+
+    /**
+     * Clears all the text fields and the photos in the form
+     */
+    protected void clearDataFields() {
+
+        View formView = getView();
+        int numUris = photoUris.size();
+        photoUris.clear();
+        photoAdapter.notifyItemRangeRemoved(0,numUris);
+        ((EditText) formView.findViewById(R.id.add_item_description)).setText("");
+        ((EditText) formView.findViewById(R.id.add_item_date)).setText("");
+        ((EditText) formView.findViewById(R.id.add_item_cost)).setText("");
+        ((EditText) formView.findViewById(R.id.add_item_make)).setText("");
+        ((EditText) formView.findViewById(R.id.add_item_model)).setText("");
+        ((EditText) formView.findViewById(R.id.add_item_serial_number)).setText("");
+        ((EditText) formView.findViewById(R.id.add_item_comment)).setText("");
+
+
+
     }
 }
