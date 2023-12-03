@@ -24,13 +24,15 @@ import java.util.regex.Pattern;
 public class SNImageScanner extends ImageScanner {
     private Context context;
     private OnImageScannedListener listener;
+
     public interface OnImageScannedListener {
         void onSNScanningComplete(String serialNumber);
     }
 
     /**
      * Constructs a new SNImageScanner
-     * @param context The context of this scanner
+     *
+     * @param context  The context of this scanner
      * @param listener The listener to notify when scanning complete
      */
     public SNImageScanner(Context context, OnImageScannedListener listener) {
@@ -40,6 +42,7 @@ public class SNImageScanner extends ImageScanner {
 
     /**
      * Scans the given image using google MLKit
+     *
      * @param imageUri Image to scan
      */
     @Override
@@ -55,7 +58,7 @@ public class SNImageScanner extends ImageScanner {
                                 .setTitle("Serial number scanned: ")
                                 .setMessage(resultText +
                                         "\n \nSet as serial number?")
-                                .setPositiveButton("YES",(dialog,which)->{
+                                .setPositiveButton("YES", (dialog, which) -> {
                                     listener.onSNScanningComplete(resultText);
                                 })
                                 .setNegativeButton("NO", null)
@@ -70,7 +73,9 @@ public class SNImageScanner extends ImageScanner {
     }
 
     /**
-     * Selects the best line from MLKit text by choosing the lowest, longest line of numbers
+     * Selects the best line from MLKit text by choosing the text with
+     * the most digits
+     *
      * @param text The MLKit text to select the number from
      * @return the chosen serial number
      */
@@ -78,8 +83,8 @@ public class SNImageScanner extends ImageScanner {
 
         String bestElement = "";
         List<String> strings = new ArrayList<>();
-        Pattern pattern = Pattern.compile("\\d+");
-        int maxConsecutiveCount = 0;
+        Pattern pattern = Pattern.compile("\\d");
+        int maxTotalDigits = 0;
 
         //Get all the text elements/words from the image as strings
         for (Text.TextBlock block : text.getTextBlocks()) {
@@ -89,20 +94,18 @@ public class SNImageScanner extends ImageScanner {
             }
         }
 
-        //Select the string that has the most consecutive numbers on it
+        //Select the string that has the most numbers in it
         for (String str : strings) {
             Matcher matcher = pattern.matcher(str);
-            int consecutiveCount = 0;
+            int totalDigits = 0;
             while (matcher.find()) {
-                int currentCount = matcher.group().length();
-                consecutiveCount += currentCount;
+                totalDigits++;
             }
-            if (consecutiveCount > maxConsecutiveCount) {
-                maxConsecutiveCount = consecutiveCount;
+            if (totalDigits > maxTotalDigits) {
+                maxTotalDigits = totalDigits;
                 bestElement = str;
             }
         }
-
         return bestElement;
     }
 
