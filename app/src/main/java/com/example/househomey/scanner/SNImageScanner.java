@@ -12,6 +12,10 @@ import com.google.mlkit.vision.text.TextRecognizer;
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A class for handling the scanning of serial numbers and updating item information accordingly
@@ -20,13 +24,15 @@ import java.io.IOException;
 public class SNImageScanner extends ImageScanner {
     private Context context;
     private OnImageScannedListener listener;
+
     public interface OnImageScannedListener {
         void onSNScanningComplete(String serialNumber);
     }
 
     /**
      * Constructs a new SNImageScanner
-     * @param context The context of this scanner
+     *
+     * @param context  The context of this scanner
      * @param listener The listener to notify when scanning complete
      */
     public SNImageScanner(Context context, OnImageScannedListener listener) {
@@ -36,6 +42,7 @@ public class SNImageScanner extends ImageScanner {
 
     /**
      * Scans the given image using google MLKit
+     *
      * @param imageUri Image to scan
      */
     @Override
@@ -51,7 +58,7 @@ public class SNImageScanner extends ImageScanner {
                                 .setTitle("Serial number scanned: ")
                                 .setMessage(resultText +
                                         "\n \nSet as serial number?")
-                                .setPositiveButton("YES",(dialog,which)->{
+                                .setPositiveButton("YES", (dialog, which) -> {
                                     listener.onSNScanningComplete(resultText);
                                 })
                                 .setNegativeButton("NO", null)
@@ -66,19 +73,37 @@ public class SNImageScanner extends ImageScanner {
     }
 
     /**
-     * Selects the best line from MLKit text by choosing the lowest, longest line of numbers
+     * Selects the best line from MLKit text by choosing the text with
+     * the most digits
+     *
      * @param text The MLKit text to select the number from
      * @return the chosen serial number
      */
     private static String selectBestLine(Text text) {
-        String bestElement = "";
 
+        String bestElement = "";
+        List<String> strings = new ArrayList<>();
+        Pattern pattern = Pattern.compile("\\d");
+        int maxTotalDigits = 0;
+
+        //Get all the text elements/words from the image as strings
         for (Text.TextBlock block : text.getTextBlocks()) {
             for (Text.Line line : block.getLines()) {
                 for (Text.Element element : line.getElements())
-                    // Serial numbers are usually at the bottom
-                    if (element.getText().length() >= bestElement.length())
-                        bestElement = element.getText();
+                    strings.add(element.getText());
+            }
+        }
+
+        //Select the string that has the most numbers in it
+        for (String str : strings) {
+            Matcher matcher = pattern.matcher(str);
+            int totalDigits = 0;
+            while (matcher.find()) {
+                totalDigits++;
+            }
+            if (totalDigits > maxTotalDigits) {
+                maxTotalDigits = totalDigits;
+                bestElement = str;
             }
         }
         return bestElement;

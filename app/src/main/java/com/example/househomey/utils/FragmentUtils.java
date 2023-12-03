@@ -170,5 +170,32 @@ public class FragmentUtils {
                     .addOnFailureListener(e -> Log.e("IMAGE_DELETE", "Failed to delete image from Cloud Storage: " + e));
         }
     }
+
+    /**
+     * Navigates to fragment without adding it to back stack, this is for moving between the 3
+     * primary fragments on the bottom navbar
+     * @param fragmentToShow page to navigate to
+     * @param context The AppCompatActivity context where the navigation is called
+     */
+    public static void navigateViaBottomNavBar(Fragment fragmentToShow, Context context) {
+        FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
+        if(fragmentManager.getBackStackEntryCount()!=0) {
+            fragmentManager.popBackStack(fragmentToShow.toString(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, fragmentToShow)
+                .commit();
+    }
+
+    /**
+     * Takes an unformatted string and converts it to initial case
+     *
+     * @param label the unformatted label
+     * @return the formatted label
+     */
+    public static String initialCase(String label) {
+        label = label.substring(0, 1).toUpperCase() + label.substring(1).toLowerCase();
+        return label;
+    }
 }
 

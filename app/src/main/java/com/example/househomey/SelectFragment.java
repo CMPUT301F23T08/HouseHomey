@@ -1,6 +1,7 @@
 package com.example.househomey;
 
 import static com.example.househomey.utils.FragmentUtils.deletePhotosFromCloud;
+import static com.example.househomey.utils.FragmentUtils.goBack;
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
 
 import android.os.Bundle;
@@ -92,12 +93,7 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
         final Button cancelButton = rootView.findViewById(R.id.cancel_select_button);
         cancelButton.setOnClickListener(v -> {
             unselectAllItems();
-            HomeFragment homeFragment = new HomeFragment();
-            Bundle outgoing_args = new Bundle();
-            outgoing_args.putString("currentSortName",currentSortName);
-            outgoing_args.putBoolean("sortOrder", sortOrder);
-            homeFragment.setArguments(outgoing_args);
-            navigateToFragmentPage(getContext(), homeFragment);
+            goBack(getContext());
         });
 
         final Button deleteButton = rootView.findViewById(R.id.action_delete);
@@ -179,12 +175,8 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
                     Log.e("Firestore", "Failed to remove items.", error);
                 });
 
-        HomeFragment homeFragment = new HomeFragment();
-        Bundle outgoing_args = new Bundle();
-        outgoing_args.putString("currentSortName",currentSortName);
-        outgoing_args.putBoolean("sortOrder", sortOrder);
-        homeFragment.setArguments(outgoing_args);
-        navigateToFragmentPage(getContext(), homeFragment);
+        goBack(getContext());
+      
     }
 
     /**

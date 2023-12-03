@@ -124,7 +124,6 @@ public class SignUpFragment extends Fragment {
                             {
                                 //If email already registered.
                                 emailEdittext.setError(task1.getException().getMessage());
-                                System.out.println(task1.getException().getMessage());
 
                             } else if (task1.getException() instanceof FirebaseAuthWeakPasswordException) {
                                 //if password not 'stronger'
