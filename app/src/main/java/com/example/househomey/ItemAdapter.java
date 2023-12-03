@@ -96,11 +96,14 @@ public class ItemAdapter extends ArrayAdapter<Item> {
         ((TextView) view.findViewById(R.id.item_date_text)).setText(formatDate(item.getAcquisitionDate()));
         ((TextView) view.findViewById(R.id.item_cost_text)).setText("$" + item.getCost());
 
+        ((TextView) view.findViewById(R.id.item_tag)).setVisibility(View.GONE);
+        ((View) view.findViewById(R.id.make_tag_divider)).setVisibility(View.GONE);
+
         String makeString = item.getMake();
         Set<Tag> itemTags = item.getTags();
         ((TextView) view.findViewById(R.id.item_extra_tags_text)).setText("");
         if (itemTags.size() > 0) {
-            if (makeString != "") makeString += " | ";
+            if (makeString != "") ((View) view.findViewById(R.id.make_tag_divider)).setVisibility(View.VISIBLE);;
             ((TextView) view.findViewById(R.id.item_tag)).setVisibility(View.VISIBLE);
             ((TextView) view.findViewById(R.id.item_tag)).setText(itemTags.iterator().next().getTagLabel());
             if (itemTags.size() > 1)
