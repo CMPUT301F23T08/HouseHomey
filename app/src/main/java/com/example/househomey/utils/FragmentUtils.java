@@ -170,5 +170,16 @@ public class FragmentUtils {
                     .addOnFailureListener(e -> Log.e("IMAGE_DELETE", "Failed to delete image from Cloud Storage: " + e));
         }
     }
+
+    /**
+     * Takes an unformatted string and converts it to initial case
+     *
+     * @param label the unformatted label
+     * @return the formatted label
+     */
+    public static String initialCase(String label) {
+        label = label.substring(0, 1).toUpperCase() + label.substring(1).toLowerCase();
+        return label;
+    }
 }
 
