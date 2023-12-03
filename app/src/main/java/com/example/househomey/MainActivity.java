@@ -1,17 +1,21 @@
 package com.example.househomey;
 
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
+import static com.example.househomey.utils.FragmentUtils.navigateViaBottomNavBar;
 
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.househomey.form.AddItemFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import org.checkerframework.checker.units.qual.A;
 
 
 /**
@@ -43,8 +47,16 @@ public class MainActivity extends AppCompatActivity {
             user = new User("john_doe");
         }
 
-        // Init home fragment
-        navigateToFragmentPage(this, new HomeFragment());
+        // Init primary fragments and show home fragment
+        HomeFragment homeFragment = new HomeFragment();
+        AddItemFragment addFragment = new AddItemFragment();
+        HomeFragment userFragment = new HomeFragment(); // TODO: initalize userProfilePage properly
+        getSupportFragmentManager().beginTransaction()
+                        .add(R.id.fragmentContainer, homeFragment,homeFragment.toString())
+                        .add(R.id.fragmentContainer, addFragment,addFragment.toString())
+                        .add(R.id.fragmentContainer, userFragment,userFragment.toString())
+                        .replace(R.id.fragmentContainer,homeFragment)
+                        .commit();
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -52,15 +64,14 @@ public class MainActivity extends AppCompatActivity {
             Fragment fragment;
             if (id == R.id.action_home) {
                 // Go to Home page
-                fragment = new HomeFragment();
+                navigateViaBottomNavBar(homeFragment,this);
             } else if (id == R.id.action_add) {
                 // Go to Add Item page
-                fragment = new AddItemFragment();
+                navigateViaBottomNavBar(addFragment,this);
             } else {
                 // TODO: Go to Profile Page
-                fragment = new HomeFragment();
+                navigateViaBottomNavBar(userFragment,this);
             }
-            navigateToFragmentPage(this, fragment);
             return true;
         });
     }
@@ -92,4 +103,5 @@ public class MainActivity extends AppCompatActivity {
                 .child(user.getUsername())
                 .child(imageId);
     }
+
 }

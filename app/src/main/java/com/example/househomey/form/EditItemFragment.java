@@ -9,8 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.os.BundleCompat;
 
 import com.example.househomey.Item;
 import com.example.househomey.MainActivity;
@@ -19,6 +21,7 @@ import com.example.househomey.ViewItemFragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -28,17 +31,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author Owen Cooke
  */
 public class EditItemFragment extends ItemFormFragment {
-    private final Item item;
+    private Item item;
     private Item updatedItem;
 
-    /**
-     * Constructs a new EditItemFragment with the item to edit.
-     *
-     * @param item The item to be edited
-     */
-    public EditItemFragment(Item item) {
-        this.item = item;
+    private OnItemUpdateListener listener;
+    public interface OnItemUpdateListener extends Serializable {
+        void onItemUpdated(Item updatedItem);
     }
+
 
     /**
      * This creates the view to edit an existing item and sets the button listeners.
@@ -55,9 +55,19 @@ public class EditItemFragment extends ItemFormFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
+
+        //Get the item and listener for item update from Bundle
+        Bundle args = getArguments();
+        assert(args!=null);
+        this.item = BundleCompat.getParcelable(args, "item", Item.class);
+        this.listener = args.getSerializable("listener", OnItemUpdateListener.class);
+
         // Change title and prefill inputs with the existing Item's data
         ((MaterialTextView) rootView.findViewById(R.id.add_item_title)).setText("Edit Item");
         prefillInputs(rootView);
+
+
+
         // Add listeners for buttons and text validation
         initDatePicker(rootView);
         initTextValidators(rootView);
@@ -124,10 +134,9 @@ public class EditItemFragment extends ItemFormFragment {
      * Sends the new item to the view item fragment
      */
     private void sendItem() {
-        ViewItemFragment viewItemFragment = new ViewItemFragment();
-        Bundle args = new Bundle();
-        args.putSerializable("item", updatedItem);
-        viewItemFragment.setArguments(args);
-        navigateToFragmentPage(getContext(), viewItemFragment);
+        if (listener!=null) {
+            listener.onItemUpdated(updatedItem);
+        }
+        goBack(getContext());
     }
 }
