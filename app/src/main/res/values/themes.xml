@@ -19,9 +19,13 @@
         <item name="android:color">#40FFFFFF</item>
     </style>
 
-    <style name="roundedImageView" parent="">
+    <style name="smallRoundedImageView" parent="">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">8dp</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+    <style name="largeRoundedImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">32dp</item>
     </style>
 
     <style name="Theme.HouseHomey" parent="Base.Theme.HouseHomey" />
