@@ -143,7 +143,7 @@
                     android:layout_weight="0.5"
                     android:text="Make"
                     android:textColor="@color/subTitle"
-                    android:textSize="18sp" />
+                    android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/view_item_make"
@@ -151,7 +151,7 @@
                     android:layout_height="40dp"
                     android:layout_weight="0.5"
                     android:text="Make"
-                    android:textSize="18sp" />
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -169,7 +169,7 @@
                     android:layout_weight="0.5"
                     android:text="Model"
                     android:textColor="@color/subTitle"
-                    android:textSize="18sp" />
+                    android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/view_item_model"
@@ -177,7 +177,7 @@
                     android:layout_height="40dp"
                     android:layout_weight="0.5"
                     android:text="Model"
-                    android:textSize="18sp" />
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -195,7 +195,7 @@
                     android:layout_weight="0.5"
                     android:text="Serial Number"
                     android:textColor="@color/subTitle"
-                    android:textSize="18sp" />
+                    android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/view_item_serial_number"
@@ -203,7 +203,7 @@
                     android:layout_height="40dp"
                     android:layout_weight="0.5"
                     android:text="Serial"
-                    android:textSize="18sp" />
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -221,7 +221,7 @@
                     android:layout_weight="0.5"
                     android:text="Est. Cost (CAD)"
                     android:textColor="@color/subTitle"
-                    android:textSize="18sp" />
+                    android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/view_item_cost"
@@ -229,7 +229,7 @@
                     android:layout_height="40dp"
                     android:layout_weight="0.5"
                     android:text="Cost"
-                    android:textSize="18sp" />
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -323,33 +323,32 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1" />
 
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/edit_button"
-                    android:layout_width="160dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:text="Edit Item" />
-
+                    android:layout_width="125dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edit_button_border"
+                    android:text="Edit Item"
+                    android:paddingVertical="10dp"
+                    android:paddingHorizontal="24dp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/darkGrey">
+                </androidx.appcompat.widget.AppCompatButton>
                 <Space
-                    android:layout_width="32dp"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1" />
-
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/delete_button"
-                    android:layout_width="160dp"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
-                    android:layout_gravity="center"
-
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/red"
-                    android:text="Delete"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/edit_button"
-                    app:layout_constraintTop_toTopOf="parent" />
-
+                    android:layout_width="125dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/delete_button_border"
+                    android:text="Delete Item"
+                    android:paddingVertical="10dp"
+                    android:paddingHorizontal="24dp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/red">
+                </androidx.appcompat.widget.AppCompatButton>
                 <Space
                     android:layout_width="32dp"
                     android:layout_height="match_parent"
