@@ -87,6 +87,7 @@ public class ManageTagFragment extends TagFragment {
      * @param tagLabel the label that will go on the tag
      */
     private void addTag(String tagLabel) {
+        tagLabel = FragmentUtils.initialCase(tagLabel);
         if (!tagList.stream()
                 .map(Tag::getTagLabel)
                 .collect(Collectors.toList()).contains(tagLabel)) {
