@@ -2,6 +2,7 @@ package com.example.househomey;
 
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +10,8 @@ import androidx.fragment.app.Fragment;
 
 import com.example.househomey.form.AddItemFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -32,16 +35,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // Handle the test user data
-        Bundle userData = getIntent().getBundleExtra("userData");
-        if (userData != null) {
-            String username = userData.getString("username");
-            user = new User(username);
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            user = new User(currentUser.getDisplayName());
         } else {
-            // create or login a user, for now just assume...
-            user = new User("john_doe");
+            Intent intent = new Intent(this, SignInActivity.class);
+            this.startActivity(intent);
         }
+
 
         // Init home fragment
         navigateToFragmentPage(this, new HomeFragment());
@@ -57,8 +58,10 @@ public class MainActivity extends AppCompatActivity {
                 // Go to Add Item page
                 fragment = new AddItemFragment();
             } else {
-                // TODO: Go to Profile Page
-                fragment = new HomeFragment();
+                Bundle name = new Bundle();
+                name.putString("username", user.getUsername());
+                fragment = new UserProfileFragment();
+                fragment.setArguments(name);
             }
             navigateToFragmentPage(this, fragment);
             return true;
