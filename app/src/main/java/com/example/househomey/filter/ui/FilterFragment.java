@@ -6,10 +6,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.househomey.R;
 import com.example.househomey.filter.model.FilterCallback;
 
 /**
@@ -38,6 +42,19 @@ public abstract class FilterFragment extends DialogFragment {
                 .setNegativeButton("Reset", onResetListener)
                 .setNeutralButton("Cancel", null)
                 .setPositiveButton("Apply", onApplyListener);
+    }
+
+    /**
+     * Customizes the appearance of buttons button in the associated AlertDialog.
+     */
+    @Override
+    public void onStart() {
+        super.onStart();
+        AlertDialog dialog = (AlertDialog) getDialog();
+        if (dialog != null) {
+            Button negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+            negativeButton.setTextColor(ContextCompat.getColor(getActivity(), R.color.red));
+        }
     }
 
     /**
