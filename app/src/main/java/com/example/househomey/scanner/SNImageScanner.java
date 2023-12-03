@@ -12,6 +12,10 @@ import com.google.mlkit.vision.text.TextRecognizer;
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A class for handling the scanning of serial numbers and updating item information accordingly
@@ -71,16 +75,34 @@ public class SNImageScanner extends ImageScanner {
      * @return the chosen serial number
      */
     private static String selectBestLine(Text text) {
-        String bestElement = "";
 
+        String bestElement = "";
+        List<String> strings = new ArrayList<>();
+        Pattern pattern = Pattern.compile("\\d+");
+        int maxConsecutiveCount = 0;
+
+        //Get all the text elements/words from the image as strings
         for (Text.TextBlock block : text.getTextBlocks()) {
             for (Text.Line line : block.getLines()) {
                 for (Text.Element element : line.getElements())
-                    // Serial numbers are usually at the bottom
-                    if (element.getText().length() >= bestElement.length())
-                        bestElement = element.getText();
+                    strings.add(element.getText());
             }
         }
+
+        //Select the string that has the most consecutive numbers on it
+        for (String str : strings) {
+            Matcher matcher = pattern.matcher(str);
+            int consecutiveCount = 0;
+            while (matcher.find()) {
+                int currentCount = matcher.group().length();
+                consecutiveCount += currentCount;
+            }
+            if (consecutiveCount > maxConsecutiveCount) {
+                maxConsecutiveCount = consecutiveCount;
+                bestElement = str;
+            }
+        }
+
         return bestElement;
     }
 
