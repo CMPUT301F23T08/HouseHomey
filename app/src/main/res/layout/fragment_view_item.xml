@@ -103,7 +103,7 @@
                     android:layout_height="40dp"
                     android:text="No attached photos"
                     android:textColor="@color/subTitle"
-                    android:textSize="18sp" />
+                    android:textSize="15sp" />
 
             </LinearLayout>
 
