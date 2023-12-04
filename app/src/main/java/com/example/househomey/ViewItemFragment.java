@@ -28,6 +28,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -45,6 +46,7 @@ public class ViewItemFragment extends Fragment implements EditItemFragment.OnIte
     protected ViewPhotoAdapter viewPhotoAdapter;
     private CollectionReference tagRef;
     private ChipGroup chipGroup;
+    private ListenerRegistration tagListener;
 
     /**
      *
@@ -62,7 +64,7 @@ public class ViewItemFragment extends Fragment implements EditItemFragment.OnIte
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_view_item, container, false);
         tagRef = ((MainActivity) requireActivity()).getTagRef();
-        tagRef.addSnapshotListener(this::setupTagListener);
+        tagListener = tagRef.addSnapshotListener(this::setupTagListener);
         // Initialize TextViews
         TextView title = rootView.findViewById(R.id.view_item_title);
         TextView make = rootView.findViewById(R.id.view_item_make);
@@ -130,6 +132,15 @@ public class ViewItemFragment extends Fragment implements EditItemFragment.OnIte
         });
 
         return rootView;
+    }
+
+    /**
+     * Remove the tag listener when the fragment is stopped
+     */
+    @Override
+    public void onStop() {
+        super.onStop();
+        tagListener.remove();
     }
 
     /**
