@@ -101,7 +101,7 @@
                 <TextView
                     android:id="@+id/view_item_no_photos"
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_height="32dp"
                     android:text="No attached photos"
                     android:textColor="@color/subTitle"
                     android:textSize="15sp" />
@@ -126,7 +126,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="12dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingHorizontal="12dp">
@@ -152,7 +152,7 @@
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
+                    android:layout_height="32dp"
                     android:layout_weight="0.5"
                     android:text="Date Acquired"
                     android:textColor="@color/subTitle"
@@ -161,7 +161,7 @@
                 <TextView
                     android:id="@+id/view_item_date"
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
+                    android:layout_height="32dp"
                     android:layout_weight="0.5"
                     android:text="Date"
                     android:hint="—"
@@ -179,7 +179,7 @@
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
+                    android:layout_height="32dp"
                     android:layout_weight="0.5"
                     android:text="Est. Cost (CAD)"
                     android:textColor="@color/subTitle"
@@ -188,7 +188,7 @@
                 <TextView
                     android:id="@+id/view_item_cost"
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
+                    android:layout_height="32dp"
                     android:layout_weight="0.5"
                     android:text="Cost"
                     android:hint="—"
@@ -206,7 +206,7 @@
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
+                    android:layout_height="32dp"
                     android:layout_weight="0.5"
                     android:text="Make"
                     android:textColor="@color/subTitle"
@@ -215,7 +215,7 @@
                 <TextView
                     android:id="@+id/view_item_make"
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
+                    android:layout_height="32dp"
                     android:layout_weight="0.5"
                     android:text="Make"
                     android:hint="—"
@@ -233,7 +233,7 @@
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
+                    android:layout_height="32dp"
                     android:layout_weight="0.5"
                     android:text="Model"
                     android:textColor="@color/subTitle"
@@ -242,7 +242,7 @@
                 <TextView
                     android:id="@+id/view_item_model"
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
+                    android:layout_height="32dp"
                     android:layout_weight="0.5"
                     android:text="Model"
                     android:hint="—"
@@ -269,7 +269,7 @@
                 <TextView
                     android:id="@+id/view_item_serial_number"
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
+                    android:layout_height="32dp"
                     android:layout_weight="0.5"
                     android:text="Serial"
                     android:hint="—"
@@ -280,7 +280,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:layout_marginTop="24dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingHorizontal="12dp">
@@ -295,9 +294,10 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/add_tags_button"
                     style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:padding="0dp"
+                    android:layout_marginTop="1dp"
                     android:gravity="center_vertical"
                     app:icon="@drawable/baseline_add_24"
                     app:iconSize="25dp"
@@ -321,39 +321,45 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/view_item_comment_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="24dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="0.5"
-                    android:paddingHorizontal="12dp"
-                    android:text="Comment"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="0.5"
+                        android:paddingHorizontal="12dp"
+                        android:text="Comment"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="4dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingHorizontal="12dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="12dp">
 
-                <TextView
-                    android:id="@+id/view_item_comment"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="0.5"
-                    android:text="Comment"
-                    android:textSize="15sp" />
+                    <TextView
+                        android:id="@+id/view_item_comment"
+                        android:layout_width="0dp"
+                        android:layout_height="32dp"
+                        android:layout_weight="0.5"
+                        android:text="Comment"
+                        android:textSize="15sp" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
