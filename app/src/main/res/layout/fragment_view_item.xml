@@ -154,6 +154,60 @@
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="0.5"
+                    android:text="Date Acquired"
+                    android:textColor="@color/subTitle"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/view_item_date"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.5"
+                    android:text="Date"
+                    android:hint="—"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.5"
+                    android:text="Est. Cost (CAD)"
+                    android:textColor="@color/subTitle"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/view_item_cost"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.5"
+                    android:text="Cost"
+                    android:hint="—"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.5"
                     android:text="Make"
                     android:textColor="@color/subTitle"
                     android:textSize="15sp" />
@@ -218,33 +272,6 @@
                     android:layout_height="40dp"
                     android:layout_weight="0.5"
                     android:text="Serial"
-                    android:hint="—"
-                    android:textSize="15sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="4dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingHorizontal="12dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="0.5"
-                    android:text="Est. Cost (CAD)"
-                    android:textColor="@color/subTitle"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/view_item_cost"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="0.5"
-                    android:text="Cost"
                     android:hint="—"
                     android:textSize="15sp" />
             </LinearLayout>

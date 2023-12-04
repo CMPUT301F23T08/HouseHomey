@@ -36,6 +36,7 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -71,6 +72,7 @@ public class ViewItemFragment extends Fragment implements EditItemFragment.OnIte
         tagListener = tagRef.addSnapshotListener(this::setupTagListener);
         // Initialize TextViews
         TextView title = rootView.findViewById(R.id.view_item_title);
+        TextView date = rootView.findViewById(R.id.view_item_date);
         TextView make = rootView.findViewById(R.id.view_item_make);
         TextView model = rootView.findViewById(R.id.view_item_model);
         TextView serialNumber = rootView.findViewById(R.id.view_item_serial_number);
@@ -86,6 +88,7 @@ public class ViewItemFragment extends Fragment implements EditItemFragment.OnIte
                 .ifPresent(item -> {
                     this.item = item;
                     title.setText(item.getDescription());
+                    date.setText((new SimpleDateFormat("yyyy-MM-dd")).format(item.getAcquisitionDate()));
                     make.setText(item.getMake());
                     model.setText(item.getModel());
                     serialNumber.setText(item.getSerialNumber());
