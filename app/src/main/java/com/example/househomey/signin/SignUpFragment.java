@@ -217,11 +217,11 @@ public class SignUpFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 confirmedPassword = editable.toString().trim();
-                if(!confirmedPassword.equals(password)) {
+                if(confirmedPassword.isEmpty()) {
+                    confirmPasswordEdittext.setError("password cannot be empty");
+                } else if (!confirmedPassword.equals(password)) {
                     confirmPasswordEdittext.setError("passwords do not match");
                     passwordEdittext.setError("passwords do not match");
-                } else if (confirmedPassword.isEmpty()) {
-                    confirmPasswordEdittext.setError("password cannot be empty");
                 } else {
                     confirmPasswordEdittext.setError(null);
                     passwordEdittext.setError(null);
