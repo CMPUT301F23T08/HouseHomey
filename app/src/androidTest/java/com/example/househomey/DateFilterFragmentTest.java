@@ -51,7 +51,7 @@ public class DateFilterFragmentTest extends TestSetup  {
      */
     public void navigateToDateRangeFilter() {
         onView(withId(R.id.filter_dropdown_button)).perform(click());
-        onView(withText("Date Range")).perform(click());
+        onView(withText("Date")).perform(click());
     }
 
 }
