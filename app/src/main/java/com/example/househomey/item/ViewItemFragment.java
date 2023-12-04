@@ -95,6 +95,11 @@ public class ViewItemFragment extends Fragment implements EditItemFragment.OnIte
                     cost.setText(item.getCost().toString());
                     addTagsToChipGroup();
                     comment.setText(item.getComment());
+                    if (item.getComment() != null && !item.getComment().isEmpty()) {
+                        comment.setText(item.getComment());
+                    } else {
+                        rootView.findViewById(R.id.view_item_comment_section).setVisibility(View.GONE);
+                    }
                 });
 
         // On edit button click, pass item to EditItemFragment
