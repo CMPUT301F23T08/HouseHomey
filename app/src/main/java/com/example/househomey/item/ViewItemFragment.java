@@ -21,12 +21,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.househomey.MainActivity;
 import com.example.househomey.R;
 import com.example.househomey.form.EditItemFragment;
-
 import com.example.househomey.form.ViewPhotoAdapter;
-import com.example.househomey.home.HomeFragment;
-import com.example.househomey.item.Item;
-import com.example.househomey.tags.Tag;
 import com.example.househomey.tags.ApplyTagFragment;
+import com.example.househomey.tags.Tag;
 import com.example.househomey.utils.FragmentUtils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -44,32 +41,31 @@ import java.util.Objects;
 /**
  * This fragment is for the "View Item Page" - which currently displays the details and comment linked
  * to the item
+ *
  * @author Matthew Neufeld
  */
-public class ViewItemFragment extends Fragment implements EditItemFragment.OnItemUpdateListener{
-    private Item item;
+public class ViewItemFragment extends Fragment implements EditItemFragment.OnItemUpdateListener {
     protected ViewPhotoAdapter viewPhotoAdapter;
-    private CollectionReference tagRef;
+    private Item item;
     private ChipGroup chipGroup;
     private ListenerRegistration tagListener;
 
     /**
-     *
-     * @param inflater The LayoutInflater object that can be used to inflate
-     * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
-     * but this can be used to generate the LayoutParams of the view.
+     * @param inflater           The LayoutInflater object that can be used to inflate
+     *                           any views in the fragment,
+     * @param container          If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to.  The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
      * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
-     *
+     *                           from a previous saved state as given here.
      * @return view item fragment
      */
     @SuppressLint("SetTextI18n")
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_view_item, container, false);
-        tagRef = ((MainActivity) requireActivity()).getTagRef();
+        CollectionReference tagRef = ((MainActivity) requireActivity()).getTagRef();
         tagListener = tagRef.addSnapshotListener(this::setupTagListener);
+
         // Initialize TextViews
         TextView title = rootView.findViewById(R.id.view_item_title);
         TextView date = rootView.findViewById(R.id.view_item_date);
@@ -106,10 +102,10 @@ public class ViewItemFragment extends Fragment implements EditItemFragment.OnIte
         rootView.findViewById(R.id.edit_button).setOnClickListener(v -> {
             EditItemFragment editItemFragment = new EditItemFragment();
             Bundle args = new Bundle();
-            args.putParcelable("item",item);
-            args.putSerializable("listener",this);
+            args.putParcelable("item", item);
             editItemFragment.setArguments(args);
-            navigateToFragmentPage(getContext(),editItemFragment);
+            editItemFragment.setListener(this);
+            navigateToFragmentPage(getContext(), editItemFragment);
         });
 
         rootView.findViewById(R.id.delete_button).setOnClickListener(v -> {
@@ -140,7 +136,7 @@ public class ViewItemFragment extends Fragment implements EditItemFragment.OnIte
             Bundle tagArgs = new Bundle();
             tagArgs.putParcelableArrayList("itemList", selectedItem);
             applyTagFragment.setArguments(tagArgs);
-            applyTagFragment.show(requireActivity().getSupportFragmentManager(),"tagDialog");
+            applyTagFragment.show(requireActivity().getSupportFragmentManager(), "tagDialog");
         });
 
         return rootView;
@@ -158,6 +154,7 @@ public class ViewItemFragment extends Fragment implements EditItemFragment.OnIte
     /**
      * Whenever an item is updated (in Edit Item), this listener method adds the updated item
      * to View Item's bundle arguments and displays the updated item information upon view creation
+     *
      * @param updatedItem the Item with updated fields
      */
     @Override
@@ -170,8 +167,9 @@ public class ViewItemFragment extends Fragment implements EditItemFragment.OnIte
     /**
      * This method updates the tags with changes in the firestore database and creates new
      * tag objects
+     *
      * @param querySnapshots The updated information on the inventory from the database
-     * @param error Non-null if an error occurred in Firestore
+     * @param error          Non-null if an error occurred in Firestore
      */
     private void setupTagListener(QuerySnapshot querySnapshots, FirebaseFirestoreException error) {
         if (error != null) {
@@ -181,7 +179,7 @@ public class ViewItemFragment extends Fragment implements EditItemFragment.OnIte
         if (querySnapshots != null) {
             item.clearTags();
             chipGroup.removeAllViews();
-            for (QueryDocumentSnapshot doc: querySnapshots) {
+            for (QueryDocumentSnapshot doc : querySnapshots) {
                 Tag tag = new Tag(doc.getId(), doc.getData());
                 for (String id : tag.getItemIds()) {
                     if (Objects.equals(item.getId(), id)) item.addTag(tag);
@@ -196,18 +194,14 @@ public class ViewItemFragment extends Fragment implements EditItemFragment.OnIte
      */
     private void addTagsToChipGroup() {
         CollectionReference tagRef = ((MainActivity) requireActivity()).getTagRef();
-        for (Tag tag: item.getTags()) {
+        for (Tag tag : item.getTags()) {
             final Chip chip = FragmentUtils.makeChip(tag.getTagLabel(), true, chipGroup, getContext(), R.color.creme, R.color.black, R.color.black);
             final Tag finalTag = tag;
-            chip.setOnCloseIconClickListener(v -> {
-                tagRef.document(finalTag.getTagLabel()).get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        ArrayList<String> itemIds = new ArrayList<>((List<String>) task.getResult().get("items"));
-                        itemIds.removeIf(item -> item.equals(this.item.getId()));
-                        tagRef.document(finalTag.getTagLabel()).update("items", itemIds);
-                    }
-                });
-            });
+            chip.setOnCloseIconClickListener(v -> tagRef.document(finalTag.getTagLabel()).get().addOnSuccessListener(task -> {
+                ArrayList<String> itemIds = new ArrayList<>((List<String>) task.getData().get("items"));
+                itemIds.removeIf(item -> item.equals(this.item.getId()));
+                tagRef.document(finalTag.getTagLabel()).update("items", itemIds);
+            }));
         }
     }
 }

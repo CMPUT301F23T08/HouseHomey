@@ -57,6 +57,7 @@ public class UserProfileFragment extends Fragment {
             if (activity != null) {
                 Intent intent = new Intent(activity, SignInActivity.class);
                 activity.startActivity(intent);
+                activity.finish();
             }
         });
 

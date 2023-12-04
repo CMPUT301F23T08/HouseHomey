@@ -376,7 +376,6 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
      * Clears all the text fields and the photos in the form
      */
     protected void clearDataFields() {
-
         View formView = getView();
         int numUris = photoUris.size();
         photoUris.clear();
@@ -388,8 +387,5 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         ((EditText) formView.findViewById(R.id.add_item_model)).setText("");
         ((EditText) formView.findViewById(R.id.add_item_serial_number)).setText("");
         ((EditText) formView.findViewById(R.id.add_item_comment)).setText("");
-
-
-
     }
 }

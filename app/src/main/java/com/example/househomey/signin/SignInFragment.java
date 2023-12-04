@@ -88,8 +88,11 @@ public class SignInFragment extends Fragment {
                 loginButton.setTextColor(getResources().getColor(R.color.brown, rootView.getContext().getTheme()));
             }, 150);
 
+            username = usernameEdittext.getText().toString();
             usernameEdittext.setError(null);
+
             passwordEdittext.setError(null);
+            password = passwordEdittext.getText().toString();
 
             userRef = FirebaseFirestore.getInstance().collection("user");
 
@@ -123,8 +126,13 @@ public class SignInFragment extends Fragment {
                     }
                 });
             } else {
-                usernameEdittext.setError("username or password empty");
-                passwordEdittext.setError("username or password empty");
+                if (username.isEmpty()) {
+                    usernameEdittext.setError("username cannot be empty");
+                }
+
+                if (password.isEmpty()) {
+                    passwordEdittext.setError("password cannot be empty");
+                }
             }
 
         });

@@ -40,6 +40,15 @@ public class SignUpFragmentTest {
     }
 
     @Test
+    public void testAllEmpty() {
+        onView(withId(R.id.signup_button)).perform(scrollTo(), click());
+        onView(withId(R.id.signup_username)).check(matches(hasErrorText("username cannot be empty")));
+        onView(withId(R.id.signup_email)).check(matches(hasErrorText("email cannot be empty")));
+        onView(withId(R.id.signup_password)).check(matches(hasErrorText("password cannot be empty")));
+        onView(withId(R.id.signup_confirm_password)).check(matches(hasErrorText("password cannot be empty")));
+    }
+
+    @Test
     public void testUsername() {
         enterText(R.id.signup_username, "antonio2");
         onView(withId(R.id.signup_username)).perform(clearText());
@@ -61,6 +70,8 @@ public class SignUpFragmentTest {
         enterText(R.id.signup_password, "123456");
         enterText(R.id.signup_confirm_password, "12345");
         onView(withId(R.id.signup_confirm_password)).check(matches(hasErrorText("passwords do not match")));
+        onView(withId(R.id.signup_confirm_password)).perform(clearText());
+        onView(withId(R.id.signup_confirm_password)).check(matches(hasErrorText("password cannot be empty")));
     }
 
     @Test
