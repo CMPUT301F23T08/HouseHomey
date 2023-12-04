@@ -2,6 +2,7 @@ package com.example.househomey.form;
 
 import static com.example.househomey.utils.FragmentUtils.formatDate;
 import static com.example.househomey.utils.FragmentUtils.goBack;
+import static java.util.Optional.ofNullable;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -27,12 +28,7 @@ import java.io.Serializable;
 public class EditItemFragment extends ItemFormFragment {
     private Item item;
     private Item updatedItem;
-
     private OnItemUpdateListener listener;
-    public interface OnItemUpdateListener extends Serializable {
-        void onItemUpdated(Item updatedItem);
-    }
-
 
     /**
      * This creates the view to edit an existing item and sets the button listeners.
@@ -49,18 +45,13 @@ public class EditItemFragment extends ItemFormFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
-
-        //Get the item and listener for item update from Bundle
-        Bundle args = getArguments();
-        assert(args!=null);
-        this.item = BundleCompat.getParcelable(args, "item", Item.class);
-        this.listener = args.getSerializable("listener", OnItemUpdateListener.class);
+        ofNullable(getArguments())
+                .map(args -> BundleCompat.getParcelable(args, "item", Item.class))
+                .ifPresent(item -> this.item = item);
 
         // Change title and prefill inputs with the existing Item's data
         ((MaterialTextView) rootView.findViewById(R.id.add_item_title)).setText("Edit Item");
         prefillInputs(rootView);
-
-
 
         // Add listeners for buttons and text validation
         initDatePicker(rootView);
@@ -128,9 +119,22 @@ public class EditItemFragment extends ItemFormFragment {
      * Sends the new item to the view item fragment
      */
     private void sendItem() {
-        if (listener!=null) {
+        if (listener != null) {
             listener.onItemUpdated(updatedItem);
         }
         goBack(getContext());
+    }
+
+    /**
+     * Sets the listener for item update events.
+     *
+     * @param listener The listener to be notified when an item is updated.
+     */
+    public void setListener(OnItemUpdateListener listener) {
+        this.listener = listener;
+    }
+
+    public interface OnItemUpdateListener extends Serializable {
+        void onItemUpdated(Item updatedItem);
     }
 }
