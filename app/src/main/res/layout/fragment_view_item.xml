@@ -64,13 +64,14 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="14dp">
+                >
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/view_item_main_photo"
                     android:scaleType="centerCrop"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    android:layout_margin="14dp"
                     app:shapeAppearanceOverlay="@style/largeRoundedImageView"
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintTop_toTopOf="parent"
@@ -163,6 +164,7 @@
                     android:layout_height="40dp"
                     android:layout_weight="0.5"
                     android:text="Make"
+                    android:hint="—"
                     android:textSize="15sp" />
             </LinearLayout>
 
@@ -189,6 +191,7 @@
                     android:layout_height="40dp"
                     android:layout_weight="0.5"
                     android:text="Model"
+                    android:hint="—"
                     android:textSize="15sp" />
             </LinearLayout>
 
@@ -215,6 +218,7 @@
                     android:layout_height="40dp"
                     android:layout_weight="0.5"
                     android:text="Serial"
+                    android:hint="—"
                     android:textSize="15sp" />
             </LinearLayout>
 
@@ -241,6 +245,7 @@
                     android:layout_height="40dp"
                     android:layout_weight="0.5"
                     android:text="Cost"
+                    android:hint="—"
                     android:textSize="15sp" />
             </LinearLayout>
 
@@ -248,7 +253,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="24dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingHorizontal="12dp">
@@ -292,7 +297,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="24dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
