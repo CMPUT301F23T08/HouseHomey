@@ -29,6 +29,7 @@ import com.example.househomey.tags.ApplyTagFragment;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
@@ -54,6 +55,7 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
     private ItemAdapter itemAdapter;
     private CollectionReference tagRef;
     private Map<String, Item> itemIdMap = new HashMap<>();
+    private ListenerRegistration tagListener;
 
     /**
      *
@@ -92,7 +94,7 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
         itemAdapter.setSelectState(true);
 
         tagRef = ((MainActivity) requireActivity()).getTagRef();
-        tagRef.addSnapshotListener(this::setupTagListener);
+        tagListener = tagRef.addSnapshotListener(this::setupTagListener);
 
         final Button cancelButton = rootView.findViewById(R.id.cancel_select_button);
         cancelButton.setOnClickListener(v -> {
@@ -223,5 +225,14 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
             }
         }
         itemAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * Remove the tag listener when the fragment is stopped
+     */
+    @Override
+    public void onStop() {
+        super.onStop();
+        tagListener.remove();
     }
 }
