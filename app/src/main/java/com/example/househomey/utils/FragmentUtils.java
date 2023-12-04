@@ -89,7 +89,6 @@ public class FragmentUtils {
      * @return datePicker
      */
     public static MaterialDatePicker<Long> createDatePicker() {
-
         // Create constraint to restrict dates to past/present
         CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
         constraintsBuilder.setEnd(System.currentTimeMillis());
@@ -125,7 +124,6 @@ public class FragmentUtils {
      * @param textColour          text colour of the chip
      * @return a new chip
      */
-
     public static Chip makeChip(String label, Boolean closeIconVisibility, ChipGroup chipGroup, Context context, int backgroundColour, int strokeColour, int textColour, boolean checkable) {
         Chip chip = new Chip(context);
         chip.setText(label);
@@ -137,6 +135,19 @@ public class FragmentUtils {
         chipGroup.addView(chip);
         return chip;
     }
+
+    /**
+     * uses MakeChip to make a new chip
+     *
+     * @param label               label that will go on the chip
+     * @param closeIconVisibility boolean: if true, closeIcon is visible, if false, not visible
+     * @param chipGroup           group of chips the chip will be added to
+     * @param context             the given context
+     * @param backgroundColour    background colour of the chip
+     * @param strokeColour        stroke colour of the chip
+     * @param textColour          text colour of the chip
+     * @return a chip provided by makeChip
+     */
     public static Chip makeChip(String label, Boolean closeIconVisibility, ChipGroup chipGroup, Context context, int backgroundColour, int strokeColour, int textColour) {
         return makeChip(label, closeIconVisibility, chipGroup, context, backgroundColour, strokeColour, textColour, false);
     }

@@ -24,6 +24,7 @@ import java.util.List;
  * A class for handling the scanning and decoding of barcodes
  * and updating item information accordingly
  * @author Sami
+ * @see ImageScanner
  */
 public class BarcodeImageScanner extends ImageScanner{
 

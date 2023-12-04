@@ -13,6 +13,11 @@ import com.example.househomey.form.ImagePickerDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 
+/**
+ * Creates a dialog to select the appropriate scanner. After selection it prompts the user to
+ * choose image upload method
+ * @see ImagePickerDialog
+ */
 public class ScannerPickerDialog extends BottomSheetDialogFragment implements ImagePickerDialog.OnImagePickedListener {
     ImageScanner scanner;
     ImagePickerDialog imagePickerDialog;
