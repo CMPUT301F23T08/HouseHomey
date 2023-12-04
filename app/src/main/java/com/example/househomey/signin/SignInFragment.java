@@ -78,12 +78,7 @@ public class SignInFragment extends Fragment {
         usernameEdittext = rootView.findViewById(R.id.signin_username);
         passwordEdittext = rootView.findViewById(R.id.signin_password);
         loginButton = rootView.findViewById(R.id.signin_button);
-        TextView signInRedirectMessage = rootView.findViewById(R.id.signin_redirect_message);
         TextView signInRedirect = rootView.findViewById(R.id.signin_redirect);
-
-        loginButton.setText(R.string.signin_button_text);
-        signInRedirectMessage.setText(R.string.signin_text);
-        signInRedirect.setText(R.string.sign_up_string);
 
         loginButton.setOnClickListener(v -> {
             loginButton.setBackgroundResource(R.drawable.signin_button_clicked);
