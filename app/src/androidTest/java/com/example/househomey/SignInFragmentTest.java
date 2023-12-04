@@ -51,14 +51,9 @@ public class SignInFragmentTest {
 
     @Test
     public void testLogin() {
-        onView(withId(R.id.signin_username)).perform(clearText(), typeText("ESPRESSO_GENERAL_USER"), pressImeActionButton(), closeSoftKeyboard());
-        onView(withId(R.id.signin_password)).perform(clearText(), typeText("123456"), pressImeActionButton(), closeSoftKeyboard());
+        enterText(R.id.signin_username, "ESPRESSO_GENERAL_USER");
+        enterText(R.id.signin_password, "123456");
         onView(withId(R.id.signin_button)).perform(click());
-        try {
-            Thread.sleep(1500);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
         waitFor(()->hasListLength(15));
     }
 
