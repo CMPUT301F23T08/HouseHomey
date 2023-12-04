@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,15 +45,18 @@ public class DeleteItemsFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = getLayoutInflater().inflate(R.layout.fragment_delete_items, null);
+        TextView dialogMessage = view.findViewById(R.id.dialogMessage);
+        dialogMessage.setText("This will permanently remove the selected items from your inventory.");
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         return builder
                 .setView(view)
+                .setNeutralButton("Cancel", null)
                 .setTitle(listener.DialogTitle(selectedItems))
-                .setNegativeButton("Cancel",null)
-                .setPositiveButton("OK",(dialog,which)->{
+                .setPositiveButton("OK", (dialog, which) -> {
                     listener.onOKPressed(selectedItems);
-                }).create();
+                })
+                .create();
     }
 
     /**

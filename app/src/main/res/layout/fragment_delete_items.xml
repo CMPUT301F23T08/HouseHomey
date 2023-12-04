@@ -2,12 +2,16 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/num_delete_items"
+        android:id="@+id/dialogMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"/>
+        android:paddingTop="16dp"
+        android:paddingHorizontal="24dp"
+        android:text="This will permanently remove the selected items from your inventory."
+        android:textSize="16sp"/>
+
 </LinearLayout>

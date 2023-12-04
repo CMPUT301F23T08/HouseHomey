@@ -48,7 +48,7 @@ public class KeywordFilterFragment extends FilterFragment {
         contentView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_keywords, null);
         AlertDialog.Builder builder = createBuilder();
 
-        Dialog dialog = builder.setTitle("Modify Keyword Filter").setView(contentView).create();
+        Dialog dialog = builder.setTitle("Filter by Keywords").setView(contentView).create();
 
         chipGroup = contentView.findViewById(R.id.chip_group_labels);
         addButton = contentView.findViewById(R.id.add_keyword_button);

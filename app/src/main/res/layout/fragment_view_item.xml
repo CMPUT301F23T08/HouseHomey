@@ -64,13 +64,14 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="14dp">
+                >
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/view_item_main_photo"
                     android:scaleType="centerCrop"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    android:layout_margin="14dp"
                     app:shapeAppearanceOverlay="@style/largeRoundedImageView"
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintTop_toTopOf="parent"
@@ -100,7 +101,7 @@
                 <TextView
                     android:id="@+id/view_item_no_photos"
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_height="32dp"
                     android:text="No attached photos"
                     android:textColor="@color/subTitle"
                     android:textSize="15sp" />
@@ -125,7 +126,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="12dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingHorizontal="12dp">
@@ -151,18 +152,19 @@
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
+                    android:layout_height="32dp"
                     android:layout_weight="0.5"
-                    android:text="Make"
+                    android:text="Date Acquired"
                     android:textColor="@color/subTitle"
                     android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/view_item_make"
+                    android:id="@+id/view_item_date"
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
+                    android:layout_height="32dp"
                     android:layout_weight="0.5"
-                    android:text="Make"
+                    android:text="Date"
+                    android:hint="—"
                     android:textSize="15sp" />
             </LinearLayout>
 
@@ -177,59 +179,7 @@
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="0.5"
-                    android:text="Model"
-                    android:textColor="@color/subTitle"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/view_item_model"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="0.5"
-                    android:text="Model"
-                    android:textSize="15sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="4dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingHorizontal="12dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="0.5"
-                    android:text="Serial Number"
-                    android:textColor="@color/subTitle"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/view_item_serial_number"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="0.5"
-                    android:text="Serial"
-                    android:textSize="15sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="4dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingHorizontal="12dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
+                    android:layout_height="32dp"
                     android:layout_weight="0.5"
                     android:text="Est. Cost (CAD)"
                     android:textColor="@color/subTitle"
@@ -238,9 +188,10 @@
                 <TextView
                     android:id="@+id/view_item_cost"
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
+                    android:layout_height="32dp"
                     android:layout_weight="0.5"
                     android:text="Cost"
+                    android:hint="—"
                     android:textSize="15sp" />
             </LinearLayout>
 
@@ -249,6 +200,86 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="32dp"
+                    android:layout_weight="0.5"
+                    android:text="Make"
+                    android:textColor="@color/subTitle"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/view_item_make"
+                    android:layout_width="0dp"
+                    android:layout_height="32dp"
+                    android:layout_weight="0.5"
+                    android:text="Make"
+                    android:hint="—"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="32dp"
+                    android:layout_weight="0.5"
+                    android:text="Model"
+                    android:textColor="@color/subTitle"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/view_item_model"
+                    android:layout_width="0dp"
+                    android:layout_height="32dp"
+                    android:layout_weight="0.5"
+                    android:text="Model"
+                    android:hint="—"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="32dp"
+                    android:layout_weight="0.5"
+                    android:text="Serial Number"
+                    android:textColor="@color/subTitle"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/view_item_serial_number"
+                    android:layout_width="0dp"
+                    android:layout_height="32dp"
+                    android:layout_weight="0.5"
+                    android:text="Serial"
+                    android:hint="—"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingHorizontal="12dp">
@@ -263,9 +294,10 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/add_tags_button"
                     style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:padding="0dp"
+                    android:layout_marginTop="0.5dp"
                     android:gravity="center_vertical"
                     app:icon="@drawable/baseline_add_24"
                     app:iconSize="25dp"
@@ -289,45 +321,51 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/view_item_comment_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="4dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="0.5"
-                    android:paddingHorizontal="12dp"
-                    android:text="Comment"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="0.5"
+                        android:paddingHorizontal="12dp"
+                        android:text="Comment"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="12dp">
+
+                    <TextView
+                        android:id="@+id/view_item_comment"
+                        android:layout_width="0dp"
+                        android:layout_height="32dp"
+                        android:layout_weight="0.5"
+                        android:text="Comment"
+                        android:textSize="15sp" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="4dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingHorizontal="12dp">
-
-                <TextView
-                    android:id="@+id/view_item_comment"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="0.5"
-                    android:text="Comment"
-                    android:textSize="15sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginTop="16dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="24dp"
                 android:orientation="horizontal">
 
                 <Space

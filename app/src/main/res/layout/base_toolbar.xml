@@ -9,7 +9,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/select_items_button"
         android:layout_width="80dp"
-        android:layout_height="34dp"
+        android:layout_height="36dp"
         android:text="@string/select"
         android:layout_marginStart="4dp"
         android:padding="0dp"
@@ -26,10 +26,10 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/filter_dropdown_button"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             app:icon="@drawable/baseline_tune_24"
-            app:iconSize="22dp"
+            app:iconSize="26dp"
             app:iconGravity="textEnd"
             app:iconTint="@color/black"
             android:contentDescription="@string/filter_dropdown_description"/>
@@ -37,19 +37,19 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/sort_by_alpha_button"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             app:icon="@drawable/baseline_sort_by_alpha_24"
-            app:iconSize="22dp"
+            app:iconSize="26dp"
             app:iconTint="@color/black"
             app:iconGravity="textEnd"
             android:contentDescription="@string/sort_button_description"/>
 
         <androidx.appcompat.widget.AppCompatToggleButton
             android:id="@+id/sort_order_toggle"
-            android:layout_width="32dp"
+            android:layout_width="36dp"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_height="32dp"
+            android:layout_height="36dp"
             app:iconGravity="textStart|start"
             android:textOn=""
             android:textOff=""

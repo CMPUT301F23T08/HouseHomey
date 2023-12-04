@@ -11,7 +11,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/cancel_select_button"
         android:layout_width="80dp"
-        android:layout_height="34dp"
+        android:layout_height="36dp"
         android:text="@string/done"
         android:textSize="16sp"
         android:layout_marginStart="4dp"
@@ -30,10 +30,10 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/action_delete"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             app:icon="@drawable/baseline_delete_24"
-            app:iconSize="22dp"
+            app:iconSize="26dp"
             app:iconGravity="textEnd"
             app:iconTint="@color/black"
             android:contentDescription="@string/delete_action_description"/>
@@ -41,11 +41,11 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/action_tags"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             app:iconGravity="textEnd"
             app:icon="@drawable/sell_24px"
-            app:iconSize="22dp"
+            app:iconSize="26dp"
             app:iconTint="@color/black"
             android:contentDescription="@string/tags_popup_description"/>
     </LinearLayout>

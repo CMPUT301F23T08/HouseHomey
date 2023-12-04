@@ -43,7 +43,7 @@ public class TagFilterFragment extends FilterFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         contentView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_tags, null);
         AlertDialog.Builder builder = createBuilder();
-        Dialog dialog = builder.setTitle("Modify Tag Filter").setView(contentView).create();
+        Dialog dialog = builder.setTitle("Filter by Tags").setView(contentView).create();
 
         if (getArguments() != null) {
             this.filterCallback = getArguments().getSerializable("callback", FilterCallback.class);

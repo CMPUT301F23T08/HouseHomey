@@ -11,13 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="24dp"
-        android:text="Scan Serial Number"
+        android:text=" Scan Serial Number"
         android:textAlignment="textStart"
         android:textColor="@color/white"
-        app:icon="@drawable/number_sign_icon"
+        app:icon="@drawable/serial_number"
         android:textSize="18sp"
         app:iconGravity="textStart"
-        app:iconSize="24dp"
         app:iconTint="@color/white" />
 
     <com.google.android.material.divider.MaterialDivider
@@ -31,13 +30,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="24dp"
-        android:text="Scan Barcode"
+        android:text=" Scan Barcode"
         android:textAlignment="textStart"
         android:textColor="@color/white"
-        app:icon="@drawable/baseline_barcode_scanner_24"
+        app:icon="@drawable/barcode"
         app:iconGravity="textStart"
         android:textSize="18sp"
-        app:iconSize="24dp"
         app:iconTint="@color/white" />
 
 </LinearLayout>
