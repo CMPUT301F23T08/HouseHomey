@@ -48,9 +48,9 @@ public class AddItemFragment extends ItemFormFragment {
         clearButton.setVisibility(View.VISIBLE);
         clearButton.setOnClickListener(v -> {
             clearDataFields();
-            ((TextInputLayout) getView().findViewById(R.id.add_item_description_layout)).setError(null);
-            ((TextInputLayout) getView().findViewById(R.id.add_item_cost_layout)).setError(null);
-            ((TextInputLayout) getView().findViewById(R.id.add_item_date_layout)).setError(null);
+            ((TextInputLayout) getView().findViewById(R.id.add_item_description_layout)).setErrorEnabled(false);
+            ((TextInputLayout) getView().findViewById(R.id.add_item_cost_layout)).setErrorEnabled(false);
+            ((TextInputLayout) getView().findViewById(R.id.add_item_date_layout)).setErrorEnabled(false);
         });
         return rootView;
     }
@@ -61,9 +61,9 @@ public class AddItemFragment extends ItemFormFragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((TextInputLayout) getView().findViewById(R.id.add_item_description_layout)).setError(null);
-        ((TextInputLayout) getView().findViewById(R.id.add_item_cost_layout)).setError(null);
-        ((TextInputLayout) getView().findViewById(R.id.add_item_date_layout)).setError(null);
+        ((TextInputLayout) getView().findViewById(R.id.add_item_description_layout)).setErrorEnabled(false);
+        ((TextInputLayout) getView().findViewById(R.id.add_item_cost_layout)).setErrorEnabled(false);
+        ((TextInputLayout) getView().findViewById(R.id.add_item_date_layout)).setErrorEnabled(false);
     }
 
     /**

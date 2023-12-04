@@ -177,7 +177,7 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
             textInputLayout.setError("This field is required");
             return true;
         }
-        textInputLayout.setError(null);
+        textInputLayout.setErrorEnabled(false);
         return false;
     }
 
@@ -205,7 +205,7 @@ public abstract class ItemFormFragment extends Fragment implements ImagePickerDi
         datePicker.addOnPositiveButtonClickListener(selection -> {
             dateAcquired = new Date(selection);
             dateTextView.setText(datePicker.getHeaderText());
-            ((TextInputLayout) rootView.findViewById(R.id.add_item_date_layout)).setError(null);
+            ((TextInputLayout) rootView.findViewById(R.id.add_item_date_layout)).setErrorEnabled(false);
         });
 
         // Show DatePicker when date field selected
