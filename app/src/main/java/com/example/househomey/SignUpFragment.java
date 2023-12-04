@@ -17,8 +17,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
@@ -79,12 +77,7 @@ public class SignUpFragment extends Fragment {
         confirmPasswordEdittext = rootView.findViewById(R.id.signup_confirm_password);
         signupButton = rootView.findViewById(R.id.signup_button);
 
-        TextView signinRedirectMessage = rootView.findViewById(R.id.signin_redirect_message);
         TextView signinRedirect = rootView.findViewById(R.id.signin_redirect);
-
-        signupButton.setText("Register");
-        signinRedirectMessage.setText("Already have an account?");
-        signinRedirect.setText(R.string.sign_in_string);
 
         signupButton.setOnClickListener(v -> {
             signupButton.setBackgroundResource(R.drawable.signin_button_clicked);
@@ -128,6 +121,7 @@ public class SignUpFragment extends Fragment {
                             } else if (task1.getException() instanceof FirebaseAuthWeakPasswordException) {
                                 //if password not 'stronger'
                                 passwordEdittext.setError(task1.getException().getMessage());
+                                confirmPasswordEdittext.setError(task1.getException().getMessage());
                             }
                         });
                     } else {
@@ -197,6 +191,12 @@ public class SignUpFragment extends Fragment {
                 password = editable.toString().trim();
                 if (password.isEmpty()) {
                     passwordEdittext.setError("password cannot be empty");
+                } else if (!password.equals(confirmedPassword)) {
+                    confirmPasswordEdittext.setError("passwords do not match");
+                    passwordEdittext.setError("passwords do not match");
+                } else {
+                    confirmPasswordEdittext.setError(null);
+                    passwordEdittext.setError(null);
                 }
             }
         });
@@ -217,8 +217,12 @@ public class SignUpFragment extends Fragment {
                 confirmedPassword = editable.toString().trim();
                 if(!confirmedPassword.equals(password)) {
                     confirmPasswordEdittext.setError("passwords do not match");
+                    passwordEdittext.setError("passwords do not match");
                 } else if (confirmedPassword.isEmpty()) {
                     confirmPasswordEdittext.setError("cannot be empty");
+                } else {
+                    confirmPasswordEdittext.setError(null);
+                    passwordEdittext.setError(null);
                 }
             }
         });
@@ -240,12 +244,17 @@ public class SignUpFragment extends Fragment {
     private boolean confirmPassword() {
         if (!password.isEmpty() & !username.isEmpty() & !email.isEmpty()){
             if (passwordEdittext.getError() == null & usernameEdittext.getError() == null & emailEdittext.getError() == null) {
-                if(confirmedPassword.equals(password) & confirmPasswordEdittext.getError() == null){
-                    usernameEdittext.setError(null);
-                    emailEdittext.setError(null);
-                    passwordEdittext.setError(null);
-                    confirmPasswordEdittext.setError(null);
-                    return true;
+                if(confirmedPassword.equals(password)){
+                    if(confirmPasswordEdittext.getError() == null) {
+                        usernameEdittext.setError(null);
+                        emailEdittext.setError(null);
+                        passwordEdittext.setError(null);
+                        confirmPasswordEdittext.setError(null);
+                        return true;
+                    }
+                } else {
+                    passwordEdittext.setError("passwords do not match");
+                    confirmPasswordEdittext.setError("passwords do not match");
                 }
             }
         }

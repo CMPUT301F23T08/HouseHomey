@@ -176,6 +176,7 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
                 });
 
         goBack(getContext());
+      
     }
 
     /**
