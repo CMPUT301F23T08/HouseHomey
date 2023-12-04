@@ -134,6 +134,9 @@ public class ViewItemFragment extends Fragment implements EditItemFragment.OnIte
         return rootView;
     }
 
+    /**
+     * Remove the tag listener when the fragment is stopped
+     */
     @Override
     public void onStop() {
         super.onStop();
