@@ -19,7 +19,8 @@ import java.util.regex.Pattern;
 
 /**
  * A class for handling the scanning of serial numbers and updating item information accordingly
- * @author Lukas
+ * @author Lukas Bonkowski
+ * @see ImageScanner
  */
 public class SNImageScanner extends ImageScanner {
     private Context context;
