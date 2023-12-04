@@ -81,6 +81,7 @@ public class SignUpFragment extends Fragment {
         TextView signInRedirect = rootView.findViewById(R.id.signin_redirect);
 
         signupButton.setOnClickListener(v -> {
+
             signupButton.setBackgroundResource(R.drawable.signin_button_clicked);
             signupButton.setTextColor(getResources().getColor(R.color.creme, rootView.getContext().getTheme()));
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
@@ -220,7 +221,7 @@ public class SignUpFragment extends Fragment {
                     confirmPasswordEdittext.setError("passwords do not match");
                     passwordEdittext.setError("passwords do not match");
                 } else if (confirmedPassword.isEmpty()) {
-                    confirmPasswordEdittext.setError("cannot be empty");
+                    confirmPasswordEdittext.setError("password cannot be empty");
                 } else {
                     confirmPasswordEdittext.setError(null);
                     passwordEdittext.setError(null);
@@ -241,7 +242,18 @@ public class SignUpFragment extends Fragment {
      * @return {@code true} if all registration inputs are valid; {@code false} otherwise.
      */
     private boolean confirmPassword() {
-        if (!password.isEmpty() & !username.isEmpty() & !email.isEmpty()){
+        username = usernameEdittext.getText().toString();
+        email = emailEdittext.getText().toString();
+        password = passwordEdittext.getText().toString();
+        confirmedPassword = confirmPasswordEdittext.getText().toString();
+
+        boolean usernameEmpty = username.isEmpty();
+        boolean emailEmpty = email.isEmpty();
+        boolean passwordEmpty = password.isEmpty();
+        boolean confirmedPasswordEmpty = confirmedPassword.isEmpty();
+
+
+        if (!usernameEmpty & !emailEmpty & !passwordEmpty & !confirmedPasswordEmpty){
             if (passwordEdittext.getError() == null & usernameEdittext.getError() == null & emailEdittext.getError() == null) {
                 if(confirmedPassword.equals(password)){
                     if(confirmPasswordEdittext.getError() == null) {
@@ -255,6 +267,22 @@ public class SignUpFragment extends Fragment {
                     passwordEdittext.setError("passwords do not match");
                     confirmPasswordEdittext.setError("passwords do not match");
                 }
+            }
+        } else {
+            if (usernameEmpty) {
+                usernameEdittext.setError("username cannot be empty");
+            }
+
+            if (emailEmpty) {
+                emailEdittext.setError("email cannot be empty");
+            }
+
+            if (passwordEmpty) {
+                passwordEdittext.setError("password cannot be empty");
+            }
+
+            if (confirmedPasswordEmpty) {
+                confirmPasswordEdittext.setError("password cannot be empty");
             }
         }
         return false;

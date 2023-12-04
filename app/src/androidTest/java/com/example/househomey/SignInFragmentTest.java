@@ -36,6 +36,14 @@ public class SignInFragmentTest {
     }
 
     @Test
+    public void testAllEmpty() {
+        onView(withId(R.id.signin_button)).perform(scrollTo(), click());
+        onView(withId(R.id.signin_username)).check(matches(hasErrorText("username cannot be empty")));
+        onView(withId(R.id.signin_password)).check(matches(hasErrorText("password cannot be empty")));
+    }
+
+
+    @Test
     public void testUsername() {
         onView(withId(R.id.signin_username)).perform(typeText("antonio2"));
         onView(withId(R.id.signin_username)).perform(clearText());
