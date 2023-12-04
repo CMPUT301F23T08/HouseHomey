@@ -46,6 +46,14 @@ public class AddItemFragment extends ItemFormFragment {
         initTextValidators(rootView);
         rootView.findViewById(R.id.add_item_back_button).setVisibility(View.GONE);
         rootView.findViewById(R.id.add_item_confirm_button).setOnClickListener(v -> addItem());
+        View clearButton = rootView.findViewById(R.id.add_item_clear_button);
+        clearButton.setVisibility(View.VISIBLE);
+        clearButton.setOnClickListener(v -> {
+            clearDataFields();
+            ((TextInputLayout) getView().findViewById(R.id.add_item_description_layout)).setError(null);
+            ((TextInputLayout) getView().findViewById(R.id.add_item_cost_layout)).setError(null);
+            ((TextInputLayout) getView().findViewById(R.id.add_item_date_layout)).setError(null);
+        });
         return rootView;
     }
 
