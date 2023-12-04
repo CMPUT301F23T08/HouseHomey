@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * DialogFragment that allows users to add new tags
+ * Dialog that allows users to select and apply existing tags
  * @author Matthew Neufeld
  */
 public class ApplyTagFragment extends TagFragment implements Serializable {

@@ -2,7 +2,6 @@ package com.example.househomey.tags;
 
 import androidx.fragment.app.DialogFragment;
 
-import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -11,6 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The base DialogFragment that makes a tag chip and gets the tag collection. Used by apply and manage tag fragments
+ */
 public abstract class TagFragment extends DialogFragment {
     protected CollectionReference tagRef;
     protected List<Tag> tagList = new ArrayList<>();
