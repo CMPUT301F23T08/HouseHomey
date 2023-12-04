@@ -18,8 +18,6 @@ import com.example.househomey.item.Item;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
 
-import java.io.Serializable;
-
 /**
  * This fragment is responsible for editing an existing item in the database.
  *
@@ -134,7 +132,10 @@ public class EditItemFragment extends ItemFormFragment {
         this.listener = listener;
     }
 
-    public interface OnItemUpdateListener extends Serializable {
+    /**
+     * Interface definition for when an Item is updated.
+     */
+    public interface OnItemUpdateListener {
         void onItemUpdated(Item updatedItem);
     }
 }
