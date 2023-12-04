@@ -26,6 +26,9 @@ public class SNImageScanner extends ImageScanner {
     private Context context;
     private OnImageScannedListener listener;
 
+    /**
+     * Interface definition for when serial number scanning is complete.
+     */
     public interface OnImageScannedListener {
         void onSNScanningComplete(String serialNumber);
     }

@@ -19,6 +19,11 @@ import com.example.househomey.R;
 import com.example.househomey.signin.SignInActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
+/**
+ * This fragment is responsible for displaying the currently signed-in user's details
+ *
+ * @author Antonio Lech Martin-Ozimek
+ */
 public class UserProfileFragment extends Fragment {
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
 
