@@ -43,13 +43,13 @@ public class EditItemFragmentTest extends TestSetup {
         // Create mock initial item in DB
         database.addTestItem(mockData);
         // Click to view the item page
-        waitFor(() -> onData(anything())
-                .inAdapterView(withId(R.id.item_list))
-                .atPosition(0)
-                .perform(click()));
-        // Click on edit button
-        waitFor(() -> onView(withId(R.id.edit_button)).perform(scrollTo()));
-        onView(withId(R.id.edit_button)).perform(click());
+        waitFor(() -> {
+            onData(anything())
+                    .inAdapterView(withId(R.id.item_list))
+                    .atPosition(0)
+                    .perform(click());
+            onView(withId(R.id.edit_button)).perform(scrollTo(), click());
+        });
     }
 
     @Test
