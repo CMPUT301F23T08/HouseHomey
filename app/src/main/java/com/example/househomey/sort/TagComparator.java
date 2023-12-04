@@ -6,6 +6,10 @@ import com.example.househomey.tags.Tag;
 import java.util.Comparator;
 import java.util.Set;
 
+/**
+ * Comparator for an Item that compares items based on their tags, more specifically
+ * the first tag lexicographically
+ */
 public class TagComparator implements Comparator<Item> {
     /**
      * Compares the first tag of each item
@@ -28,6 +32,13 @@ public class TagComparator implements Comparator<Item> {
             return tag1.compareTo(tag2);
         }
     }
+
+    /**
+     * If an item has tags, returns the first tag from an ordered set of tags,
+     * ordered lexicographically
+     * @param item item whose first tag is being returned
+     * @return Lexicographically first tag of given item
+     */
 
     private Tag getFirstTag(Item item) {
         Set<Tag> tags = item.getTags();
