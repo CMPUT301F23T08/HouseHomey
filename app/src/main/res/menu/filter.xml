@@ -2,15 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/filter_by_dates"
-        android:title="Date Range"
-        />
-    <item
-        android:id="@+id/filter_by_make"
-        android:title="Make"
+        android:title="Date"
         />
     <item
         android:id="@+id/filter_by_keywords"
         android:title="Description Keywords"
+        />
+    <item
+        android:id="@+id/filter_by_make"
+        android:title="Make"
         />
     <item
         android:id="@+id/filter_by_tags"

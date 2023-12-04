@@ -31,7 +31,7 @@ public class MakeFilterFragment extends FilterFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         contentView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter_by_make, null);
 
-        Dialog dialog = createBuilder().setTitle("Modify Make Filter").setView(contentView).create();
+        Dialog dialog = createBuilder().setTitle("Filter by Make").setView(contentView).create();
 
         filterCallback = getArguments().getSerializable("callback", FilterCallback.class);
 

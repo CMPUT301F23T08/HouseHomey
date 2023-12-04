@@ -44,7 +44,7 @@ public class DateFilterFragment extends FilterFragment {
         setDateTextView(contentView, R.id.start_date_filter, R.id.start_date_layout);
         setDateTextView(contentView, R.id.end_date_filter, R.id.end_date_layout);
 
-        Dialog dialog = createBuilder().setTitle("Modify Date Filter").setView(contentView).create();
+        Dialog dialog = createBuilder().setTitle("Filter by Date").setView(contentView).create();
 
         filterCallback = getArguments().getSerializable("callback", FilterCallback.class);
 
