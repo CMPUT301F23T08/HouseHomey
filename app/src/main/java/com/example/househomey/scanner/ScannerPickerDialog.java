@@ -19,8 +19,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
  * @see ImagePickerDialog
  */
 public class ScannerPickerDialog extends BottomSheetDialogFragment implements ImagePickerDialog.OnImagePickedListener {
-    ImageScanner scanner;
-    ImagePickerDialog imagePickerDialog;
+    private ImageScanner scanner;
+    private ImagePickerDialog imagePickerDialog;
 
     /**
      * Create new Scanner picker dialog
