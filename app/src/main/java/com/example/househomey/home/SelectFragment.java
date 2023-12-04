@@ -194,7 +194,7 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
      */
     @Override
     public String DialogTitle(ArrayList<Item> selectedItems) {
-        return "Confirm deletion of "+selectedItems.size()+" item(s)?";
+        return "Delete "+selectedItems.size()+" item(s)?";
     }
 
     /**
