@@ -1,6 +1,7 @@
 package com.example.househomey.item;
 
 import static com.example.househomey.utils.FragmentUtils.deletePhotosFromCloud;
+import static com.example.househomey.utils.FragmentUtils.goBack;
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
 import static java.util.Optional.ofNullable;
 
@@ -43,7 +44,7 @@ import java.util.Objects;
  * to the item
  * @author Matthew Neufeld
  */
-public class ViewItemFragment extends Fragment {
+public class ViewItemFragment extends Fragment implements EditItemFragment.OnItemUpdateListener{
     private Item item;
     protected ViewPhotoAdapter viewPhotoAdapter;
     private CollectionReference tagRef;
@@ -92,17 +93,22 @@ public class ViewItemFragment extends Fragment {
                 });
 
         // On edit button click, pass item to EditItemFragment
-        rootView.findViewById(R.id.edit_button).setOnClickListener(v ->
-                navigateToFragmentPage(getContext(), new EditItemFragment(item))
-        );
+        rootView.findViewById(R.id.edit_button).setOnClickListener(v -> {
+            EditItemFragment editItemFragment = new EditItemFragment();
+            Bundle args = new Bundle();
+            args.putParcelable("item",item);
+            args.putSerializable("listener",this);
+            editItemFragment.setArguments(args);
+            navigateToFragmentPage(getContext(),editItemFragment);
+        });
 
         rootView.findViewById(R.id.delete_button).setOnClickListener(v -> {
                     deletePhotosFromCloud(requireActivity(), item.getPhotoIds());
                     ((MainActivity) requireActivity()).getItemRef().document(item.getId()).delete();
-                    navigateToFragmentPage(getContext(), new HomeFragment());
+                    goBack(getContext());
                 }
         );
-        rootView.findViewById(R.id.view_item_back_button).setOnClickListener(v -> navigateToFragmentPage(getContext(), new HomeFragment()));
+        rootView.findViewById(R.id.view_item_back_button).setOnClickListener(v -> goBack(getContext()));
 
         viewPhotoAdapter = new ViewPhotoAdapter(getContext(), item.getPhotoIds(), imagePath -> viewPhotoAdapter.loadIntoImageView(mainPhoto, imagePath));
         if (item.getPhotoIds().isEmpty()) {
@@ -128,6 +134,18 @@ public class ViewItemFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    /**
+     * Whenever an item is updated (in Edit Item), this listener method adds the updated item
+     * to View Item's bundle arguments and displays the updated item information upon view creation
+     * @param updatedItem the Item with updated fields
+     */
+    @Override
+    public void onItemUpdated(Item updatedItem) {
+        Bundle args = new Bundle();
+        args.putSerializable("item", updatedItem);
+        this.setArguments(args);
     }
 
     /**

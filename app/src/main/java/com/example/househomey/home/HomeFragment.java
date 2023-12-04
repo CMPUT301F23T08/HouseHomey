@@ -73,12 +73,12 @@ public class HomeFragment extends Fragment implements FilterCallback {
     private BigDecimal listSum = new BigDecimal("0.00");
     private int listCount = 0;
     private Map<String, Comparator<Item>> sortProperties;
-    private Comparator<Item> currentSort;
-    private String currentSortName;
+    private Comparator<Item> currentSort = new DescriptionComparator();
+    private String currentSortName = "description";
     private final boolean DESC = true;
     private final boolean ASC = false;
     private ToggleButton toggleOrder;
-    private boolean sortOrder;
+    private boolean sortOrder = ASC;
     private CollectionReference tagRef;
     private ArrayList<Tag> tagList = new ArrayList<>();
     private Map<String, Item> itemIdMap = new HashMap<>();
@@ -119,11 +119,6 @@ public class HomeFragment extends Fragment implements FilterCallback {
             currentSortName = received_args.getString("currentSortName");
             currentSort = sortProperties.get(currentSortName);
             sortOrder = received_args.getBoolean("sortOrder");
-        }
-        else {
-            currentSortName = "description";
-            currentSort = sortProperties.get("description"); //default sort property
-            sortOrder = ASC; //ascending order is default
         }
 
         itemRef.addSnapshotListener(this::setupItemListener);

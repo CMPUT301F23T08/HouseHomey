@@ -90,22 +90,22 @@ public class ItemAdapter extends ArrayAdapter<Item> {
 
         // Get the correct item
         Item item = items.get(position);
-        ChipGroup chipGroup = view.findViewById(R.id.item_list_chips);
-        chipGroup.removeAllViews();
 
         // Set all the text views to their appropriate values
         ((TextView) view.findViewById(R.id.item_description_text)).setText(item.getDescription());
         ((TextView) view.findViewById(R.id.item_date_text)).setText(formatDate(item.getAcquisitionDate()));
         ((TextView) view.findViewById(R.id.item_cost_text)).setText("$" + item.getCost());
 
+        ((TextView) view.findViewById(R.id.item_tag)).setVisibility(View.GONE);
+        ((View) view.findViewById(R.id.make_tag_divider)).setVisibility(View.GONE);
+
         String makeString = item.getMake();
         Set<Tag> itemTags = item.getTags();
         ((TextView) view.findViewById(R.id.item_extra_tags_text)).setText("");
         if (itemTags.size() > 0) {
-            makeString += " | ";
-            Chip chip = FragmentUtils.makeChip(itemTags.iterator().next().getTagLabel(), false, chipGroup, view.getContext(), R.color.white, R.color.black, R.color.black);
-            chip.setFocusable(false);
-            chip.setClickable(false);
+            if (makeString != "") ((View) view.findViewById(R.id.make_tag_divider)).setVisibility(View.VISIBLE);;
+            ((TextView) view.findViewById(R.id.item_tag)).setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(R.id.item_tag)).setText(itemTags.iterator().next().getTagLabel());
             if (itemTags.size() > 1)
                 ((TextView) view.findViewById(R.id.item_extra_tags_text)).setText(" +" + (itemTags.size()-1));
         }

@@ -2,11 +2,21 @@ package com.example.househomey;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
+
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.pressImeActionButton;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.assertThat;
 import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+
+import static com.example.househomey.testUtils.TestHelpers.enterText;
+import static com.example.househomey.testUtils.TestHelpers.hasListLength;
+import static com.example.househomey.testUtils.TestHelpers.waitFor;
 
 import androidx.test.core.app.ActivityScenario;
 
@@ -43,7 +53,10 @@ public class SignInFragmentTest {
 
     @Test
     public void testLogin() {
-
+        enterText(R.id.signin_username, "ESPRESSO_GENERAL_USER");
+        enterText(R.id.signin_password, "123456");
+        onView(withId(R.id.signin_button)).perform(click());
+        waitFor(()->hasListLength(15));
     }
 
     @After

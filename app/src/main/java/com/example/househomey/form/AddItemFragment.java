@@ -7,9 +7,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.example.househomey.item.Item;
 import com.example.househomey.R;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 /**
  * This fragment is responsible for creating and loading to the database a new item
@@ -36,9 +42,20 @@ public class AddItemFragment extends ItemFormFragment {
         // Add listeners for buttons and text validation
         initDatePicker(rootView);
         initTextValidators(rootView);
+        rootView.findViewById(R.id.add_item_back_button).setVisibility(View.GONE);
         rootView.findViewById(R.id.add_item_confirm_button).setOnClickListener(v -> addItem());
-        rootView.findViewById(R.id.add_item_back_button).setOnClickListener(v -> navigateHomeWithIndicator(getContext()));
         return rootView;
+    }
+
+    /**
+     * Sets the view functionality for when this fragment is resumed in its lifecycle
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((TextInputLayout) getView().findViewById(R.id.add_item_description_layout)).setError(null);
+        ((TextInputLayout) getView().findViewById(R.id.add_item_cost_layout)).setError(null);
+        ((TextInputLayout) getView().findViewById(R.id.add_item_date_layout)).setError(null);
     }
 
     /**
@@ -59,6 +76,8 @@ public class AddItemFragment extends ItemFormFragment {
         itemRef.add(newItem.getData()).addOnSuccessListener(documentReference -> {
                     Log.d("Firestore", "Successfully created new item with id:" + documentReference.getId());
                     navigateHomeWithIndicator(getContext());
+                    clearDataFields();
+
                 })
                 .addOnFailureListener(e -> {
                     Log.d("Firestore", "Failed to create new item");
