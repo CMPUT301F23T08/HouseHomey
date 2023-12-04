@@ -1,6 +1,6 @@
 package com.example.househomey.filter.model;
 
-import com.example.househomey.Item;
+import com.example.househomey.item.Item;
 
 import java.util.ArrayList;
 import java.util.Date;

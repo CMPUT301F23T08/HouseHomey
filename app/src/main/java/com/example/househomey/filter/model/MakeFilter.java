@@ -1,8 +1,7 @@
 package com.example.househomey.filter.model;
 
-import com.example.househomey.Item;
+import com.example.househomey.item.Item;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 

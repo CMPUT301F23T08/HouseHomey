@@ -11,6 +11,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.househomey.form.AddItemFragment;
+import com.example.househomey.home.HomeFragment;
+import com.example.househomey.signin.SignInActivity;
+import com.example.househomey.user.User;
+import com.example.househomey.user.UserProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -106,5 +110,4 @@ public class MainActivity extends AppCompatActivity {
                 .child(user.getUsername())
                 .child(imageId);
     }
-
 }

@@ -12,12 +12,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.househomey.Item;
+import com.example.househomey.item.Item;
 import com.example.househomey.R;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-
-import java.util.Map;
 
 /**
  * This fragment is responsible for creating and loading to the database a new item

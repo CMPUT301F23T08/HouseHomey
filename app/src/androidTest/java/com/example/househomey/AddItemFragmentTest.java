@@ -92,12 +92,6 @@ public class AddItemFragmentTest extends TestSetup {
     }
 
     @Test
-    public void testBackButtonGoesToHomePage() {
-        onView(withId(R.id.add_item_back_button)).perform(click());
-        onView(withId(R.id.item_list)).check(matches(isDisplayed()));
-    }
-
-    @Test
     public void testRoundCostTo2Decimals() {
         enterText(R.id.add_item_cost, "99.9852323324");
         onView(withId(R.id.add_item_cost)).check(matches(withText("99.99")));

@@ -20,6 +20,8 @@ import static com.example.househomey.testUtils.TestHelpers.waitFor;
 
 import androidx.test.core.app.ActivityScenario;
 
+import com.example.househomey.signin.SignInActivity;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

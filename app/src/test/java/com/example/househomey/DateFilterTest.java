@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import com.example.househomey.filter.model.DateFilter;
+import com.example.househomey.item.Item;
 import com.google.firebase.Timestamp;
 
 import org.junit.Before;

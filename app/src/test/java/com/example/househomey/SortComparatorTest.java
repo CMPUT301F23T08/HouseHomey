@@ -1,5 +1,6 @@
 package com.example.househomey;
 
+import com.example.househomey.item.Item;
 import com.example.househomey.sort.CostComparator;
 import com.example.househomey.sort.DateComparator;
 import com.example.househomey.sort.DescriptionComparator;
@@ -10,7 +11,6 @@ import org.junit.Test;
 
 import com.google.firebase.Timestamp;
 
-import java.sql.Time;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.Collections;

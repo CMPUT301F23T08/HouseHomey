@@ -2,14 +2,15 @@ package com.example.househomey.testUtils;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.test.core.app.ActivityScenario;
 
-import com.example.househomey.Item;
 import com.example.househomey.MainActivity;
+import com.example.househomey.item.Item;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -21,6 +22,7 @@ import org.junit.runners.model.Statement;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -34,10 +36,12 @@ import java.util.concurrent.TimeUnit;
 public class DatabaseSetupRule<T extends Activity> implements TestRule {
     private final String methodMatcher = "WithNewUser";
     private final Class<T> activityClass;
+    private final int dbTimeoutInSeconds = 30;
+    private final FirebaseAuth auth = FirebaseAuth.getInstance();
     private DocumentReference userDoc;
     private boolean isDatabaseTest;
-    private final int dbTimeoutInSeconds = 30;
     private T activity;
+    private final String password = "123456";
 
     public DatabaseSetupRule(Class<T> activityClass) {
         this.activityClass = activityClass;
@@ -50,12 +54,9 @@ public class DatabaseSetupRule<T extends Activity> implements TestRule {
      * ex) proper page navigation, field validation, etc.
      */
     public T setupActivity() {
-        Bundle userData = new Bundle();
-        userData.putString("username", isDatabaseTest ? userDoc.getId() : "ESPRESSO_GENERAL_USER");
         ActivityScenario.launch(activityClass).onActivity(activity -> {
             this.activity = activity;
             Intent intent = new Intent(activity, MainActivity.class);
-            intent.putExtra("userData", userData);
             activity.startActivity(intent);
         });
         return activity;
@@ -74,7 +75,8 @@ public class DatabaseSetupRule<T extends Activity> implements TestRule {
             // Ensure that mock data can be used to create a valid Item
             Item item;
             try {
-                item = new Item("", itemDetails, userDoc.collection("tag"), item1 -> {});
+                item = new Item("", itemDetails, userDoc.collection("tag"), item1 -> {
+                });
             } catch (NullPointerException e) {
                 throw new RuntimeException("Mock data cannot create a valid Item: " + e.getMessage());
             }
@@ -105,6 +107,8 @@ public class DatabaseSetupRule<T extends Activity> implements TestRule {
             public void evaluate() throws Throwable {
                 if (isDatabaseTest) {
                     createTestUser();
+                } else {
+                    loginToGeneralTestUser();
                 }
                 try {
                     // Run the actual @Test method body
@@ -118,41 +122,69 @@ public class DatabaseSetupRule<T extends Activity> implements TestRule {
         };
     }
 
+    public void loginToGeneralTestUser() {
+        CountDownLatch latch = new CountDownLatch(1);
+        auth.signInWithEmailAndPassword(getEmail(), password)
+                .addOnSuccessListener(authResult -> {
+                    Log.d("ESP-TEST", "ESPRESSO_GENERAL_USER logged in successfully");
+                    latch.countDown();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("ESP-TEST", "Login failed for ESPRESSO_GENERAL_USER: " + e.getMessage());
+                    latch.countDown();
+                });
+
+        // Wait for the login to finish
+        try {
+            if (!latch.await(dbTimeoutInSeconds, TimeUnit.SECONDS)) {
+                throw new RuntimeException("Timeout waiting for user login.");
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Timeout waiting for user login.");
+        }
+    }
+
+
     private void createTestUser() throws Exception {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CountDownLatch latch = new CountDownLatch(1);
-        db.collection("user").add(new HashMap<String, Object>()).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                userDoc = task.getResult();
-                latch.countDown();
-            } else {
-                throw new RuntimeException("Could not generate a unique test user.");
-            }
-        });
-        // Wait for user creation to finish
+
+        // Create a unique Firebase Auth test user and document
+        String email = getEmail();
+        auth.createUserWithEmailAndPassword(email, password)
+                .addOnSuccessListener(authResult -> auth.signInWithEmailAndPassword(email, password).addOnSuccessListener(aVoid -> {
+                    UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(email).build();
+                    auth.getCurrentUser().updateProfile(profileChangeRequest);
+                    db.collection("user").
+                            document(email).set(new HashMap<>()).addOnSuccessListener(a -> {
+                                userDoc = db.collection("user").document(email);
+                                latch.countDown();
+                            });
+                }).addOnFailureListener(e -> {
+                    throw new RuntimeException("Could not create Firestore document for the test user: " + e.getMessage());
+                })).addOnFailureListener(e -> {
+                    throw new RuntimeException("Could not create Firebase Auth user for the test: " + e.getMessage());
+                });
+
+        // Wait for user creation and Firestore document creation to finish
         if (!latch.await(dbTimeoutInSeconds, TimeUnit.SECONDS)) {
             throw new RuntimeException("Timeout waiting for test user creation.");
         }
     }
 
-    private void deleteTestUser() throws Exception {
+    private void deleteTestUser() {
         if (userDoc != null) {
-            CountDownLatch latch = new CountDownLatch(1);
             // Need to delete all nested collections before user doc can be deleted
             deleteNestedDocuments(userDoc.collection("item"));
-            userDoc.delete()
-                    .addOnSuccessListener(aVoid -> {
-                        Log.d("ESP-TEST", "Unique test user document deleted successfully");
-                        latch.countDown();
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e("ESP-TEST", "Could not delete the unique test user: " + e.getMessage());
-                        latch.countDown();
-                    });
-            // Wait for all deletions to finish
-            if (!latch.await(dbTimeoutInSeconds, TimeUnit.SECONDS)) {
-                throw new RuntimeException("Timeout waiting for test user deletion.");
-            }
+            deleteNestedDocuments(userDoc.collection("tag"));
+
+            // Delete Firestore document
+            userDoc.delete().addOnSuccessListener(aVoid -> Log.d("ESP-TEST", "Unique test user document deleted successfully"))
+                    .addOnFailureListener(e -> Log.e("ESP-TEST", "Could not delete the unique test user document: " + e.getMessage()));
+
+            // Delete Firebase Auth test user
+            auth.getCurrentUser().delete().addOnSuccessListener(aVoid -> Log.d("ESP-TEST", "Firebase Auth user deleted successfully"))
+                    .addOnFailureListener(e -> Log.e("ESP-TEST", "Could not delete Firebase Auth user: " + e.getMessage()));
         }
     }
 
@@ -160,11 +192,14 @@ public class DatabaseSetupRule<T extends Activity> implements TestRule {
         collection.get().addOnSuccessListener(queryDocumentSnapshots -> {
             for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                 DocumentReference docRef = document.getReference();
-                docRef.delete()
-                        .addOnSuccessListener(aVoid -> Log.d("ESP-TEST", "Nested document deleted successfully"))
-                        .addOnFailureListener(e -> Log.e("ESP-TEST", "Could not delete nested document: " + e.getMessage()));
+                docRef.delete().addOnSuccessListener(aVoid -> Log.d("ESP-TEST", "Nested document deleted successfully")).addOnFailureListener(e -> Log.e("ESP-TEST", "Could not delete nested document: " + e.getMessage()));
             }
         }).addOnFailureListener(e -> Log.e("ESP-TEST", "Could not retrieve nested documents: " + e.getMessage()));
+    }
+
+    private String getEmail() {
+        if (isDatabaseTest) return UUID.randomUUID() + "@example.com";
+        return "espresso_general_user@example.com";
     }
 }
 

@@ -1,4 +1,4 @@
-package com.example.househomey;
+package com.example.househomey.home;
 
 import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
 
@@ -9,7 +9,6 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -19,6 +18,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.househomey.MainActivity;
+import com.example.househomey.R;
 import com.example.househomey.filter.model.DateFilter;
 import com.example.househomey.filter.model.KeywordFilter;
 import com.example.househomey.filter.model.MakeFilter;
@@ -29,6 +30,8 @@ import com.example.househomey.filter.model.FilterCallback;
 import com.example.househomey.filter.ui.KeywordFilterFragment;
 import com.example.househomey.filter.ui.MakeFilterFragment;
 import com.example.househomey.filter.ui.TagFilterFragment;
+import com.example.househomey.item.Item;
+import com.example.househomey.item.ItemAdapter;
 import com.example.househomey.sort.CostComparator;
 import com.example.househomey.sort.DateComparator;
 import com.example.househomey.sort.DescriptionComparator;

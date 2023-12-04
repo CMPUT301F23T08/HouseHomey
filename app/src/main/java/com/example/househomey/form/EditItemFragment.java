@@ -2,28 +2,22 @@ package com.example.househomey.form;
 
 import static com.example.househomey.utils.FragmentUtils.formatDate;
 import static com.example.househomey.utils.FragmentUtils.goBack;
-import static com.example.househomey.utils.FragmentUtils.navigateToFragmentPage;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.os.BundleCompat;
 
-import com.example.househomey.Item;
-import com.example.househomey.MainActivity;
 import com.example.househomey.R;
-import com.example.househomey.ViewItemFragment;
+import com.example.househomey.item.Item;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
 
 import java.io.Serializable;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * This fragment is responsible for editing an existing item in the database.

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/creme"
-    tools:context=".SignInActivity">
+    tools:context=".signin.SignInActivity">
 
     <FrameLayout
         android:id="@+id/fragmentContainerSignIn"

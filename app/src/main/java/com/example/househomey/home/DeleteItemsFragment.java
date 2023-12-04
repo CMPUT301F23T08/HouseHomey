@@ -1,15 +1,16 @@
-package com.example.househomey;
+package com.example.househomey.home;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+
+import com.example.househomey.R;
+import com.example.househomey.item.Item;
 
 import java.util.ArrayList;
 
