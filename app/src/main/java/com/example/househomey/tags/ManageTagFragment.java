@@ -21,6 +21,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Dialog that allows users to manage (add and delete) tags
+ * @author Matthew Neufeld
+ */
 public class ManageTagFragment extends TagFragment {
     private EditText tagEditText;
     private Button addTagButton;

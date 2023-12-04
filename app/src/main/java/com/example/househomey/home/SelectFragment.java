@@ -130,6 +130,10 @@ public class SelectFragment extends Fragment implements DeleteItemsFragment.Dele
         return rootView;
     }
 
+    /**
+     * Setter for itemIdMap where it populates the Hashmap, by mapping
+     * each of the items' ID to the actual item obects from our itemList
+     */
     private void createItemIdMap() {
         for (Item item : itemList) {
             itemIdMap.put(item.getId(), item);

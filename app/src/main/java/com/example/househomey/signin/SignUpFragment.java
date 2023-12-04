@@ -32,6 +32,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Defines the sign up/register page and links back to the SignInFragment.
+ * Deals with validating registration information from user.
+ * @author Antonio Lech Martin-Ozimek
+ */
 public class SignUpFragment extends Fragment {
     private EditText usernameEdittext;
     private EditText emailEdittext;
