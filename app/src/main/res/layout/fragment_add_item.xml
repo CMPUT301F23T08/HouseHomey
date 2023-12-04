@@ -251,6 +251,24 @@
                     android:maxLength="280" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="16dp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/add_item_clear_button"
+                android:layout_width="125dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/delete_button_border"
+                android:layout_gravity="center"
+                android:text="Clear All"
+                android:paddingVertical="10dp"
+                android:paddingHorizontal="24dp"
+                android:textAllCaps="false"
+                android:textColor="@color/red"
+                android:visibility="gone">
+            </androidx.appcompat.widget.AppCompatButton>
+
         </LinearLayout>
 
     </ScrollView>
